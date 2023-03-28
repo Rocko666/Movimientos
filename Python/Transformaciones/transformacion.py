@@ -242,13 +242,13 @@ def fun_cargar_devengos_combos_bonos(sqlContext, fecha_incial, fecha_final):
     return 0
 
 def fun_cargar_parque(sqlContext, fecha_alt_ini, fecha_alt_fin, fecha_proc, fecha_eje_pv, fecha_menos_5, fecha_mas_1, \
-                      fecha_alt_dos_meses_ant_fin, fecha_alt_dos_meses_ant_ini, fecha_ini_mes, fecha_inac_1):
+                      fecha_alt_dos_meses_ant_fin, fecha_alt_dos_meses_ant_ini, fecha_ini_mes, fecha_inac_1, fecha_tmstmp):
 
     # extraemos los datos de la tabla bloqueo de llamadas
     
-    df_datos_parque = fun_extraer_movi_parque(sqlContext, fecha_alt_ini, fecha_alt_fin, fecha_proc, fecha_eje_pv, "and t.estado_abonado not in ('BAA')")
+    df_datos_parque = fun_extraer_movi_parque(sqlContext, fecha_alt_ini, fecha_alt_fin, fecha_proc, fecha_eje_pv, "and t.estado_abonado not in ('BAA')", fecha_tmstmp)
     
-    df_datos_parque_inac = fun_extraer_movi_parque(sqlContext, fecha_alt_dos_meses_ant_fin, fecha_alt_dos_meses_ant_ini, fecha_ini_mes, fecha_eje_pv, "and 1=1")
+    df_datos_parque_inac = fun_extraer_movi_parque(sqlContext, fecha_alt_dos_meses_ant_fin, fecha_alt_dos_meses_ant_ini, fecha_ini_mes, fecha_eje_pv, "and 1=1", fecha_tmstmp)
     
     df_datos_cuenta_cliente = fun_extraer_cuenta_cliente(sqlContext)
     

@@ -194,7 +194,7 @@ def fun_extraer_combos_bonos(fecha_inicial, fecha_final):
     return qry
 
 @cargar_consulta
-def fun_extraer_movi_parque(fecha_alta_inicial, fecha_alta_final, fecha_proc, fecha_eje_pv, condicion_abonado):
+def fun_extraer_movi_parque(fecha_alta_inicial, fecha_alta_final, fecha_proc, fecha_eje_pv, condicion_abonado, fecha_tmstmp):
     qry = '''
         SELECT DISTINCT
             t.num_telefonico,
@@ -226,7 +226,7 @@ def fun_extraer_movi_parque(fecha_alta_inicial, fecha_alta_final, fecha_proc, fe
             	fecha_alta,
             	fecha_baja,
             	nvl(fecha_modif,fecha_alta) fecha_last_status,
-            	case when (fecha_baja is null or fecha_baja = '') then current_timestamp() else fecha_baja end as fecha_baja_new,
+            	case when (fecha_baja is null or fecha_baja = '') then '{fecha_tmstmp}' else fecha_baja end as fecha_baja_new,
             	estado_abonado,
             	{fecha_eje_pv} fecha_proceso, 
             	numero_abonado,
@@ -241,7 +241,7 @@ def fun_extraer_movi_parque(fecha_alta_inicial, fecha_alta_final, fecha_proc, fe
             	correo_cliente_pr,
             	telefono_cliente_pr,
             	imei,
-            	row_number() over (partition by num_telefonico order by (case when (fecha_baja is null or fecha_baja = '') then current_timestamp() else fecha_baja end) desc,fecha_alta desc,nvl(fecha_modif,fecha_alta) desc) as orden
+            	row_number() over (partition by num_telefonico order by (case when (fecha_baja is null or fecha_baja = '') then '{fecha_tmstmp}' else fecha_baja end) desc,fecha_alta desc,nvl(fecha_modif,fecha_alta) desc) as orden
             	FROM db_cs_altas.otc_t_nc_movi_parque_v1
             	WHERE fecha_proceso = {fecha_proc}
             ) t
@@ -250,9 +250,8 @@ def fun_extraer_movi_parque(fecha_alta_inicial, fecha_alta_final, fecha_proc, fe
             {condicion_abonado}
             --and t.estado_abonado not in ('BAA')
             and t.fecha_alta<'{fecha_alta_inicial}' and (t.fecha_baja>'{fecha_alta_final}' or t.fecha_baja is null)
-      '''.format(fecha_alta_inicial=fecha_alta_inicial, fecha_alta_final=fecha_alta_final, fecha_proc=fecha_proc, fecha_eje_pv=fecha_eje_pv, condicion_abonado=condicion_abonado)
+      '''.format(fecha_alta_inicial=fecha_alta_inicial, fecha_alta_final=fecha_alta_final, fecha_proc=fecha_proc, fecha_eje_pv=fecha_eje_pv, condicion_abonado=condicion_abonado, fecha_tmstmp=fecha_tmstmp)
     return qry
-
 
 @cargar_consulta
 def fun_extraer_cuenta_cliente():
@@ -288,7 +287,8 @@ def fun_extraer_churn(fechamenos5, fechamas1):
             a.num_telefonico,
             a.counted_days,
             'churn' as fuente
-            from db_temporales.tmp_360_otc_t_360_churn90_ori_prod a
+	from db_desarrollo2021.tmp_360_otc_t_360_churn90_ori_prod a
+        --    from db_temporales.tmp_360_otc_t_360_churn90_ori_prod a
       '''.format(fechamenos5=fechamenos5, fechamas1=fechamas1)
     return qry
 
@@ -310,7 +310,8 @@ def fun_extraer_churn_dia():
 def fun_extraer_churn_inac(fecha_inac_1):
     qry = '''
         SELECT num_telefonico,counted_days 
-        FROM db_temporales.tmp_360_otc_t_360_churn90_tmp1_prod
+	FROM db_desarrollo2021.tmp_360_otc_t_360_churn90_tmp1_prod
+        --FROM db_temporales.tmp_360_otc_t_360_churn90_tmp1_prod
       '''.format(fecha_inac_1=fecha_inac_1)
     return qry
 
@@ -318,7 +319,8 @@ def fun_extraer_churn_inac(fecha_inac_1):
 def fun_extraer_parque_inac():
     qry = '''
         SELECT telefono
-        FROM db_temporales.tmp_360_parque_inactivo_prod
+	FROM db_desarrollo2021.tmp_360_parque_inactivo_prod
+        --FROM db_temporales.tmp_360_parque_inactivo_prod
         group by telefono
       '''
     return qry

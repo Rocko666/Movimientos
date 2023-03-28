@@ -8,14 +8,14 @@ from datetime import timedelta, datetime
 
 # Unificamos las funciones que vamos a ejecutar
 def proceso(sqlContext, fecha_alt_ini, fecha_alt_fin, fecha_proc, fecha_eje_pv, fecha_menos_5, fecha_mas_1, \
-            fecha_alt_dos_meses_ant_fin, fecha_alt_dos_meses_ant_ini, fecha_ini_mes, fecha_inac_1):
+            fecha_alt_dos_meses_ant_fin, fecha_alt_dos_meses_ant_ini, fecha_ini_mes, fecha_inac_1, fecha_tmstmp):
     
     #fun_cargar_devengos_buzon_voz_diario(sqlContext, fecha_inicio, fecha_fin, fecha_eje)
     print('MENSAJE fecha eje PV: ',fecha_eje_pv)
     print('MENSAJE fecha PROCESO: ',fecha_proc)
     
     fun_cargar_parque(sqlContext, fecha_alt_ini, fecha_alt_fin, fecha_proc, fecha_eje_pv, fecha_menos_5, fecha_mas_1, \
-            fecha_alt_dos_meses_ant_fin, fecha_alt_dos_meses_ant_ini, fecha_ini_mes, fecha_inac_1)
+            fecha_alt_dos_meses_ant_fin, fecha_alt_dos_meses_ant_ini, fecha_ini_mes, fecha_inac_1,  fecha_tmstmp)
         
     return "Ejecucion OK"
 
@@ -65,7 +65,7 @@ if __name__ == '__main__':
 
         val_proceso = proceso(sqlContext, val_fecha_alta_inicio, val_fecha_alta_fin, val_fecha_proceso, val_fecha_ejecucion_pv,\
                               val_fecha_menos_5, val_fecha_mas_1, val_fecha_alt_dos_meses_ant_fin, val_fecha_alt_dos_meses_ant_ini, \
-                              val_fecha_ini_mes, val_fecha_inac_1)
+                              val_fecha_ini_mes, val_fecha_inac_1, val_fecha_tmstmp)
         print(msg_succ("Ejecucion Exitosa: \n %s " % val_proceso))
 
     except Exception as e:

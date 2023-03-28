@@ -411,6 +411,13 @@ WHERE fecha_proceso = {}
     return qry
 
 #16
+
+def qry_tmp_otc_t_360_bonos_fidelizacion_partt():
+    qry="""
+    SHOW PARTITIONS db_rdb.otc_t_bonos_fidelizacion
+    """
+    return qry
+
 def qry_tmp_otc_t_360_bonos_fidelizacion_row_temp(vIFechaMas1):
     qry='''
 SELECT telefono
@@ -420,8 +427,8 @@ SELECT telefono
 ,fecha
 ,ROW_NUMBER() OVER (PARTITION BY telefono,tipo ORDER BY	mb,codigo_slo) AS orden
 FROM db_rdb.otc_t_bonos_fidelizacion a
-INNER JOIN (SELECT max(fecha) fecha_max FROM db_rdb.otc_t_bonos_fidelizacion WHERE fecha < {}) b ON b.fecha_max = a.fecha
-    '''.format(vIFechaMas1)
+WHERE a.fecha = {vIFechaMas1}
+    '''.format(vIFechaMas1=vIFechaMas1)
     return qry
 
 #17
@@ -483,7 +490,7 @@ FROM {}
     return qry
 
 #21
-def qry_tmp_otc_t_360_general_temp_final_1(vSTable12,vSTable15,vSTable18,vSTable20,vSTableExt10,vSTable14,vSTable9,vSTableExt11,vSTableExt12):
+def qry_tmp_otc_t_360_general_temp_final_1(vSTable12,vSTable15,vSTable18,vSTable20,vSTableExt10,vSTable14,vSTable9,vSTableExt11,vSTableExt12,vFecha_tmp):
     qry='''
 select gen.telefono
 ,gen.codigo_plan
@@ -563,7 +570,7 @@ select gen.telefono
 ,gen.fecha_proceso
 from {} gen
 left outer join {} nse on nse.telefono = gen.telefono					
-left outer join db_reportes.otc_t_360_trafico tra on tra.telefono = gen.telefono and tra.fecha_proceso = gen.fecha_proceso
+left outer join (select * from db_reportes.otc_t_360_trafico tra where fecha_proceso={vFecha_tmp})tra on tra.telefono = gen.telefono and tra.fecha_proceso = gen.fecha_proceso
 left join {} fm on fm.telefono=gen.telefono
 left join {} fd on fd.telefono=gen.telefono
 left join {} nb on nb.telefono=gen.telefono
@@ -647,7 +654,7 @@ group by gen.telefono
 ,gen.es_parque
 ,gen.banco
 ,gen.fecha_proceso
-    '''.format(vSTable12,vSTable15,vSTable18,vSTable20,vSTableExt10,vSTable14,vSTable9,vSTableExt11,vSTableExt12)
+    '''.format(vSTable12,vSTable15,vSTable18,vSTable20,vSTableExt10,vSTable14,vSTable9,vSTableExt11,vSTableExt12,vFecha_tmp=vFecha_tmp)
     return qry
 
 #22
@@ -756,9 +763,298 @@ WHERE orden = 1
     return qry
 
 #24
+def qry_tmp_otc_t_desc_planes(fechamas1,fecha_inico_mes_1_1,fecha_eje1):
+    qry='''
+SELECT
+	phone_number
+	, tariff_plan_id
+	, created_when_orden
+	, descripcion_descuento
+	, tipo_proceso_esp
+	, p_fecha_proceso
+	, discount_value
+	, (case when upper(descripcion_descuento) LIKE '%CONADIS%' THEN 'CONADIS'
+			WHEN upper(descripcion_descuento) LIKE '%ADULTO%MAYOR%' THEN 'CONADIS' end ) as desc_conadis
+FROM
+	(
+	SELECT
+		phone_number
+		, tariff_plan_id
+		, created_when_orden
+		, descripcion_descuento
+		, tipo_proceso_esp
+		, p_fecha_proceso
+		, discount_value
+		, ROW_NUMBER() OVER (PARTITION BY phone_number
+	ORDER BY
+		to_date(created_when_orden) DESC) rn
+	FROM
+		db_cs_altas.otc_t_descuentos_planes
+	WHERE
+		p_fecha_proceso = {fechamas1}
+	AND to_date(created_when_orden) between '{fecha_inico_mes_1_1}' and '{fecha_eje1}'
+	and (tipo_proceso_esp  <>  'Suspender' or  tipo_proceso_esp is null)
+	) t1
+WHERE
+	rn = 1
+    '''.format(fechamas1=fechamas1,fecha_inico_mes_1_1=fecha_inico_mes_1_1,fecha_eje1=fecha_eje1)
+    return qry
+
+#25
+def qry_tmp_otc_t_ov_planes(fechamas1,fecha_inico_mes_1_1,fecha_eje1):
+    qry='''
+SELECT
+	created_when_orden
+	, phone_number
+	, p_fecha_proceso
+	, tariff_plan_id
+	, mrc_base_price
+	, mrc_ov_price
+FROM
+	(
+	SELECT
+		created_when_orden
+		, phone_number
+		, p_fecha_proceso
+		, tariff_plan_id
+		, mrc_base_price
+		, mrc_ov_price
+		, ROW_NUMBER() OVER (PARTITION BY phone_number
+	ORDER BY
+		to_date(created_when_orden) DESC) rn
+	FROM
+		db_cs_altas.otc_t_overwrite_planes
+	WHERE
+		p_FECHA_PROCESO = {fechamas1}
+	AND to_date(created_when_orden) between '{fecha_inico_mes_1_1}' and '{fecha_eje1}'
+	) t1
+WHERE
+	rn = 1
+    '''.format(fechamas1=fechamas1,fecha_inico_mes_1_1=fecha_inico_mes_1_1,fecha_eje1=fecha_eje1)
+    return qry
+
+#26
+def qry_tmp_prmt_alta_ti(FECHAEJE):
+    qry='''
+SELECT 
+    identificador
+    ,razon_social
+    ,fecha_ingreso
+    ,ejecutivo_asignado
+    ,correo_ejecutivo_asignado
+    ,area
+    ,codigo_vendedor_da
+    ,jefatura
+    ,red_jefe
+    ,tipopersona
+    ,tiposegmentacion
+    ,tiporuc
+    ,region
+    ,fecha_carga
+    ,pt_fecha
+FROM db_desarrollo2021.OTC_T_PRMTR_ALTAS_TI 
+WHERE pt_fecha={FECHAEJE}
+    '''.format(FECHAEJE=FECHAEJE)
+    return qry
+
+#27
+def qry_tmp_prmt_baja_to(FECHAEJE):
+    qry='''
+SELECT 
+    identificador
+    ,razon_social
+    ,fecha_ingreso
+    ,ejecutivo_asignado
+    ,correo_ejecutivo_asignado
+    ,area
+    ,codigo_vendedor_da
+    ,jefatura
+    ,region
+    ,fecha_carga
+    ,pt_fecha
+FROM db_desarrollo2021.OTC_T_PRMTR_BAJAS_TO
+WHERE pt_fecha={FECHAEJE}
+    '''.format(FECHAEJE=FECHAEJE)
+    return qry
+
+#28
+def qry_tmp_desc_no_pymes(fecha_eje1):
+    qry='''
+SELECT 
+    telefono
+	,plan_codigo
+	,descuento
+	,fecha_proceso
+	,fecha_carga
+	, detalle
+from db_desarrollo2021.otc_t_desc_no_pymes
+WHERE fecha_proceso = '{fecha_eje1}'
+    '''.format(fecha_eje1)
+    return qry
+
+#29
+def qry_tmp_desp_nc_final():
+    qry='''
+SELECT
+	icc
+	, no_min
+	, (case when descripcion like'%HALFSIM CHIP PREPAGO $5 AUTOSERVICIO NUMERADO 15D%' 
+			then 'HALFSIM CHIP PREPAGO $5 AUTOSERVICIO NUMERADO 15DIAS'
+			when descripcion like'%HALFSIM CHIP PREPAGO $5 NUMERADO 15 D%' 
+			then 'HALFSIM CHIP PREPAGO $5 NUMERADO 15 DIAS'
+			when descripcion like'%HALFSIM TUENTI PREPAGO CELOF%N NUMERADA%' 
+			then 'HALFSIM TUENTI PREPAGO CELOFAN NUMERADA'
+			when descripcion like'%USIM TUENTI PREPAGO BL%STER NUMERADA $20.00%' 
+			then 'USIM TUENTI PREPAGO BLISTER NUMERADA $20.00'
+			when descripcion like'%USIM TUENTI PREPAGO BL%STER NUMERADA $10.00%' 
+			then 'USIM TUENTI PREPAGO BLISTER NUMERADA $10.00'
+			ELSE descripcion END) as descripcion
+	, codigo_despacho
+	, cliente
+	, operadora
+FROM
+		db_cs_altas.despachos_nc_final
+WHERE
+        upper(operadora) = 'MOVISTAR'
+    '''.format()
+    return qry
+
+#30
+def qry_tmp_otc_t_cat_id_canal():
+    qry='''
+SELECT
+	tipo_movimiento
+	,id_tipo_movimiento
+	,nombre_id
+	,extractor
+	,crite
+	,fechacarga
+FROM
+	db_reportes.otc_t_catalogo_consolidado_id
+WHERE
+	upper(extractor) IN ('MOVIMIENTOS', 'TODOS')
+	AND upper(nombre_id)= UPPER('ID_CANAL')
+'''.format()
+    return qry
+
+#31
+def qry_tmp_otc_t_cat_id_sub_canal():
+    qry='''
+SELECT
+	tipo_movimiento
+	,id_tipo_movimiento
+	,nombre_id
+	,extractor
+	,crite
+	,fechacarga
+FROM
+	db_reportes.otc_t_catalogo_consolidado_id
+WHERE
+	upper(extractor) IN ('MOVIMIENTOS', 'TODOS')
+	AND upper(nombre_id)= UPPER('ID_SUBCANAL')
+'''.format()
+    return qry
+
+#32
+def qry_tmp_otc_t_cat_id_producto():
+    qry='''
+SELECT
+	tipo_movimiento
+	,id_tipo_movimiento
+	,nombre_id
+	,extractor
+	,crite
+	,fechacarga
+FROM
+	db_reportes.otc_t_catalogo_consolidado_id
+WHERE
+	upper(extractor) IN ('MOVIMIENTOS', 'TODOS')
+	AND upper(nombre_id)= UPPER('ID_PRODUCTO')
+'''.format()
+    return qry
+
+#33
+def qry_tmp_otc_t_cat_id_tipo_mov():
+    qry='''
+SELECT 
+id_tipo_movimiento
+, nombre_id
+, extractor 
+, tipo_movimiento
+, case 
+	when upper(tipo_movimiento) like '%TRANSFER%IN%' then 'PRE_POS'
+	when upper(tipo_movimiento) like '%TRANSFER%OUT%' then 'POS_PRE'
+	when upper(tipo_movimiento) like '%CAMBIO%DE%PLAN%' then 'UPSELL'
+	when upper(tipo_movimiento) like '%NO%RECICLABLE%' then 'NO_RECICLABLE'
+	when upper(tipo_movimiento) like '%ALTAS%BAJAS%REPROCESO%' then 'ALTA_BAJA'
+	ELSE tipo_movimiento END AS auxiliar
+from db_reportes.otc_t_catalogo_consolidado_id  
+where upper(extractor) IN ('MOVIMIENTOS', 'TODOS')
+and upper(nombre_id)=UPPER('ID_TIPO_MOVIMIENTO')
+union ALL SELECT
+id_tipo_movimiento
+, nombre_id
+, extractor 
+, tipo_movimiento
+, 'DOWNSELL'
+FROM db_reportes.otc_t_catalogo_consolidado_id  
+where upper(tipo_movimiento) like '%CAMBIO%DE%PLAN%'
+and upper(nombre_id)=UPPER('ID_TIPO_MOVIMIENTO')
+union ALL SELECT
+id_tipo_movimiento
+, nombre_id
+, extractor 
+, tipo_movimiento
+, 'MISMA_TARIFA'
+FROM db_reportes.otc_t_catalogo_consolidado_id  
+where upper(tipo_movimiento) like '%CAMBIO%DE%PLAN%'
+and upper(nombre_id)=UPPER('ID_TIPO_MOVIMIENTO')
+'''.format()
+    return qry
+
+#34
+def qry_tmp_rdb_solic_port_in():
+    qry='''
+SELECT distinct 
+	ln_origen
+	,telefono
+	,fvc
+	,created_when
+	,salesorderprocesseddate
+	,requeststatus
+	,doc_number
+	--LA SIGUIENTE TABLA FUE TRAIDA DESDE ORACLE CON SPARK CON EL QUERY DE CARLOS CASTILLO
+FROM db_desarrollo2021.sol_port_in_3
+	--FROM db_desarrollo2021.r_om_portin_co 
+	--cambiar por la tabla generada en el proceso SOLICITUDES DE PORTABILIDAD IN 
+    --en SPARK con tablas de hive
+WHERE nvl(salesorderprocesseddate, created_when) BETWEEN '{fecha_port_ini}' AND '{fecha_port_fin}'
+and requeststatus in ('Approved','Partially Rejected','Pending in ASCP')
+'''.format()
+    return qry
+
+#35
+def qry_tmp_fecha_alta_pos_hist():
+    qry='''
+SELECT 
+	telefono
+	, CAST(fecha_alta AS date) AS fecha_alta
+	,linea_negocio_homologado
+	,tipo_movimiento_mes
+	, datediff(fecha_movimiento_mes, fecha_alta) as dias_transcurridos_baja
+	,cliente
+from db_desarrollo2021.otc_t_360_general_temp_final 
+where linea_negocio_homologado='POSPAGO'
+and tipo_movimiento_mes = 'TRANSFER_OUT'
+and es_parque ='NO'
+'''.format()
+    return qry
+
+
+#36
 def qry_ins_otc_t_360_general(vIFechaEje1,vIFechaEje,vTblInt23,vSTableExt16,vSTableExt17,vSTableExt18,vSTableExt19,vSTableExt20,vSTableExt21,vSTableExt22,vSTableExt23,vSTableExt24):
     qry='''
-select distinct 
+SELECT DISTINCT 
 t1.telefono
 ,t1.codigo_plan
 ,(CASE WHEN t1.estado_abonado NOT IN('BAA','BAP') THEN COALESCE(pp.usa_app,'NO') ELSE 'NO' END) as usa_app

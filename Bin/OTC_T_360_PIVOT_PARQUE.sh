@@ -272,7 +272,7 @@ $RUTA_PYTHON/otc_t_360_pivot_parque_2.py \
 -fec_alt_dos_meses_ant_ini $fecha_alt_dos_meses_ant_ini \
 -fec_ini_mes $fechaIniMes \
 -fec_inac_1 $fecha_inac_1 \
--fec_tmstmp '$fecha_tmstmp' 2>&1 &>> $VAL_LOG_EJECUCION
+-fec_tmstmp "$fecha_tmstmp" 2>&1 &>> $VAL_LOG_EJECUCION
 
 	# Validamos el LOG de la ejecucion, si encontramos errores finalizamos con error >0
 error_spark=`egrep 'An error occurred|Caused by:|ERROR: Creando df de query|NO EXISTE TABLA|cannot resolve|Non-ASCII character|UnicodeEncodeError:|can not accept object|pyspark.sql.utils.ParseException|AnalysisException:|NameError:|IndentationError:|Permission denied:|ValueError:|ERROR:|error:|unrecognized arguments:|No such file or directory|Failed to connect|Could not open client' $VAL_LOG_EJECUCION | wc -l`
