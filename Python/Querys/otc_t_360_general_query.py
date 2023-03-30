@@ -7,7 +7,7 @@
 # QUERYS: OTC_T_360_GENERAL
 ##########################################################################################################################################################
 #1
-def qry_tmp_otc_t_360_parque_mop_1_tmp(vIFechaMas1):
+def qry_tmp_otc_t_360_parque_mop_1_tmp(vIvIFechaMas1):
     qry='''
 SELECT t.num_telefonico
 ,t.forma_pago
@@ -18,7 +18,7 @@ FROM(SELECT num_telefonico
 FROM db_cs_altas.otc_t_nc_movi_parque_v1
 WHERE fecha_proceso = {}) t
 WHERE t.orden = 1
-    '''.format(vIFechaMas1)
+    '''.format(vIvIFechaMas1)
     return qry
 
 #2
@@ -32,7 +32,7 @@ WHERE fecha_proceso = {}
     return qry
 
 #3
-def qry_tmp_otc_t_360_usa_app_tmp(vSEsquemaTabla1,vIFechaMenos1Mes,vIFechaMas1):
+def qry_tmp_otc_t_360_usa_app_tmp(vSEsquemaTabla1,vIFechaMenos1Mes,vIvIFechaMas1):
     qry='''
 SELECT numero_telefono
 ,count(1) AS total
@@ -41,7 +41,7 @@ WHERE fecha_proceso > {}
 AND fecha_proceso < {}
 GROUP BY numero_telefono
 HAVING count(1)>0
-    '''.format(vSEsquemaTabla1,vIFechaMenos1Mes,vIFechaMas1)
+    '''.format(vSEsquemaTabla1,vIFechaMenos1Mes,vIvIFechaMas1)
     return qry
 
 #4
@@ -56,28 +56,28 @@ HAVING count(1)>0
     return qry
 
 #5
-def qry_tmp_otc_t_360_bonos_devengo_tmp(vIFechaMenos1Mes,vIFechaMas1):
+def qry_tmp_otc_t_360_bonos_devengo_tmp(vIFechaMenos1Mes,vIvIFechaMas1):
     qry='''
 SELECT a.num_telefono AS numero_telefono
 ,sum(b.imp_coste / 1.12)/ 1000 AS valor_bono
 ,a.cod_bono AS codigo_bono
 ,a.fec_alta
 FROM db_rdb.otc_t_ppga_adquisiciones a
-LEFT JOIN db_rdb.otc_t_ppga_actabopre b ON (b.fecha > {vIFechaMenos1Mes} AND b.fecha < {vIFechaMas1}
-AND a.fecha > {vIFechaMenos1Mes} AND a.fecha < {vIFechaMas1}
+LEFT JOIN db_rdb.otc_t_ppga_actabopre b ON (b.fecha > {vIFechaMenos1Mes} AND b.fecha < {vIvIFechaMas1}
+AND a.fecha > {vIFechaMenos1Mes} AND a.fecha < {vIvIFechaMas1}
 AND a.num_telefono = b.num_telefono AND a.sec_actuacion = b.sec_actuacion AND a.cod_particion = b.cod_particion)
 INNER JOIN db_rdb.otc_t_oferta_comercial_comberos t3 ON t3.cod_aa = a.cod_bono
 WHERE a.sec_baja IS NULL AND b.cod_actuacio = 'AB' AND b.cod_estarec = 'EJ'
-AND b.fecha > {vIFechaMenos1Mes} AND b.fecha < {vIFechaMas1}
-AND a.fecha > {vIFechaMenos1Mes} AND a.fecha < {vIFechaMas1} AND b.imp_coste > 0
+AND b.fecha > {vIFechaMenos1Mes} AND b.fecha < {vIvIFechaMas1}
+AND a.fecha > {vIFechaMenos1Mes} AND a.fecha < {vIvIFechaMas1} AND b.imp_coste > 0
 GROUP BY a.num_telefono, 
 a.cod_bono,
 a.fec_alta
-    '''.format(vIFechaMenos1Mes=vIFechaMenos1Mes,vIFechaMas1=vIFechaMas1)
+    '''.format(vIFechaMenos1Mes=vIFechaMenos1Mes,vIvIFechaMas1=vIvIFechaMas1)
     return qry
 
 #6
-def qry_tmp_otc_t_360_bonos_all_tmp(vSEsquemaTabla3,vSTableExt1,vIFechaMenos2Mes,vIFechaMas1,vSTable5):
+def qry_tmp_otc_t_360_bonos_all_tmp(vSEsquemaTabla3,vSTableExt1,vIFechaMenos2Mes,vIvIFechaMas1,vSTable5):
     qry='''
 SELECT t1.numero_telefono
 ,sum(t1.valor_bono) AS valor_bono
@@ -106,7 +106,7 @@ FROM {}) AS t1
 GROUP BY t1.numero_telefono
 ,t1.codigo_bono
 ,t1.fecha
-    '''.format(vSEsquemaTabla3,vSTableExt1,vIFechaMenos2Mes,vIFechaMas1,vSTable5)
+    '''.format(vSEsquemaTabla3,vSTableExt1,vIFechaMenos2Mes,vIvIFechaMas1,vSTable5)
     return qry
 
 #7
@@ -127,7 +127,7 @@ WHERE t1.orden = 1
     return qry
 
 #8
-def qry_tmp_otc_t_360_combero_all_tmp(vSTableExt1,vIFechaMenos1Mes,vIFechaMas1,vSTable5):
+def qry_tmp_otc_t_360_combero_all_tmp(vSTableExt1,vIFechaMenos1Mes,vIvIFechaMas1,vSTable5):
     qry='''
 SELECT t1.numero_telefono
 ,sum(t1.valor_bono) AS valor_bono
@@ -157,7 +157,7 @@ FROM {}) AS t1
 GROUP BY t1.numero_telefono
 ,t1.codigo_bono
 ,t1.fecha
-    '''.format(vSTableExt1,vIFechaMenos1Mes,vIFechaMas1,vSTable5)
+    '''.format(vSTableExt1,vIFechaMenos1Mes,vIvIFechaMas1,vSTable5)
     return qry
 
 #9
@@ -418,7 +418,7 @@ def qry_tmp_otc_t_360_bonos_fidelizacion_partt():
     """
     return qry
 
-def qry_tmp_otc_t_360_bonos_fidelizacion_row_temp(vIFechaMas1):
+def qry_tmp_otc_t_360_bonos_fidelizacion_row_temp(vIvIFechaMas1):
     qry='''
 SELECT telefono
 ,tipo
@@ -427,8 +427,8 @@ SELECT telefono
 ,fecha
 ,ROW_NUMBER() OVER (PARTITION BY telefono,tipo ORDER BY	mb,codigo_slo) AS orden
 FROM db_rdb.otc_t_bonos_fidelizacion a
-WHERE a.fecha = {vIFechaMas1}
-    '''.format(vIFechaMas1=vIFechaMas1)
+WHERE a.fecha = {vIvIFechaMas1}
+    '''.format(vIvIFechaMas1=vIvIFechaMas1)
     return qry
 
 #17
@@ -763,7 +763,7 @@ WHERE orden = 1
     return qry
 
 #24
-def qry_tmp_otc_t_desc_planes(fechamas1,fecha_inico_mes_1_1,fecha_eje1):
+def qry_tmp_otc_t_desc_planes(vIFechaMas1,fecha_inico_mes_1_1,vIFechaEje1):
     qry='''
 SELECT
 	phone_number
@@ -791,17 +791,17 @@ FROM
 	FROM
 		db_cs_altas.otc_t_descuentos_planes
 	WHERE
-		p_fecha_proceso = {fechamas1}
-	AND to_date(created_when_orden) between '{fecha_inico_mes_1_1}' and '{fecha_eje1}'
+		p_fecha_proceso = {vIFechaMas1}
+	AND to_date(created_when_orden) between '{fecha_inico_mes_1_1}' and '{vIFechaEje1}'
 	and (tipo_proceso_esp  <>  'Suspender' or  tipo_proceso_esp is null)
 	) t1
 WHERE
 	rn = 1
-    '''.format(fechamas1=fechamas1,fecha_inico_mes_1_1=fecha_inico_mes_1_1,fecha_eje1=fecha_eje1)
+    '''.format(vIFechaMas1=vIFechaMas1,fecha_inico_mes_1_1=fecha_inico_mes_1_1,vIFechaEje1=vIFechaEje1)
     return qry
 
 #25
-def qry_tmp_otc_t_ov_planes(fechamas1,fecha_inico_mes_1_1,fecha_eje1):
+def qry_tmp_otc_t_ov_planes(vIFechaMas1,fecha_inico_mes_1_1,vIFechaEje1):
     qry='''
 SELECT
 	created_when_orden
@@ -825,16 +825,16 @@ FROM
 	FROM
 		db_cs_altas.otc_t_overwrite_planes
 	WHERE
-		p_FECHA_PROCESO = {fechamas1}
-	AND to_date(created_when_orden) between '{fecha_inico_mes_1_1}' and '{fecha_eje1}'
+		p_FECHA_PROCESO = {vIFechaMas1}
+	AND to_date(created_when_orden) between '{fecha_inico_mes_1_1}' and '{vIFechaEje1}'
 	) t1
 WHERE
 	rn = 1
-    '''.format(fechamas1=fechamas1,fecha_inico_mes_1_1=fecha_inico_mes_1_1,fecha_eje1=fecha_eje1)
+    '''.format(vIFechaMas1=vIFechaMas1,fecha_inico_mes_1_1=fecha_inico_mes_1_1,vIFechaEje1=vIFechaEje1)
     return qry
 
 #26
-def qry_tmp_prmt_alta_ti(FECHAEJE):
+def qry_tmp_prmt_alta_ti(vIFechaEje):
     qry='''
 SELECT 
     identificador
@@ -853,12 +853,12 @@ SELECT
     ,fecha_carga
     ,pt_fecha
 FROM db_desarrollo2021.OTC_T_PRMTR_ALTAS_TI 
-WHERE pt_fecha={FECHAEJE}
-    '''.format(FECHAEJE=FECHAEJE)
+WHERE pt_fecha={vIFechaEje}
+    '''.format(vIFechaEje=vIFechaEje)
     return qry
 
 #27
-def qry_tmp_prmt_baja_to(FECHAEJE):
+def qry_tmp_prmt_baja_to(vIFechaEje):
     qry='''
 SELECT 
     identificador
@@ -873,12 +873,12 @@ SELECT
     ,fecha_carga
     ,pt_fecha
 FROM db_desarrollo2021.OTC_T_PRMTR_BAJAS_TO
-WHERE pt_fecha={FECHAEJE}
-    '''.format(FECHAEJE=FECHAEJE)
+WHERE pt_fecha={vIFechaEje}
+    '''.format(vIFechaEje=vIFechaEje)
     return qry
 
 #28
-def qry_tmp_desc_no_pymes(fecha_eje1):
+def qry_tmp_desc_no_pymes(vIFechaEje1):
     qry='''
 SELECT 
     telefono
@@ -888,8 +888,8 @@ SELECT
 	,fecha_carga
 	, detalle
 from db_desarrollo2021.otc_t_desc_no_pymes
-WHERE fecha_proceso = '{fecha_eje1}'
-    '''.format(fecha_eje1)
+WHERE fecha_proceso = '{vIFechaEje1}'
+    '''.format(vIFechaEje1=vIFechaEje1)
     return qry
 
 #29
@@ -1013,7 +1013,7 @@ and upper(nombre_id)=UPPER('ID_TIPO_MOVIMIENTO')
     return qry
 
 #34
-def qry_tmp_rdb_solic_port_in():
+def qry_tmp_rdb_solic_port_in(fecha_port_ini,fecha_port_fin):
     qry='''
 SELECT distinct 
 	ln_origen
@@ -1030,11 +1030,11 @@ FROM db_desarrollo2021.sol_port_in_3
     --en SPARK con tablas de hive
 WHERE nvl(salesorderprocesseddate, created_when) BETWEEN '{fecha_port_ini}' AND '{fecha_port_fin}'
 and requeststatus in ('Approved','Partially Rejected','Pending in ASCP')
-'''.format()
+'''.format(fecha_port_ini=fecha_port_ini,fecha_port_fin=fecha_port_fin)
     return qry
 
 #35
-def qry_tmp_fecha_alta_pos_hist():
+def qry_tmp_fecha_alta_pos_hist(vTblInt23):
     qry='''
 SELECT 
 	telefono
@@ -1043,172 +1043,378 @@ SELECT
 	,tipo_movimiento_mes
 	, datediff(fecha_movimiento_mes, fecha_alta) as dias_transcurridos_baja
 	,cliente
-from db_desarrollo2021.otc_t_360_general_temp_final 
+from {vTblInt23} 
 where linea_negocio_homologado='POSPAGO'
 and tipo_movimiento_mes = 'TRANSFER_OUT'
 and es_parque ='NO'
-'''.format()
+'''.format(vTblInt23=vTblInt23)
     return qry
 
 
 #36
-def qry_ins_otc_t_360_general(vIFechaEje1,vIFechaEje,vTblInt23,vSTableExt16,vSTableExt17,vSTableExt18,vSTableExt19,vSTableExt20,vSTableExt21,vSTableExt22,vSTableExt23,vSTableExt24):
+def qry_ins_otc_t_360_general(vIFechaEje1,vIFechaEje,vTblInt23,vTblExt18,vTblExt20,vTblExt21,vTblExt22,vTblExt23,vTblExt24,vTblInt29,vTblInt34,vTblInt30,vTblInt31,vTblInt32,vTblInt33,vTblInt28,vTblInt26,vTblInt27,vTblInt24,vTblInt25,vTblInt35):
     qry='''
-SELECT DISTINCT 
-t1.telefono
-,t1.codigo_plan
-,(CASE WHEN t1.estado_abonado NOT IN('BAA','BAP') THEN COALESCE(pp.usa_app,'NO') ELSE 'NO' END) as usa_app
-,(CASE WHEN t1.estado_abonado NOT IN('BAA','BAP') THEN COALESCE(pp.usuario_app,'NO') ELSE 'NO' END) as usuario_app
-,t1.usa_movistar_play
-,t1.usuario_movistar_play						
-,t1.fecha_alta
-,t1.nse
-,t1.sexo
-,t1.edad
-,t1.mes
-,t1.anio
-,t1.segmento
-,t1.linea_negocio
-,t1.linea_negocio_homologado
-,t1.forma_pago_factura
-,t1.forma_pago_alta
-,t1.estado_abonado
-,t1.sub_segmento					
-,t1.numero_abonado
-,t1.account_num
-,t1.identificacion_cliente
-,t1.customer_ref
-,t1.tac
-,t1.tiene_bono
-,t1.valor_bono
-,t1.codigo_bono
-,t1.probabilidad_churn
-,t1.counted_days
-,t1.categoria_plan
-,t1.tarifa
-,t1.nombre_plan
-,t1.marca
-,t1.grupo_prepago
-,t1.fidelizacion_megas
-,t1.fidelizacion_dumy
-,t1.bancarizado
-,nvl(t1.bono_combero,'') as bono_combero
-,t1.ticket_recarga		
-,nvl(t1.tiene_score_tiaxa,'NO') as tiene_score_tiaxa
-,t1.score_1_tiaxa
-,t1.score_2_tiaxa			
-,t1.tipo_doc_cliente 
-,t1.cliente as nombre_cliente
-,t1.ciclo_fact as ciclo_facturacion
-,t1.email
-,t1.telefono_contacto
-,t1.fecha_ultima_renovacion
-,t1.address_2
-,t1.address_3
-,t1.address_4
-,t1.fecha_fin_contrato_definitivo
-,t1.vigencia_contrato
-,t1.version_plan
-,t1.fecha_ultima_renovacion_jn
-,t1.fecha_ultimo_cambio_plan
-,t1.tipo_movimiento_mes
-,t1.fecha_movimiento_mes
-,t1.es_parque
-,t1.banco			   
-,t1.parque_recargador			
-,t1.segmento_fin as segmento_parque
-,t1.susp_cobranza
-,t1.susp_911
-,t1.susp_cobranza_puntual
-,t1.susp_fraude
-,t1.susp_robo
-,t1.susp_voluntaria
-,t1.vencimiento_cartera
-,t1.saldo_cartera
-,A2.fecha_alta_historica	
-,A2.CANAL_ALTA
-,A2.SUB_CANAL_ALTA
---,A2.NUEVO_SUB_CANAL_ALTA
-,A2.DISTRIBUIDOR_ALTA
-,A2.OFICINA_ALTA
-,A2.PORTABILIDAD
-,A2.OPERADORA_ORIGEN
-,A2.OPERADORA_DESTINO
-,A2.MOTIVO
-,A2.FECHA_PRE_POS
-,A2.CANAL_PRE_POS
-,A2.SUB_CANAL_PRE_POS
---,A2.NUEVO_SUB_CANAL_PRE_POS
-,A2.DISTRIBUIDOR_PRE_POS
-,A2.OFICINA_PRE_POS
-,A2.FECHA_POS_PRE
-,A2.CANAL_POS_PRE
-,A2.SUB_CANAL_POS_PRE
---,A2.NUEVO_SUB_CANAL_POS_PRE
-,A2.DISTRIBUIDOR_POS_PRE
-,A2.OFICINA_POS_PRE
-,A2.FECHA_CAMBIO_PLAN
-,A2.CANAL_CAMBIO_PLAN
-,A2.SUB_CANAL_CAMBIO_PLAN
---,A2.NUEVO_SUB_CANAL_CAMBIO_PLAN
-,A2.DISTRIBUIDOR_CAMBIO_PLAN
-,A2.OFICINA_CAMBIO_PLAN
-,A2.COD_PLAN_ANTERIOR
-,A2.DES_PLAN_ANTERIOR
-,A2.TB_DESCUENTO
-,A2.TB_OVERRIDE
-,A2.DELTA
-,A1.CANAL_MOVIMIENTO_MES
-,A1.SUB_CANAL_MOVIMIENTO_MES
---,A1.NUEVO_SUB_CANAL_MOVIMIENTO_MES
-,A1.DISTRIBUIDOR_MOVIMIENTO_MES
-,A1.OFICINA_MOVIMIENTO_MES
-,A1.PORTABILIDAD_MOVIMIENTO_MES
-,A1.OPERADORA_ORIGEN_MOVIMIENTO_MES
-,A1.OPERADORA_DESTINO_MOVIMIENTO_MES
-,A1.MOTIVO_MOVIMIENTO_MES
-,A1.COD_PLAN_ANTERIOR_MOVIMIENTO_MES
-,A1.DES_PLAN_ANTERIOR_MOVIMIENTO_MES
-,A1.TB_DESCUENTO_MOVIMIENTO_MES
-,A1.TB_OVERRIDE_MOVIMIENTO_MES
-,A1.DELTA_MOVIMIENTO_MES
-,A3.Fecha_Alta_Cuenta
-,t1.fecha_inicio_pago_actual
-,t1.fecha_fin_pago_actual
-,t1.fecha_inicio_pago_anterior
-,t1.fecha_fin_pago_anterior
-,t1.forma_pago_anterior
-,A4.origen_alta_segmento
-,A4.fecha_alta_segmento
-,A5.dias_voz
-,A5.dias_datos
-,A5.dias_sms
-,A5.dias_conenido
-,A5.dias_total
-,t1.limite_credito
-,cast(p1.adendum as double)
---,cast(t1.fecha_proceso as bigint) fecha_proceso
-,(CASE WHEN t1.estado_abonado NOT IN('BAA','BAP') THEN pp.fecha_registro_app ELSE NULL END) as fecha_registro_app
-,(CASE WHEN t1.estado_abonado NOT IN('BAA','BAP') THEN pp.perfil ELSE 'NO' END) as perfil
-,(CASE WHEN t1.estado_abonado NOT IN('BAA','BAP') THEN COALESCE(wb.usuario_web,'NO') ELSE 'NO' END) as usuario_web
-,(CASE WHEN t1.estado_abonado NOT IN('BAA','BAP') THEN wb.fecha_registro_web ELSE NULL END) as fecha_registro_web
---20210629 - SE AGREGA CAMPO FECHA NACIMIENTO
---20210712 - Giovanny Cholca, valida que la fecha actual - fecha de nacimiento no sea menor a 18 anios, si se cumple colocamos null al a la fecha de nacimiento
-,case when round(datediff('{}',coalesce(cast(cs.fecha_nacimiento as varchar(12)),'{}'))/365.25) <18 
-or round(datediff('{}',coalesce(cast(cs.fecha_nacimiento as varchar(12)),'{}'))/365.25) > 120
-then null else cs.fecha_nacimiento end as fecha_nacimiento
-,{} as fecha_proceso
-FROM {} t1
-LEFT JOIN {} A2 ON (t1.TELEFONO=A2.NUM_TELEFONICO) AND (t1.LINEA_NEGOCIO=a2.LINEA_NEGOCIO)
-LEFT JOIN {} A1 ON (t1.TELEFONO=A1.TELEFONO) AND (t1.fecha_movimiento_mes=A1.fecha_movimiento_mes)
-LEFT JOIN {} A3 ON (t1.account_num=A3.cta_fact)
-LEFT JOIN {} A4 ON (t1.TELEFONO=A4.TELEFONO) AND (t1.es_parque='SI')
-LEFT JOIN {} A5 ON (t1.TELEFONO=A5.TELEFONO) AND ({}=A5.fecha_corte)
-LEFT JOIN {} p1 ON (t1.TELEFONO=p1.phone_number)
-LEFT JOIN {} pp ON (t1.telefono=pp.num_telefonico)
-LEFT JOIN {} wb ON (t1.customer_ref=wb.cust_ext_ref)
---20210629 - SE REALIZA EL CRUCE CON LA TEMPORAL PARA AGREGAR CAMPO FECHA NACIMIENTO
-LEFT JOIN {} cs ON t1.identificacion_cliente=cs.cedula
-    '''.format(vIFechaEje1,vIFechaEje1,vIFechaEje1,vIFechaEje1,vIFechaEje,vTblInt23,vSTableExt16,vSTableExt17,vSTableExt18,vSTableExt19,vSTableExt20,vIFechaEje,vSTableExt21,vSTableExt22,vSTableExt23,vSTableExt24)
+SELECT
+	DISTINCT 
+	t1.telefono AS num_telefonico
+	, t1.codigo_plan
+	, (CASE
+		WHEN t1.estado_abonado NOT IN('BAA', 'BAP') 
+		THEN COALESCE(pp.usa_app
+		, 'NO')
+		ELSE 'NO'
+	END) AS usa_app
+	, (CASE
+		WHEN t1.estado_abonado NOT IN('BAA', 'BAP')
+		 THEN COALESCE(pp.usuario_app
+		, 'NO')
+		ELSE 'NO'
+	END) AS usuario_app
+	, t1.usa_movistar_play
+	, t1.usuario_movistar_play
+	, t1.fecha_alta
+	, t1.nse
+	, t1.sexo
+	, t1.edad
+	, t1.mes
+	, t1.anio
+	, t1.segmento
+	, t1.linea_negocio
+	, t1.linea_negocio_homologado
+	, t1.forma_pago_factura
+	, t1.forma_pago_alta
+	, t1.estado_abonado
+	, t1.sub_segmento
+	, t1.numero_abonado
+	, t1.account_num
+	, t1.identificacion_cliente
+	, t1.customer_ref
+	, t1.tac
+	, t1.tiene_bono
+	, t1.valor_bono
+	, t1.codigo_bono
+	, t1.probabilidad_churn
+	, t1.counted_days
+	, t1.categoria_plan
+	, t1.tarifa
+	, t1.nombre_plan
+	, t1.marca
+	, t1.grupo_prepago
+	, t1.fidelizacion_megas
+	, t1.fidelizacion_dumy
+	, t1.bancarizado
+	, nvl(t1.bono_combero, '') AS bono_combero
+	, t1.ticket_recarga
+	, nvl(t1.tiene_score_tiaxa, 'NO') AS tiene_score_tiaxa
+	, t1.score_1_tiaxa
+	, t1.score_2_tiaxa
+	, t1.tipo_doc_cliente
+	, t1.cliente AS nombre_cliente
+	, t1.ciclo_fact AS ciclo_facturacion
+	, t1.email
+	, t1.telefono_contacto
+	, t1.fecha_ultima_renovacion
+	, t1.address_2
+	, t1.address_3
+	, t1.address_4
+	, t1.fecha_fin_contrato_definitivo
+	, t1.vigencia_contrato
+	, t1.version_plan
+	, t1.fecha_ultima_renovacion_jn
+	, t1.fecha_ultimo_cambio_plan
+	, t1.tipo_movimiento_mes
+	--nvl aumentado en REFACTORING para incluir fecha_movimiento_mes para NO_RECICLABLE 
+	--cuya fecha_movimiento_mes viene null en otc_t_360_general_temp_final
+	--, a1.fecha_movimiento_mes AS fecha_movimiento_mes
+	, NVL(t1.fecha_movimiento_mes, a1.fecha_movimiento_mes) AS fecha_movimiento_mes
+	, t1.es_parque
+	, t1.banco
+	, t1.parque_recargador
+	, t1.segmento_fin AS segmento_parque
+	, t1.susp_cobranza
+	, t1.susp_911
+	, t1.susp_cobranza_puntual
+	, t1.susp_fraude
+	, t1.susp_robo
+	, t1.susp_voluntaria
+	, t1.vencimiento_cartera
+	, t1.saldo_cartera
+	, a2.fecha_alta_historica as fecha_alta_historia
+	, a2.canal_alta
+	, a2.sub_canal_alta
+	--, a2.nuevo_sub_canal_alta
+	, a2.distribuidor_alta
+	, a2.oficina_alta
+	, a2.portabilidad
+	, a2.operadora_origen
+	, a2.operadora_destino
+	, a2.motivo
+	, a2.fecha_pre_pos
+	, a2.canal_pre_pos
+	, a2.sub_canal_pre_pos
+	--, a2.nuevo_sub_canal_pre_pos
+	, a2.distribuidor_pre_pos
+	, a2.oficina_pre_pos
+	, a2.fecha_pos_pre
+	, a2.canal_pos_pre
+	, a2.sub_canal_pos_pre
+	--, a2.nuevo_sub_canal_pos_pre
+	, a2.distribuidor_pos_pre
+	, a2.oficina_pos_pre
+	, a2.fecha_cambio_plan
+	, a2.canal_cambio_plan
+	, a2.sub_canal_cambio_plan
+	--, a2.nuevo_sub_canal_cambio_plan
+	, a2.distribuidor_cambio_plan
+	, a2.oficina_cambio_plan
+	, a2.cod_plan_anterior
+	, a2.des_plan_anterior
+	, a2.tb_descuento AS tb_descuento
+	, a2.tb_override
+	, a2.delta
+	, a1.canal_comercial AS canal_movimiento_mes
+	, a1.sub_canal AS sub_canal_movimiento_mes
+	--, a1.nuevo_sub_canal_movimiento_mes
+	, a1.nom_distribuidor AS distribuidor_movimiento_mes
+	, a1.oficina_movimiento_mes
+	, a1.portabilidad_movimiento_mes
+	, a1.operadora_origen_movimiento_mes
+	, a1.operadora_destino_movimiento_mes
+	, a1.motivo_movimiento_mes
+	, a1.cod_plan_anterior_movimiento_mes
+	, a1.des_plan_anterior_movimiento_mes
+	, a1.tb_descuento_movimiento_mes
+	, a1.tb_override_movimiento_mes
+	, a1.delta_movimiento_mes
+	, a3.fecha_alta_cuenta
+	, t1.fecha_inicio_pago_actual
+	, t1.fecha_fin_pago_actual
+	, t1.fecha_inicio_pago_anterior
+	, t1.fecha_fin_pago_anterior
+	, t1.forma_pago_anterior
+	, a4.origen_alta_segmento
+	, a4.fecha_alta_segmento
+	, a5.dias_voz
+	, a5.dias_datos
+	, a5.dias_sms
+	, a5.dias_conenido
+	, a5.dias_total
+	, t1.limite_credito
+	, CAST(p1.adendum AS double)
+	--, cast(t1.fecha_proceso as bigint) fecha_proceso
+	, (CASE
+		WHEN t1.estado_abonado NOT IN('BAA', 'BAP') 
+		THEN pp.fecha_registro_app
+		ELSE NULL
+	END) AS fecha_registro_app
+	, (CASE
+		WHEN t1.estado_abonado NOT IN('BAA', 'BAP') 
+		THEN pp.perfil
+		ELSE 'NO'
+	END) AS perfil
+	, (CASE
+		WHEN t1.estado_abonado NOT IN('BAA', 'BAP') 
+		THEN COALESCE(wb.usuario_web, 'NO')
+		ELSE 'NO'
+	END) AS usuario_web
+	, (CASE
+		WHEN t1.estado_abonado NOT IN('BAA', 'BAP') 
+		THEN wb.fecha_registro_web
+		ELSE NULL
+	END) AS fecha_registro_web
+	--20210629 - SE AGREGA CAMPO FECHA NACIMIENTO
+	--20210712 - Giovanny Cholca,  valida que la fecha actual -
+	-- fecha de nacimiento no sea menor a 18 anios,  si se cumple colocamos null al a la fecha de nacimiento
+	, CASE
+		WHEN round(datediff('{vIFechaEje1}'
+		, COALESCE(CAST(cs.fecha_nacimiento AS varchar(12))
+		, '{vIFechaEje1}'))/ 365.25) <18
+		OR round(datediff('{vIFechaEje1}'
+		, COALESCE(CAST(cs.fecha_nacimiento AS varchar(12))
+		, '{vIFechaEje1}'))/ 365.25) > 120 THEN NULL
+		ELSE cs.fecha_nacimiento
+	END AS fecha_nacimiento
+	-----------------------------------
+	----------------Insertado en RF
+	-------------------------------------
+	, cat_tm.id_tipo_movimiento AS id_tipo_movimiento
+	, a1.tipo AS tipo_movimiento
+	, cat_sc.id_tipo_movimiento AS id_subcanal
+	, cat_p.id_tipo_movimiento AS id_producto
+	, a1.sub_movimiento
+	, tec.tecnologia
+	, (CASE WHEN a1.tipo in ('BAJA') 
+	THEN datediff(a2.fecha_movimiento_baja, t1.fecha_alta)
+			WHEN a1.tipo in ('POS_PRE') 
+			THEN faph.dias_transcurridos_baja END) AS dias_transcurridos_baja
+	, a2.dias_en_parque
+	, a2.dias_en_parque_prepago
+	, (CASE
+		when a1.tipo IN ('ALTA','PRE_POS') 
+		then  nvl(dnpy.detalle, descu.desc_conadis)
+		WHEN a1.tipo IN ('DOWNSELL','UPSELL','MISMA_TARIFA') 
+		THEN descu.desc_conadis
+		ELSE ''	END) AS tipo_descuento_conadis
+	, (CASE	when a1.tipo IN ('ALTA','PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
+		THEN descu.descripcion_descuento END) AS tipo_descuento
+	, a1.ciudad
+	, a1.provincia_activacion
+	, a2.cod_categoria
+	, a2.cod_da
+	, a1.nom_usuario
+	, a2.provincia_ivr
+	, a2.provincia_ms
+	, (CASE WHEN a1.tipo in ('BAJA') 
+			THEN cast(t1.fecha_alta as date)
+			WHEN a1.tipo in ('POS_PRE') 
+			THEN faph.FECHA_ALTA END)  AS fecha_alta_pospago_historica
+	, a2.vol_invol
+	, a2.account_num_anterior
+	--, a1.fecha_movimiento_mes
+	, a1.imei
+	, a1.equipo
+	, a1.icc
+	, a1.domain_login_ow
+	, a1.nombre_usuario_ow
+	, a1.domain_login_sub
+	, a1.nombre_usuario_sub
+	--, a1.oficina_movimiento_mes
+	, a1.forma_pago
+	, cat_c.id_tipo_movimiento AS id_canal
+	, a1.campania_homologada AS campania
+	, a1.codigo_distribuidor as codigo_distribuidor_movimiento_mes
+	, a1.codigo_plaza
+	, a1.nom_plaza as nom_plaza_movimiento_mes
+	, a1.region_homologada AS region 
+	, a1.ruc_distribuidor
+	, (case when a1.tipo IN ('ALTA','PRE_POS') 
+			then pati.ejecutivo_asignado
+			when a1.tipo in ('BAJA','POS_PRE') 
+			then pbto.ejecutivo_asignado end) as ejecutivo_asignado_ptr
+	, (case when a1.tipo IN ('ALTA','PRE_POS') 
+			then pati.area
+			when a1.tipo in ('BAJA','POS_PRE') 
+			then pbto.area end) AS area_ptr
+	, (case when a1.tipo IN ('ALTA','PRE_POS') 
+			then pati.codigo_vendedor_da
+			when a1.tipo in ('BAJA','POS_PRE') 
+			then pbto.codigo_vendedor_da end) AS codigo_vendedor_da_ptr
+	, (case when a1.tipo IN ('ALTA','PRE_POS') 
+			then pati.jefatura
+			when a1.tipo in ('BAJA','POS_PRE') 
+			then pbto.jefatura end) AS jefatura_ptr
+	, a1.codigo_usuario
+	, desp.descripcion AS descripcion_desp
+	, a1.calf_riesgo
+	, a1.cap_endeu
+	, a1.valor_cred
+	, a1.ciudad_usuario
+	, a1.provincia_usuario
+	, a2.linea_de_negocio_anterior
+	, a2.cliente_anterior
+	, a2.dias_reciclaje
+	, a2.fecha_baja_reciclada
+	, a2.tarifa_basica_anterior
+	, a2.fecha_inicio_plan_anterior
+	, (case when a1.tipo IN ('PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
+		THEN (nvl(t1.tarifa, ovw.mrc_ov_price) - nvl(descu.discount_value, 0))
+			WHEN a1.tipo IN ('ALTA') 
+			then (nvl(t1.tarifa, ovw.mrc_base_price) - nvl(descu.discount_value, 0)) end) as tarifa_final_plan_act
+	--, a2.TARIFA_FINAL_PLAN_ACT
+	--, (case when a1.tipo IN ('DOWNSELL','UPSELL','MISMA_TARIFA') THEN (a2.TARIFA_BASICA_ANTERIOR-) ) 
+	, a2.tarifa_final_plan_ant
+	, a2.mismo_cliente
+	, (a2.tarifa_final_plan_act - a2.tarifa_final_plan_ant) AS delta_tarifa_final
+	, (CASE 
+			WHEN upper(spi.ln_origen) like '%POSTPAID%' THEN 'POSPAGO'
+			WHEN upper(spi.ln_origen) like '%PREPAID%' THEN 'PREPAGO'
+			ELSE '' END) AS tipo_de_cuenta_en_operador_donante
+	, a2.fecha_alta_prepago
+	, (case when UPPER(t1.es_parque) = 'NO' THEN t1.tarifa END) AS tarifa_basica_baja
+	, a1.canal_transacc
+	, a1.distribuidor_crm
+	, (CASE	when a1.tipo IN ('ALTA','PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
+		THEN descu.discount_value END) AS descuento_tarifa_plan_act
+	, (CASE	when a1.tipo IN ('PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
+			THEN ovw.mrc_ov_price
+			WHEN a1.tipo IN ('ALTA') 
+			THEN ovw.mrc_base_price END) AS tarifa_plan_actual_ov
+	-------------------------------------
+	---------FIN REFACTORING
+	-------------------------------------
+	, {vIFechaEje} AS fecha_proceso
+FROM
+----- tabla final del proceso OTC_360_GENERAL SQL 1-- proviene de PIVOT PARQUE
+	{vTblInt23} t1
+	-----------TABLA PRINCIPAL GENERADA EN MOVI PARQUE
+LEFT JOIN db_desarrollo2021.otc_t_360_parque_1_tmp_t_mov a2 --vTblExt16
+ON
+	(t1.telefono = a2.num_telefonico)
+	AND (t1.linea_negocio = a2.linea_negocio)
+-----------TABLA SECUNDARIA GENERADA EN MOVI PARQUE:   CONTIENE RESULTADO DE UNIONS
+LEFT JOIN db_desarrollo2021.otc_t_360_parque_1_mov_mes_tmp a1 --vTblExt17
+ON
+	(t1.telefono = a1.telefono)
+	---LA LINEA DE ABAJO SE HA COMENTADO PARA QUE SE INCLUYAN LOS MOVIMIENTOS NO_RECICLABLE 
+	--- LOS CUALES VIENEN SIN EL CAMPO fecha_movimiento_mes QUE GENERA EL CRUCE:
+	--AND (t1.fecha_movimiento_mes = a1.fecha_movimiento_mes)
+LEFT JOIN {vTblExt18} a3 
+ON
+	(t1.account_num = a3.cta_fact)
+	-----------TERCERA TABLA GENERADA EN MOVI PARQUE
+LEFT JOIN db_desarrollo2021.otc_t_360_parque_1_mov_seg_tmp a4   --vTblExt19
+ON
+	(t1.telefono = a4.telefono)
+	--AND (t1.es_parque = 'SI')
+LEFT JOIN {vTblExt20} a5 
+ON
+	(t1.telefono = a5.telefono)
+	AND ({vIFechaEje} = a5.fecha_corte)
+LEFT JOIN {vTblExt21} p1 
+ON
+	(t1.telefono = p1.phone_number)
+LEFT JOIN {vTblExt22} pp 
+ON
+	(t1.telefono = pp.num_telefonico)
+LEFT JOIN {vTblExt23} wb 
+ON
+	(t1.customer_ref = wb.cust_ext_ref)
+	--20210629 - SE REALIZA EL CRUCE CON LA TEMPORAL PARA AGREGAR CAMPO FECHA NACIMIENTO
+LEFT JOIN {vTblExt24} cs ON
+	(t1.identificacion_cliente = cs.cedula)
+	----------INSERTADO EN REFACTORING-------------------
+	-------------\/\/\/\/\/\/\/\/\/\/--------------------------
+LEFT JOIN db_reportes.otc_t_360_modelo tec ON
+	t1.telefono = tec.num_telefonico
+	AND ({vIFechaEje} = tec.fecha_proceso)
+LEFT JOIN {vTblInt29} desp ON
+	a1.icc = desp.icc
+LEFT JOIN {vTblInt34} spi ON
+	t1.telefono = spi.telefono
+LEFT JOIN {vTblInt30} cat_c ON
+	upper(a1.canal_comercial) = upper(cat_c.tipo_movimiento)
+LEFT JOIN {vTblInt31} cat_sc ON
+	upper(a1.sub_canal) = upper(cat_sc.tipo_movimiento)
+LEFT JOIN {vTblInt32} cat_p ON
+	upper(a1.sub_movimiento) = rtrim(upper(cat_p.tipo_movimiento))
+LEFT JOIN {vTblInt33} cat_tm ON
+	upper(a1.tipo) = upper(cat_tm.auxiliar)
+LEFT JOIN  {vTblInt28} dnpy ON
+	t1.telefono = dnpy.telefono
+LEFT JOIN {vTblInt26} pati ON
+	(t1.identificacion_cliente = pati.identificador)
+LEFT JOIN {vTblInt27} pbto ON
+	(t1.identificacion_cliente = pbto.identificador)
+LEFT JOIN {vTblInt24} descu ON
+	(t1.telefono = descu.phone_number)
+	and (descu.tariff_plan_id=t1.codigo_plan)
+LEFT JOIN {vTblInt25} ovw ON
+	(t1.telefono = ovw.phone_number)
+	and (ovw.tariff_plan_id=t1.codigo_plan)
+LEFT JOIN {vTblInt35} faph ON
+	(faph.telefono=t1.telefono)
+----------/\/\/\/\/\/\/\/\/\/\/\/\-----------------
+----------FIN DE REFACTORING-------------------
+    '''.format(vIFechaEje1=vIFechaEje1,vIFechaEje=vIFechaEje,vTblInt23=vTblInt23,vTblExt18=vTblExt18,vTblExt20=vTblExt20,vTblExt21=vTblExt21,vTblExt22=vTblExt22,vTblExt23=vTblExt23,vTblExt24=vTblExt24,vTblInt29=vTblInt29,vTblInt34=vTblInt34,vTblInt30=vTblInt30,vTblInt31=vTblInt31,vTblInt32=vTblInt32,vTblInt33=vTblInt33,vTblInt28=vTblInt28,vTblInt26=vTblInt26,vTblInt27=vTblInt27,vTblInt24=vTblInt24,vTblInt25=vTblInt25,vTblInt35=vTblInt35)
     return qry
 

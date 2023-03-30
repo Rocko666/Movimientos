@@ -196,3 +196,52 @@ def nme_tbl_tmp_otc_t_360_general_22(vSchema):
 def nme_tbl_tmp_otc_t_360_general_23(vSchema):
     nme="""{}.otc_t_360_general_temp_final""".format(vSchema)
     return nme
+
+def nme_tbl_tmp_otc_t_360_general_24(vSchTmp):
+    nme="""{}.tmp_otc_t_desc_planes""".format(vSchTmp)
+    return nme
+
+def nme_tbl_tmp_otc_t_360_general_25(vSchTmp):
+    nme="""{}.tmp_otc_t_ov_planes""".format(vSchTmp)
+    return nme
+
+def nme_tbl_tmp_otc_t_360_general_26(vSchTmp):
+    nme="""{}.tmp_prmt_alta_ti""".format(vSchTmp)
+    return nme
+
+def nme_tbl_tmp_otc_t_360_general_27(vSchTmp):
+    nme="""{}.tmp_prmt_baja_to""".format(vSchTmp)
+    return nme
+
+def nme_tbl_tmp_otc_t_360_general_28(vSchTmp):
+    nme="""{}.tmp_desc_no_pymes""".format(vSchTmp)
+    return nme
+
+def nme_tbl_tmp_otc_t_360_general_29(vSchTmp):
+    nme="""{}.tmp_desp_nc_final""".format(vSchTmp)
+    return nme
+
+def nme_tbl_tmp_otc_t_360_general_30(vSchTmp):
+    nme="""{}.tmp_otc_t_cat_id_canal""".format(vSchTmp)
+    return nme
+
+def nme_tbl_tmp_otc_t_360_general_31(vSchTmp):
+    nme="""{}.tmp_otc_t_cat_id_sub_canal""".format(vSchTmp)
+    return nme
+
+def nme_tbl_tmp_otc_t_360_general_32(vSchTmp):
+    nme="""{}.tmp_otc_t_cat_id_producto""".format(vSchTmp)
+    return nme
+
+def nme_tbl_tmp_otc_t_360_general_33(vSchTmp):
+    nme="""{}.tmp_otc_t_cat_id_tipo_mov""".format(vSchTmp)
+    return nme
+
+def nme_tbl_tmp_otc_t_360_general_34(vSchTmp):
+    nme="""{}.tmp_rdb_solic_port_in""".format(vSchTmp)
+    return nme
+
+def nme_tbl_tmp_otc_t_360_general_35(vSchTmp):
+    nme="""{}.tmp_fecha_alta_pos_hist""".format(vSchTmp)
+    return nme
+

@@ -42,6 +42,9 @@ try:
     parser.add_argument('--vSEsquemaTabla3', required=True, type=str,help='Paramtero 5 del SQL')
     parser.add_argument('--vIFechaMenos2Mes', required=True, type=str,help='Paramtero 6 del SQL')
     parser.add_argument('--vIFechaEje1', required=True, type=str,help='Paramtero 7 del SQL')
+    parser.add_argument('--fecha_inico_mes_1_1', required=True, type=str,help='Paramtero fecha')
+    parser.add_argument('--fecha_port_ini', required=True, type=str,help='Paramtero fecha')
+    parser.add_argument('--fecha_port_fin', required=True, type=str,help='Paramtero fecha')
     
     parametros = parser.parse_args()
     vSQueue=parametros.vSQueue
@@ -62,6 +65,9 @@ try:
     vSEsquemaTabla3=parametros.vSEsquemaTabla3
     vIFechaMenos2Mes=parametros.vIFechaMenos2Mes
     vIFechaEje1=parametros.vIFechaEje1
+    fecha_inico_mes_1_1=parametros.fecha_inico_mes_1_1
+    fecha_port_ini=parametros.fecha_port_ini
+    fecha_port_fin=parametros.fecha_port_fin
 
     print(etq_info("Imprimiendo parametros..."))
     print(lne_dvs())
@@ -83,6 +89,9 @@ try:
     print(etq_info(log_p_parametros("vSEsquemaTabla3",str(vSEsquemaTabla3))))
     print(etq_info(log_p_parametros("vIFechaMenos2Mes",str(vIFechaMenos2Mes))))
     print(etq_info(log_p_parametros("vIFechaEje1",str(vIFechaEje1))))
+    print(etq_info(log_p_parametros("fecha_inico_mes_1_1",str(fecha_inico_mes_1_1))))
+    print(etq_info(log_p_parametros("fecha_port_ini",str(fecha_inico_mes_1_1))))
+    print(etq_info(log_p_parametros("fecha_port_fin",str(fecha_inico_mes_1_1))))
     te_step = datetime.now()
     print(etq_info(msg_d_duracion_ejecucion(vSStep,vle_duracion(ts_step,te_step))))
 except Exception as e:
@@ -205,6 +214,18 @@ try:
     vTblInt21=nme_tbl_tmp_otc_t_360_general_21(vSSchemaTmp)
     vTblInt22=nme_tbl_tmp_otc_t_360_general_22(vSSchemaTmp)
     vTblInt23=nme_tbl_tmp_otc_t_360_general_23(vSSchemaTmp)
+    vTblInt24=nme_tbl_tmp_otc_t_360_general_24(vSSchemaTmp)
+    vTblInt25=nme_tbl_tmp_otc_t_360_general_25(vSSchemaTmp)
+    vTblInt26=nme_tbl_tmp_otc_t_360_general_26(vSSchemaTmp)
+    vTblInt27=nme_tbl_tmp_otc_t_360_general_27(vSSchemaTmp)
+    vTblInt28=nme_tbl_tmp_otc_t_360_general_28(vSSchemaTmp)
+    vTblInt29=nme_tbl_tmp_otc_t_360_general_29(vSSchemaTmp)
+    vTblInt30=nme_tbl_tmp_otc_t_360_general_30(vSSchemaTmp)
+    vTblInt31=nme_tbl_tmp_otc_t_360_general_31(vSSchemaTmp)
+    vTblInt32=nme_tbl_tmp_otc_t_360_general_32(vSSchemaTmp)
+    vTblInt33=nme_tbl_tmp_otc_t_360_general_33(vSSchemaTmp)
+    vTblInt34=nme_tbl_tmp_otc_t_360_general_34(vSSchemaTmp)
+    vTblInt35=nme_tbl_tmp_otc_t_360_general_35(vSSchemaTmp)
     
     print(etq_info(log_p_parametros('vTblInt01',vTblInt01)))
     print(etq_info(log_p_parametros('vTblInt02',vTblInt02)))
@@ -229,6 +250,18 @@ try:
     print(etq_info(log_p_parametros('vTblInt21',vTblInt21)))
     print(etq_info(log_p_parametros('vTblInt22',vTblInt22)))
     print(etq_info(log_p_parametros('vTblInt23',vTblInt23)))
+    print(etq_info(log_p_parametros('vTblInt24',vTblInt24)))
+    print(etq_info(log_p_parametros('vTblInt25',vTblInt25)))
+    print(etq_info(log_p_parametros('vTblInt26',vTblInt26)))
+    print(etq_info(log_p_parametros('vTblInt27',vTblInt27)))
+    print(etq_info(log_p_parametros('vTblInt28',vTblInt28)))
+    print(etq_info(log_p_parametros('vTblInt29',vTblInt29)))
+    print(etq_info(log_p_parametros('vTblInt30',vTblInt30)))
+    print(etq_info(log_p_parametros('vTblInt31',vTblInt31)))
+    print(etq_info(log_p_parametros('vTblInt32',vTblInt32)))
+    print(etq_info(log_p_parametros('vTblInt33',vTblInt33)))
+    print(etq_info(log_p_parametros('vTblInt34',vTblInt34)))
+    print(etq_info(log_p_parametros('vTblInt35',vTblInt35)))
 
     te_step = datetime.now()
     print(etq_info(msg_d_duracion_ejecucion(vSStep,vle_duracion(ts_step,te_step))))
@@ -1020,7 +1053,7 @@ try:
     ts_step = datetime.now()
     print(etq_info(vStp))
     print(lne_dvs())
-    VSQL=qry_tmp_otc_t_desc_planes(fechamas1,fecha_inico_mes_1_1,fecha_eje1)
+    VSQL=qry_tmp_otc_t_desc_planes(vIFechaMas1,fecha_inico_mes_1_1,vIFechaEje1)
     print(etq_sql(VSQL))
     df0 = spark.sql(VSQL)
     ts_step_count = datetime.now()
@@ -1047,24 +1080,377 @@ try:
 except Exception as e:
     exit(etq_error(msg_e_ejecucion(vStp,str(e))))
 
-
-
-
-
-
-
-
-
-
-
 print(lne_dvs())
-nme_table=vSHiveDB+"."+vSTableDB
-vStp='[ETAPA {} / Paso 3.24]: Insert en la tabla destino [{}] '.format(str(vIEtapa),nme_table)
+vStp='[ETAPA {} / Paso 3.25]: Tabla temporal para obtener el ultimo overwrite por min'
 try:
     ts_step = datetime.now()
     print(etq_info(vStp))
     print(lne_dvs())
-    VSQL=qry_ins_otc_t_360_general(vIFechaEje1,vIFechaEje,vTblInt23,vTblExt16,vTblExt17,vTblExt18,vTblExt19,vTblExt20,vTblExt21,vTblExt22,vTblExt23,vTblExt24)
+    VSQL=qry_tmp_otc_t_ov_planes(vIFechaMas1,fecha_inico_mes_1_1,vIFechaEje1)
+    print(etq_sql(VSQL))
+    df0 = spark.sql(VSQL)
+    ts_step_count = datetime.now()
+    vTotDf=df0.count()
+    te_step_count = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
+    if df0.rdd.isEmpty():
+        exit(etq_nodata(msg_e_df_nodata('df0')))
+    else:
+        try:
+            ts_step_tbl = datetime.now()
+            print(etq_info(msg_i_insert_hive(vTblInt25)))
+            df0.write.mode('overwrite').saveAsTable(vTblInt25)
+            df0.printSchema()
+            print(etq_info(msg_t_total_registros_hive(vTblInt25,str(vTotDf))))
+            te_step_tbl = datetime.now()
+            print(etq_info(msg_d_duracion_hive(vTblInt25,vle_duracion(ts_step_tbl,te_step_tbl))))
+        except Exception as e:       
+            exit(etq_error(msg_e_insert_hive(vTblInt25,str(e))))
+    del df0
+    print(etq_info("Eliminar dataframe [{}]".format('df0')))
+    te_step = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion(vStp,vle_duracion(ts_step,te_step))))
+except Exception as e:
+    exit(etq_error(msg_e_ejecucion(vStp,str(e))))
+
+print(lne_dvs())
+vStp='[ETAPA {} / Paso 3.26]: Tabla temporal de perimetros altas y transfer in'
+try:
+    ts_step = datetime.now()
+    print(etq_info(vStp))
+    print(lne_dvs())
+    VSQL=qry_tmp_prmt_alta_ti(vIFechaEje)
+    print(etq_sql(VSQL))
+    df0 = spark.sql(VSQL)
+    ts_step_count = datetime.now()
+    vTotDf=df0.count()
+    te_step_count = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
+    if df0.rdd.isEmpty():
+        exit(etq_nodata(msg_e_df_nodata('df0')))
+    else:
+        try:
+            ts_step_tbl = datetime.now()
+            print(etq_info(msg_i_insert_hive(vTblInt26)))
+            df0.write.mode('overwrite').saveAsTable(vTblInt26)
+            df0.printSchema()
+            print(etq_info(msg_t_total_registros_hive(vTblInt26,str(vTotDf))))
+            te_step_tbl = datetime.now()
+            print(etq_info(msg_d_duracion_hive(vTblInt26,vle_duracion(ts_step_tbl,te_step_tbl))))
+        except Exception as e:       
+            exit(etq_error(msg_e_insert_hive(vTblInt26,str(e))))
+    del df0
+    print(etq_info("Eliminar dataframe [{}]".format('df0')))
+    te_step = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion(vStp,vle_duracion(ts_step,te_step))))
+except Exception as e:
+    exit(etq_error(msg_e_ejecucion(vStp,str(e))))
+
+print(lne_dvs())
+vStp='[ETAPA {} / Paso 3.27]: Tabla temporal de perimetros bajas y transfer out '
+try:
+    ts_step = datetime.now()
+    print(etq_info(vStp))
+    print(lne_dvs())
+    VSQL=qry_tmp_prmt_baja_to(vIFechaEje)
+    print(etq_sql(VSQL))
+    df0 = spark.sql(VSQL)
+    ts_step_count = datetime.now()
+    vTotDf=df0.count()
+    te_step_count = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
+    if df0.rdd.isEmpty():
+        exit(etq_nodata(msg_e_df_nodata('df0')))
+    else:
+        try:
+            ts_step_tbl = datetime.now()
+            print(etq_info(msg_i_insert_hive(vTblInt27)))
+            df0.write.mode('overwrite').saveAsTable(vTblInt27)
+            df0.printSchema()
+            print(etq_info(msg_t_total_registros_hive(vTblInt27,str(vTotDf))))
+            te_step_tbl = datetime.now()
+            print(etq_info(msg_d_duracion_hive(vTblInt27,vle_duracion(ts_step_tbl,te_step_tbl))))
+        except Exception as e:       
+            exit(etq_error(msg_e_insert_hive(vTblInt27,str(e))))
+    del df0
+    print(etq_info("Eliminar dataframe [{}]".format('df0')))
+    te_step = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion(vStp,vle_duracion(ts_step,te_step))))
+except Exception as e:
+    exit(etq_error(msg_e_ejecucion(vStp,str(e))))
+
+print(lne_dvs())
+vStp='[ETAPA {} / Paso 3.28]: Tabla temporal de descuentos no pymes'
+try:
+    ts_step = datetime.now()
+    print(etq_info(vStp))
+    print(lne_dvs())
+    VSQL=qry_tmp_desc_no_pymes(vIFechaEje1)
+    print(etq_sql(VSQL))
+    df0 = spark.sql(VSQL)
+    ts_step_count = datetime.now()
+    vTotDf=df0.count()
+    te_step_count = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
+    if df0.rdd.isEmpty():
+        exit(etq_nodata(msg_e_df_nodata('df0')))
+    else:
+        try:
+            ts_step_tbl = datetime.now()
+            print(etq_info(msg_i_insert_hive(vTblInt28)))
+            df0.write.mode('overwrite').saveAsTable(vTblInt28)
+            df0.printSchema()
+            print(etq_info(msg_t_total_registros_hive(vTblInt28,str(vTotDf))))
+            te_step_tbl = datetime.now()
+            print(etq_info(msg_d_duracion_hive(vTblInt28,vle_duracion(ts_step_tbl,te_step_tbl))))
+        except Exception as e:       
+            exit(etq_error(msg_e_insert_hive(vTblInt28,str(e))))
+    del df0
+    print(etq_info("Eliminar dataframe [{}]".format('df0')))
+    te_step = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion(vStp,vle_duracion(ts_step,te_step))))
+except Exception as e:
+    exit(etq_error(msg_e_ejecucion(vStp,str(e))))
+
+print(lne_dvs())
+vStp='[ETAPA {} / Paso 3.29]: Tabla temporal para despachos'
+try:
+    ts_step = datetime.now()
+    print(etq_info(vStp))
+    print(lne_dvs())
+    VSQL=qry_tmp_desp_nc_final()
+    print(etq_sql(VSQL))
+    df0 = spark.sql(VSQL)
+    ts_step_count = datetime.now()
+    vTotDf=df0.count()
+    te_step_count = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
+    if df0.rdd.isEmpty():
+        exit(etq_nodata(msg_e_df_nodata('df0')))
+    else:
+        try:
+            ts_step_tbl = datetime.now()
+            print(etq_info(msg_i_insert_hive(vTblInt29)))
+            df0.write.mode('overwrite').saveAsTable(vTblInt29)
+            df0.printSchema()
+            print(etq_info(msg_t_total_registros_hive(vTblInt29,str(vTotDf))))
+            te_step_tbl = datetime.now()
+            print(etq_info(msg_d_duracion_hive(vTblInt29,vle_duracion(ts_step_tbl,te_step_tbl))))
+        except Exception as e:       
+            exit(etq_error(msg_e_insert_hive(vTblInt29,str(e))))
+    del df0
+    print(etq_info("Eliminar dataframe [{}]".format('df0')))
+    te_step = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion(vStp,vle_duracion(ts_step,te_step))))
+except Exception as e:
+    exit(etq_error(msg_e_ejecucion(vStp,str(e))))
+
+print(lne_dvs())
+vStp='[ETAPA {} / Paso 3.30]: Tabla temporal para id_canal '
+try:
+    ts_step = datetime.now()
+    print(etq_info(vStp))
+    print(lne_dvs())
+    VSQL=qry_tmp_otc_t_cat_id_canal()
+    print(etq_sql(VSQL))
+    df0 = spark.sql(VSQL)
+    ts_step_count = datetime.now()
+    vTotDf=df0.count()
+    te_step_count = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
+    if df0.rdd.isEmpty():
+        exit(etq_nodata(msg_e_df_nodata('df0')))
+    else:
+        try:
+            ts_step_tbl = datetime.now()
+            print(etq_info(msg_i_insert_hive(vTblInt30)))
+            df0.write.mode('overwrite').saveAsTable(vTblInt30)
+            df0.printSchema()
+            print(etq_info(msg_t_total_registros_hive(vTblInt30,str(vTotDf))))
+            te_step_tbl = datetime.now()
+            print(etq_info(msg_d_duracion_hive(vTblInt30,vle_duracion(ts_step_tbl,te_step_tbl))))
+        except Exception as e:       
+            exit(etq_error(msg_e_insert_hive(vTblInt30,str(e))))
+    del df0
+    print(etq_info("Eliminar dataframe [{}]".format('df0')))
+    te_step = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion(vStp,vle_duracion(ts_step,te_step))))
+except Exception as e:
+    exit(etq_error(msg_e_ejecucion(vStp,str(e))))
+
+print(lne_dvs())
+vStp='[ETAPA {} / Paso 3.31]: Tabla temporal para id_sub_canal '
+try:
+    ts_step = datetime.now()
+    print(etq_info(vStp))
+    print(lne_dvs())
+    VSQL=qry_tmp_otc_t_cat_id_sub_canal()
+    print(etq_sql(VSQL))
+    df0 = spark.sql(VSQL)
+    ts_step_count = datetime.now()
+    vTotDf=df0.count()
+    te_step_count = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
+    if df0.rdd.isEmpty():
+        exit(etq_nodata(msg_e_df_nodata('df0')))
+    else:
+        try:
+            ts_step_tbl = datetime.now()
+            print(etq_info(msg_i_insert_hive(vTblInt31)))
+            df0.write.mode('overwrite').saveAsTable(vTblInt31)
+            df0.printSchema()
+            print(etq_info(msg_t_total_registros_hive(vTblInt31,str(vTotDf))))
+            te_step_tbl = datetime.now()
+            print(etq_info(msg_d_duracion_hive(vTblInt31,vle_duracion(ts_step_tbl,te_step_tbl))))
+        except Exception as e:       
+            exit(etq_error(msg_e_insert_hive(vTblInt31,str(e))))
+    del df0
+    print(etq_info("Eliminar dataframe [{}]".format('df0')))
+    te_step = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion(vStp,vle_duracion(ts_step,te_step))))
+except Exception as e:
+    exit(etq_error(msg_e_ejecucion(vStp,str(e))))
+
+print(lne_dvs())
+vStp='[ETAPA {} / Paso 3.32]: Tabla temporal para id_producto '
+try:
+    ts_step = datetime.now()
+    print(etq_info(vStp))
+    print(lne_dvs())
+    VSQL=qry_tmp_otc_t_cat_id_producto()
+    print(etq_sql(VSQL))
+    df0 = spark.sql(VSQL)
+    ts_step_count = datetime.now()
+    vTotDf=df0.count()
+    te_step_count = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
+    if df0.rdd.isEmpty():
+        exit(etq_nodata(msg_e_df_nodata('df0')))
+    else:
+        try:
+            ts_step_tbl = datetime.now()
+            print(etq_info(msg_i_insert_hive(vTblInt32)))
+            df0.write.mode('overwrite').saveAsTable(vTblInt32)
+            df0.printSchema()
+            print(etq_info(msg_t_total_registros_hive(vTblInt32,str(vTotDf))))
+            te_step_tbl = datetime.now()
+            print(etq_info(msg_d_duracion_hive(vTblInt32,vle_duracion(ts_step_tbl,te_step_tbl))))
+        except Exception as e:       
+            exit(etq_error(msg_e_insert_hive(vTblInt32,str(e))))
+    del df0
+    print(etq_info("Eliminar dataframe [{}]".format('df0')))
+    te_step = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion(vStp,vle_duracion(ts_step,te_step))))
+except Exception as e:
+    exit(etq_error(msg_e_ejecucion(vStp,str(e))))
+
+print(lne_dvs())
+vStp='[ETAPA {} / Paso 3.33]: Tabla temporal para id_tipo_movimiento '
+try:
+    ts_step = datetime.now()
+    print(etq_info(vStp))
+    print(lne_dvs())
+    VSQL=qry_tmp_otc_t_cat_id_tipo_mov()
+    print(etq_sql(VSQL))
+    df0 = spark.sql(VSQL)
+    ts_step_count = datetime.now()
+    vTotDf=df0.count()
+    te_step_count = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
+    if df0.rdd.isEmpty():
+        exit(etq_nodata(msg_e_df_nodata('df0')))
+    else:
+        try:
+            ts_step_tbl = datetime.now()
+            print(etq_info(msg_i_insert_hive(vTblInt33)))
+            df0.write.mode('overwrite').saveAsTable(vTblInt33)
+            df0.printSchema()
+            print(etq_info(msg_t_total_registros_hive(vTblInt33,str(vTotDf))))
+            te_step_tbl = datetime.now()
+            print(etq_info(msg_d_duracion_hive(vTblInt33,vle_duracion(ts_step_tbl,te_step_tbl))))
+        except Exception as e:       
+            exit(etq_error(msg_e_insert_hive(vTblInt33,str(e))))
+    del df0
+    print(etq_info("Eliminar dataframe [{}]".format('df0')))
+    te_step = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion(vStp,vle_duracion(ts_step,te_step))))
+except Exception as e:
+    exit(etq_error(msg_e_ejecucion(vStp,str(e))))
+
+print(lne_dvs())
+vStp='[ETAPA {} / Paso 3.34]: Tabla temporal para inclusion de SOLICITUDES DE PORTABILIDAD '
+try:
+    ts_step = datetime.now()
+    print(etq_info(vStp))
+    print(lne_dvs())
+    VSQL=qry_tmp_rdb_solic_port_in(fecha_port_ini,fecha_port_fin)
+    print(etq_sql(VSQL))
+    df0 = spark.sql(VSQL)
+    ts_step_count = datetime.now()
+    vTotDf=df0.count()
+    te_step_count = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
+    if df0.rdd.isEmpty():
+        exit(etq_nodata(msg_e_df_nodata('df0')))
+    else:
+        try:
+            ts_step_tbl = datetime.now()
+            print(etq_info(msg_i_insert_hive(vTblInt34)))
+            df0.write.mode('overwrite').saveAsTable(vTblInt34)
+            df0.printSchema()
+            print(etq_info(msg_t_total_registros_hive(vTblInt34,str(vTotDf))))
+            te_step_tbl = datetime.now()
+            print(etq_info(msg_d_duracion_hive(vTblInt34,vle_duracion(ts_step_tbl,te_step_tbl))))
+        except Exception as e:       
+            exit(etq_error(msg_e_insert_hive(vTblInt34,str(e))))
+    del df0
+    print(etq_info("Eliminar dataframe [{}]".format('df0')))
+    te_step = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion(vStp,vle_duracion(ts_step,te_step))))
+except Exception as e:
+    exit(etq_error(msg_e_ejecucion(vStp,str(e))))
+
+print(lne_dvs())
+vStp='[ETAPA {} / Paso 3.35]: Tabla temporal para obtener fecha alta pospago historica '
+try:
+    ts_step = datetime.now()
+    print(etq_info(vStp))
+    print(lne_dvs())
+    VSQL=qry_tmp_fecha_alta_pos_hist(vTblInt23)
+    print(etq_sql(VSQL))
+    df0 = spark.sql(VSQL)
+    ts_step_count = datetime.now()
+    vTotDf=df0.count()
+    te_step_count = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
+    if df0.rdd.isEmpty():
+        exit(etq_nodata(msg_e_df_nodata('df0')))
+    else:
+        try:
+            ts_step_tbl = datetime.now()
+            print(etq_info(msg_i_insert_hive(vTblInt35)))
+            df0.write.mode('overwrite').saveAsTable(vTblInt35)
+            df0.printSchema()
+            print(etq_info(msg_t_total_registros_hive(vTblInt35,str(vTotDf))))
+            te_step_tbl = datetime.now()
+            print(etq_info(msg_d_duracion_hive(vTblInt35,vle_duracion(ts_step_tbl,te_step_tbl))))
+        except Exception as e:       
+            exit(etq_error(msg_e_insert_hive(vTblInt35,str(e))))
+    del df0
+    print(etq_info("Eliminar dataframe [{}]".format('df0')))
+    te_step = datetime.now()
+    print(etq_info(msg_d_duracion_ejecucion(vStp,vle_duracion(ts_step,te_step))))
+except Exception as e:
+    exit(etq_error(msg_e_ejecucion(vStp,str(e))))
+
+print(lne_dvs())
+nme_table=vSHiveDB+"."+vSTableDB
+vStp='[ETAPA {} / Paso 3.36]: Insert en la tabla destino [{}] '.format(str(vIEtapa),nme_table)
+try:
+    ts_step = datetime.now()
+    print(etq_info(vStp))
+    print(lne_dvs())
+    VSQL=qry_ins_otc_t_360_general(vIFechaEje1,vIFechaEje,vTblInt23,vTblExt18,vTblExt20,vTblExt21,vTblExt22,vTblExt23,vTblExt24,vTblInt29,vTblInt34,vTblInt30,vTblInt31,vTblInt32,vTblInt33,vTblInt28,vTblInt26,vTblInt27,vTblInt24,vTblInt25,vTblInt35)
     print(etq_sql(VSQL))
     df0 = spark.sql(VSQL)
     ts_step_count = datetime.now()

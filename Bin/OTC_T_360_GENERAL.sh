@@ -46,7 +46,7 @@ echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Validar parametros iniciales y de entrad
 ###################################################################################################################
 FECHAEJE=$1
 PASO=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'PASO';"`
-if [ -z "$FECHAEJE" ] ||
+if  [ -z "$FECHAEJE" ] ||
 	[ -z "$PASO" ]; then
 	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: Uno de los parametros iniciales/entrada estan vacios"
 	exit 1
@@ -60,7 +60,7 @@ RUTA_LOG=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"
 VAL_DIA=`date '+%Y%m%d'` 
 VAL_HORA=`date '+%H%M%S'`
 VAL_LOG=$RUTA_LOG/$ENTIDAD$FECHAEJE_$VAL_DIA"_"$VAL_HORA.log
-if [ -z "$RUTA_LOG" ] ||
+if  [ -z "$RUTA_LOG" ] ||
 	[ -z "$VAL_DIA" ] ||
 	[ -z "$VAL_HORA" ] ||
 	[ -z "$VAL_LOG" ] ; then
@@ -109,7 +109,7 @@ VAL_EXECUTOR_MEMORY=`mysql -N  <<<"select valor from params_des where ENTIDAD = 
 VAL_NUM_EXECUTORS=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_NUM_EXECUTORS';"`
 VAL_NUM_EXECUTORS_CORES=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_NUM_EXECUTORS_CORES';"`
 
-if [ -z "$HIVEDB" ] ||
+if  [ -z "$HIVEDB" ] ||
 	[ -z "$RUTA" ] ||
     [ -z "$HIVETABLE" ] ||
 	[ -z "$ESQUEMA_TEMP" ] ||
@@ -137,7 +137,6 @@ if [ -z "$HIVEDB" ] ||
 	exit 1
 fi
 
-
 ###################################################################################################################
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Obtener y validar parametros autogenerados..." 2>&1 &>> $VAL_LOG
 ###################################################################################################################
@@ -145,7 +144,9 @@ echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Obtener y validar parametros autogenerad
 eval year=`echo $FECHAEJE | cut -c1-4`
 eval month=`echo $FECHAEJE | cut -c5-6`
 day="01"
-if [ -z "$year" ] || [ -z "$month" ] || [ -z "$day" ];then 
+if  [ -z "$year" ] || 
+	[ -z "$month" ] || 
+	[ -z "$day" ];then 
 	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: Uno de los parametros iniciales es nulo o vacio" 2>&1 &>> $VAL_LOG
 	exit 1
 fi
@@ -158,7 +159,11 @@ fecha_eje2=`date '+%Y%m%d' -d "$FECHAEJE"`
 fecha_proc1=$(expr $fecha_eje2 \* 1)
 fecha_eje4=`date '+%d-%m-%Y' -d "$FECHAEJE"`
 
-if [ -z "$fechaMes" ] || [ -z "$fechaIniMes" ] || [ -z "$fecha_eje1" ] || [ -z "$fecha_eje2" ] || [ -z "$fecha_eje4" ];then 
+if  [ -z "$fechaMes" ] || 
+	[ -z "$fechaIniMes" ] || 
+	[ -z "$fecha_eje1" ] || 
+	[ -z "$fecha_eje2" ] || 
+	[ -z "$fecha_eje4" ];then 
 	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: Uno de los parametros calculados validacion [1] es nulo o vacio" 2>&1 &>> $VAL_LOG
 	exit 1
 fi
@@ -178,24 +183,26 @@ fechaInimenos1mes=$fechaInimenos1mes_1
 fechamas1_1=`date '+%Y%m%d' -d "$FECHAEJE+1 day"`
 fechamas11=$(expr $fechamas1_1 \* 1)
 
-if [ -z "$fecha_inico_mes_1_1" ] || [ -z "$fecha_inico_mes_1_2" ] || [ -z "$fecha_eje3" ] || [ -z "$fechamas1" ] || [ -z "$fechamas1_1" ];then 
+if  [ -z "$fecha_inico_mes_1_1" ] || 
+	[ -z "$fecha_inico_mes_1_2" ] || 
+	[ -z "$fecha_eje3" ] || 
+	[ -z "$fechamas1" ] || 
+	[ -z "$fechamas1_1" ];then 
 	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: Uno de los parametros calculados validacion [2] es nulo o vacio" 2>&1 &>> $VAL_LOG
 	exit 1
 fi
 
-#fechamenos1mes_1=`date '+%Y%m%d' -d "$FECHAEJE-1 month"`
 path_actualizacion=$RUTA"/Bin/OTC_F_RESTA_1_MES.sh"
 fechamenos1mes_1=`sh $path_actualizacion $FECHAEJE`       #Formato YYYYMMDD
 fechamenos1mes=$fechamenos1mes_1
-#fechamenos2mes_1=`date '+%Y%m%d' -d "$fechamenos1mes-1 month"`
+
 fechamenos2mes_1=`sh $path_actualizacion $fechamenos1mes`       #Formato YYYYMMDD
 fechamenos2mes=$fechamenos2mes_1
 fechamenos6mes_1=`date '+%Y%m%d' -d "$fechamenos1mes-6 month"` 
 fechamenos6mes=$fechamenos6mes_1
-#fechaInimenos1mes_1=`date '+%Y%m%d' -d "$fechaIniMes-1 month"`
-#path_actualizacion=$RUTA"/Bin/OTC_F_RESTA_1_MES.sh"
+
 fechaInimenos1mes_1=`sh $path_actualizacion $fechaIniMes`       #Formato YYYYMMDD
-#fechaInimenos1mes=$(expr $fechaInimenos1mes_1 \* 1)
+
 fechaInimenos1mes=$fechaInimenos1mes_1
 fechaInimenos2mes_1=`date '+%Y%m%d' -d "$fechaIniMes-2 month"`
 fechaInimenos2mes=$(expr $fechaInimenos2mes_1 \* 1)
@@ -203,6 +210,8 @@ fechaInimenos3mes_1=`date '+%Y%m%d' -d "$fechaIniMes-3 month"`
 fechaInimenos3mes=$(expr $fechaInimenos3mes_1 \* 1)
 fechamenos5_1=`date '+%Y%m%d' -d "$FECHAEJE-10 day"`
 fechamenos5=$(expr $fechamenos5_1 \* 1)
+fecha_port_ini=`date -d "$FECHAEJE-2 month" "+%Y-%m-%d"`
+fecha_port_fin=`date -d "$FECHAEJE+1 day" "+%Y-%m-%d"`
 
 if [ -z "$path_actualizacion" ] ||
         [ -z "$fechamenos1mes_1" ] ||
@@ -211,6 +220,8 @@ if [ -z "$path_actualizacion" ] ||
 		[ -z "$fechaInimenos1mes_1" ] ||
 		[ -z "$fechaInimenos2mes_1" ] ||
 		[ -z "$fechaInimenos3mes_1" ] ||
+		[ -z "$fecha_port_ini" ] ||
+		[ -z "$fecha_port_fin" ] ||
 		[ -z "$fechamenos5_1" ] ; then
 	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: Uno de los parametros calculados validacion [3] es nulo o vacio" 2>&1 &>>$VAL_LOG
 	exit 1
@@ -261,6 +272,9 @@ $VAL_RUTA_PYTHON/$VAL_FILE_PYTHON \
 --vSEsquemaTabla3=$ESQUEMA_TABLA_3 \
 --vIFechaMenos2Mes=$fechamenos2mes \
 --vIFechaEje1=$fecha_eje1 \
+--fecha_inico_mes_1_1=$fecha_inico_mes_1_1 \
+--fecha_port_ini=$fecha_port_ini \
+--fecha_port_fin=$fecha_port_fin \
 --vSPathQueryConf=$VAL_PATH_CONF 2>&1 &>> $VAL_LOG
 
 ###################################################################################################################
@@ -268,11 +282,11 @@ echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Validamos el LOG de la ejecucion, si enc
 ###################################################################################################################
 VAL_ERRORES=`egrep 'error:|Error:|KeyProviderCache:|Caused by:|pyspark.sql.utils.ParseException|AnalysisException:|NameError:|IndentationError:|Permission denied:|ValueError:|ERROR:|unrecognized arguments:|No such file or directory|Failed to connect|Could not open client' $VAL_LOG | wc -l`
 if [ $VAL_ERRORES -eq 0 ];then
-		echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: ETAPA $PASO => La extraccion de informacion fue ejecutada de manera EXITOSA" 2>&1 &>> $VAL_LOG	
-		echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Se procesa la ETAPA $PASO con EXITO " 2>&1 &>> $VAL_LOG 	
+	echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: ETAPA $PASO => La extraccion de informacion fue ejecutada de manera EXITOSA" 2>&1 &>> $VAL_LOG	
+	echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Se procesa la ETAPA $PASO con EXITO " 2>&1 &>> $VAL_LOG 	
 else
-				echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: Problemas en la carga de informacion en las tablas del proceso" 2>&1 &>> $VAL_LOG   
-				exit 1       
+	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: Problemas en la carga de informacion en las tablas del proceso" 2>&1 &>> $VAL_LOG   
+	exit 1       
 fi
 
 fi
