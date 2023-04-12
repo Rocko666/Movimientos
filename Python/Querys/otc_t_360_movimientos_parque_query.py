@@ -388,7 +388,7 @@ def qry_otc_t_mp_no_reciclable_tmp(vTNRCSA,fecha_movimientos):
 		'NO_RECICLABLE' AS tipo
 		, 'NO RECICLABLE' AS sub_movimiento
 		, num_telefonico AS telefono
-		, fecha_alta AS fecha
+		, CAST (fecha_alta AS DATE) AS fecha
 		, documento_cliente_act
 		, fecha_proceso
 		, CAST(NULL AS STRING) AS canal_comercial

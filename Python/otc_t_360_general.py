@@ -148,13 +148,13 @@ try:
     vTblExt09=nme_tbl_tmp_otc_t_360_general_ext_09(vSSchemaTmpRead)
     vTblExt10=nme_tbl_tmp_otc_t_360_general_ext_10(vSSchemaTmpRead)
     vTblExt11=nme_tbl_tmp_otc_t_360_general_ext_11(vSSchemaTmpRead)
-    vTblExt12=nme_tbl_tmp_otc_t_360_general_ext_12(vSSchemaTmpRead)
-    vTblExt13=nme_tbl_tmp_otc_t_360_general_ext_13(vSSchemaTmpRead)
-    vTblExt14=nme_tbl_tmp_otc_t_360_general_ext_14(vSSchemaTmpRead)
-    vTblExt15=nme_tbl_tmp_otc_t_360_general_ext_15(vSSchemaTmpRead)
+    vTblExt12=nme_tbl_tmp_otc_t_360_general_ext_12(vSSchemaTmp)
+    vTblExt13=nme_tbl_tmp_otc_t_360_general_ext_13(vSSchemaTmp)
+    vTblExt14=nme_tbl_tmp_otc_t_360_general_ext_14(vSSchemaTmp)
+    vTblExt15=nme_tbl_tmp_otc_t_360_general_ext_15(vSSchemaTmp)
     vTblExt16=nme_tbl_tmp_otc_t_360_general_ext_16(vSSchemaTmpRead)
     vTblExt17=nme_tbl_tmp_otc_t_360_general_ext_17(vSSchemaTmpRead)
-    vTblExt18=nme_tbl_tmp_otc_t_360_general_ext_18(vSSchemaTmpRead)
+    vTblExt18=nme_tbl_tmp_otc_t_360_general_ext_18(vSSchemaTmp)
     vTblExt19=nme_tbl_tmp_otc_t_360_general_ext_19(vSSchemaTmpRead)
     vTblExt20=nme_tbl_tmp_otc_t_360_general_ext_20(vSSchemaTmpRead)
     vTblExt21=nme_tbl_tmp_otc_t_360_general_ext_21(vSSchemaTmpRead)
@@ -1126,19 +1126,19 @@ try:
     vTotDf=df0.count()
     te_step_count = datetime.now()
     print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
-    if df0.rdd.isEmpty():
-        exit(etq_nodata(msg_e_df_nodata('df0')))
-    else:
-        try:
-            ts_step_tbl = datetime.now()
-            print(etq_info(msg_i_insert_hive(vTblInt26)))
-            df0.write.mode('overwrite').saveAsTable(vTblInt26)
-            df0.printSchema()
-            print(etq_info(msg_t_total_registros_hive(vTblInt26,str(vTotDf))))
-            te_step_tbl = datetime.now()
-            print(etq_info(msg_d_duracion_hive(vTblInt26,vle_duracion(ts_step_tbl,te_step_tbl))))
-        except Exception as e:       
-            exit(etq_error(msg_e_insert_hive(vTblInt26,str(e))))
+    #if df0.rdd.isEmpty():
+    #exit(etq_nodata(msg_e_df_nodata('df0')))
+    #else:
+    try:
+        ts_step_tbl = datetime.now()
+        print(etq_info(msg_i_insert_hive(vTblInt26)))
+        df0.write.mode('overwrite').saveAsTable(vTblInt26)
+        df0.printSchema()
+        print(etq_info(msg_t_total_registros_hive(vTblInt26,str(vTotDf))))
+        te_step_tbl = datetime.now()
+        print(etq_info(msg_d_duracion_hive(vTblInt26,vle_duracion(ts_step_tbl,te_step_tbl))))
+    except Exception as e:       
+        exit(etq_error(msg_e_insert_hive(vTblInt26,str(e))))
     del df0
     print(etq_info("Eliminar dataframe [{}]".format('df0')))
     te_step = datetime.now()
@@ -1159,19 +1159,19 @@ try:
     vTotDf=df0.count()
     te_step_count = datetime.now()
     print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
-    if df0.rdd.isEmpty():
-        exit(etq_nodata(msg_e_df_nodata('df0')))
-    else:
-        try:
-            ts_step_tbl = datetime.now()
-            print(etq_info(msg_i_insert_hive(vTblInt27)))
-            df0.write.mode('overwrite').saveAsTable(vTblInt27)
-            df0.printSchema()
-            print(etq_info(msg_t_total_registros_hive(vTblInt27,str(vTotDf))))
-            te_step_tbl = datetime.now()
-            print(etq_info(msg_d_duracion_hive(vTblInt27,vle_duracion(ts_step_tbl,te_step_tbl))))
-        except Exception as e:       
-            exit(etq_error(msg_e_insert_hive(vTblInt27,str(e))))
+    #if df0.rdd.isEmpty():
+        #exit(etq_nodata(msg_e_df_nodata('df0')))
+    #else:
+    try:
+        ts_step_tbl = datetime.now()
+        print(etq_info(msg_i_insert_hive(vTblInt27)))
+        df0.write.mode('overwrite').saveAsTable(vTblInt27)
+        df0.printSchema()
+        print(etq_info(msg_t_total_registros_hive(vTblInt27,str(vTotDf))))
+        te_step_tbl = datetime.now()
+        print(etq_info(msg_d_duracion_hive(vTblInt27,vle_duracion(ts_step_tbl,te_step_tbl))))
+    except Exception as e:       
+        exit(etq_error(msg_e_insert_hive(vTblInt27,str(e))))
     del df0
     print(etq_info("Eliminar dataframe [{}]".format('df0')))
     te_step = datetime.now()
@@ -1192,19 +1192,19 @@ try:
     vTotDf=df0.count()
     te_step_count = datetime.now()
     print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
-    if df0.rdd.isEmpty():
-        exit(etq_nodata(msg_e_df_nodata('df0')))
-    else:
-        try:
-            ts_step_tbl = datetime.now()
-            print(etq_info(msg_i_insert_hive(vTblInt28)))
-            df0.write.mode('overwrite').saveAsTable(vTblInt28)
-            df0.printSchema()
-            print(etq_info(msg_t_total_registros_hive(vTblInt28,str(vTotDf))))
-            te_step_tbl = datetime.now()
-            print(etq_info(msg_d_duracion_hive(vTblInt28,vle_duracion(ts_step_tbl,te_step_tbl))))
-        except Exception as e:       
-            exit(etq_error(msg_e_insert_hive(vTblInt28,str(e))))
+    #if df0.rdd.isEmpty():
+      #  exit(etq_nodata(msg_e_df_nodata('df0')))
+    #else:
+    try:
+        ts_step_tbl = datetime.now()
+        print(etq_info(msg_i_insert_hive(vTblInt28)))
+        df0.write.mode('overwrite').saveAsTable(vTblInt28)
+        df0.printSchema()
+        print(etq_info(msg_t_total_registros_hive(vTblInt28,str(vTotDf))))
+        te_step_tbl = datetime.now()
+        print(etq_info(msg_d_duracion_hive(vTblInt28,vle_duracion(ts_step_tbl,te_step_tbl))))
+    except Exception as e:       
+        exit(etq_error(msg_e_insert_hive(vTblInt28,str(e))))
     del df0
     print(etq_info("Eliminar dataframe [{}]".format('df0')))
     te_step = datetime.now()
