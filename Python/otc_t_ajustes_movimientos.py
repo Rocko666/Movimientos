@@ -6,6 +6,7 @@ from pyspark.sql import SparkSession
 import pandas as pd
 from datetime import datetime
 from pyspark.sql import functions as F, Window
+from pyspark.sql.functions import date_format
 import re
 import argparse
 
@@ -54,7 +55,8 @@ for vColumn in vColumns:
         )
 
 df2 = df1.select(*vColumnsOk)
-
+df2.printSchema()
+df2 = df2.withColumn('fecha_proceso',date_format(df2.fecha_proceso,'yyyyMMdd'))
 df2.repartition(1).write.mode(vTipo).saveAsTable(vTablaOut)
 
 spark.stop()
