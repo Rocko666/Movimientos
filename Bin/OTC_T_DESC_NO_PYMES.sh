@@ -47,6 +47,7 @@ echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Parametros del SPARK GENERICO"
 vRUTA_SPARK=`mysql -N  <<<"select valor from params where ENTIDAD = 'SPARK_GENERICO' AND parametro = 'VAL_RUTA_SPARK';"`
 VAL_KINIT=`mysql -N  <<<"select valor from params where ENTIDAD = 'SPARK_GENERICO' AND parametro = 'VAL_KINIT';"`
 $VAL_KINIT
+
 #VALIDACION DE PARAMETROS INICIALES
 if  [ -z "$ENTIDAD" ] || 
 	[ -z "$VAL_RUTA" ] || 
@@ -103,6 +104,18 @@ ETAPA=2
 if [ "$ETAPA" = "2" ]; then
 echo "==== Hace el llamado al python que realiza la conversion del archivo xlsx a tabla en Hive ====" 2>&1 &>> $VAL_LOG
 $vRUTA_SPARK \ 
+--jars /opt/cloudera/parcels/CDH/jars/hive-warehouse-connector-assembly-*.jar \
+--conf spark.sql.extensions=com.hortonworks.spark.sql.rule.Extensions \
+--conf spark.security.credentials.hiveserver2.enabled=false \
+--conf spark.sql.hive.hwc.execution.mode=spark \
+--conf spark.datasource.hive.warehouse.read.via.llap=false \
+--conf spark.datasource.hive.warehouse.load.staging.dir=/tmp \
+--conf spark.datasource.hive.warehouse.read.jdbc.mode=cluster \
+--conf spark.datasource.hive.warehouse.user.name="rgenerator" \
+--conf spark.port.maxRetries=100 \
+--py-files /opt/cloudera/parcels/CDH/lib/hive_warehouse_connector/pyspark_hwc-1.0.0.7.1.7.1000-141.zip \
+--conf spark.sql.hive.hiveserver2.jdbc.url="jdbc:hive2://quisrvbigdata1.otecel.com.ec:2181,quisrvbigdata2.otecel.com.ec:2181,quisrvbigdata10.otecel.com.ec:2181,quisrvbigdata11.otecel.com.ec:2181/default;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2" \
+--name $ENTIDAD \
 --master $vMASTER \
 --driver-memory $vDRIVER_MEMORY \
 --executor-memory $vEXECUTOR_MEMORY \

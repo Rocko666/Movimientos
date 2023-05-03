@@ -1,17 +1,16 @@
 set -e
-#!/bin/bash
 ############################################################################
-#   Script de carga de archivo .xlsx catalogo de usuarios prepago		   #
+#   Script de carga de archivo .xlsx catalogo de IDS 					   #
 #  desde FTP para subirlo a como tabla a HIVE							   #
 #--------------------------------------------------------------------------#
 #--------------------------------------------------------------------------#
 # REALIZADO: CRISTIAN ORTIZ												   #
-# MODIFICADO : 23/NOV/2022									    		   #
+# MODIFICADO : 27/AGO/2022									    		   #
 # COMENTARIO:                                                              #
 # "							" 											   #
 ############################################################################
 
-ENTIDAD=OTC_T_CTL_PRE_USR_NC
+ENTIDAD=OTC_T_CTL_CONSOLIDADO_ID
 
 #PARAMETROS GENERICOS DEFINIDOS EN LA TABLA params_des
 
@@ -25,6 +24,14 @@ VAL_FTP_PASS=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTI
 VAL_FTP_RUTA=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND PARAMETRO = 'VAL_FTP_RUTA';"` 
 VAL_FTP_NOM_ARCHIVO=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND PARAMETRO = 'VAL_FTP_NOM_ARCHIVO';"` 
 VAL_DIR_HDFS_CAT=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND PARAMETRO = 'VAL_DIR_HDFS_CAT';"` 
+#PARAMETROS CALCULADOS Y AUTOGENERADOS
+
+VAL_DIA=`date '+%Y%m%d'` 
+VAL_HORA=`date '+%H%M%S'` 
+VAL_LOG=$VAL_RUTA/Log/$ENTIDAD"_"$VAL_DIA"_"$VAL_HORA.log
+VAL_RUTA_ARCHIVO=$VAL_RUTA/input
+VAL_TRREMOTEDIR=`echo $VAL_FTP_RUTA|sed "s/\~}</ /g"`
+VAL_REMOTEDIRFINAL=${VAL_TRREMOTEDIR}
 
 ###########################################################################################################################################################
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Parametros del SPARK GENERICO" 
@@ -32,14 +39,6 @@ echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Parametros del SPARK GENERICO"
 vRUTA_SPARK=`mysql -N  <<<"select valor from params where ENTIDAD = 'SPARK_GENERICO' AND parametro = 'VAL_RUTA_SPARK';"`
 VAL_KINIT=`mysql -N  <<<"select valor from params where ENTIDAD = 'SPARK_GENERICO' AND parametro = 'VAL_KINIT';"`
 $VAL_KINIT
-
-#PARAMETROS CALCULADOS Y AUTOGENERADOS
-VAL_DIA=`date '+%Y%m%d'` 
-VAL_HORA=`date '+%H%M%S'` 
-VAL_LOG=$VAL_RUTA/Log/$ENTIDAD"_"$VAL_DIA"_"$VAL_HORA.log
-VAL_RUTA_ARCHIVO=$VAL_RUTA/Input
-VAL_TRREMOTEDIR=`echo $VAL_FTP_RUTA|sed "s/\~}</ /g"`
-VAL_REMOTEDIRFINAL=${VAL_TRREMOTEDIR}
 
 #VALIDACION DE PARAMETROS INICIALES
 if  [ -z "$ENTIDAD" ] || 
@@ -56,10 +55,10 @@ if  [ -z "$ENTIDAD" ] ||
 fi
 
 #INICIO DEL PROCESO
-echo "==== Inicia ejecucion catalogo de usuarios prepago===="`date '+%Y%m%d%H%M%S'` 2>&1 &>> $VAL_LOG
+echo "==== Inicia ejecucion catalogo unificado===="`date '+%Y%m%d%H%M%S'` 2>&1 &>> $VAL_LOG
 #PASO 1: REALIZA LA TRANSFERENCIA DE LOS ARCHIVOS CSV DESDE EL SERVIDOR FTP A RUTA LOCAL EN BIGDATA
 if [ "$ETAPA" = "1" ]; then
-echo "==== Realiza la transferencia del catalogo de usuarios prepago desde el servidor FTP a BigData ===="`date '+%Y%m%d%H%M%S'` 2>&1 &>> $VAL_LOG
+echo "==== Realiza la transferencia del catalogo_consolidado desde el servidor FTP a BigData ===="`date '+%Y%m%d%H%M%S'` 2>&1 &>> $VAL_LOG
 echo "Servidor: $VAL_FTP_HOSTNAME" 2>&1 &>> $VAL_LOG
 echo "Puerto: $VAL_FTP_PUERTO" 2>&1 &>> $VAL_LOG
 echo "Ruta: $VAL_FTP_RUTA" 2>&1 &>> $VAL_LOG
@@ -83,14 +82,15 @@ if [ $error_trnsf -eq 0 ];then
 	echo "==== ERROR - En la transferencia de los archivos desde el servidor FTP ===="`date '+%Y%m%d%H%M%S'` 2>&1 &>> $VAL_LOG
     exit 1
 fi
+
 fi
 
-echo "==== Finaliza la transferencia del catalogo de usuarios prepago===="`date '+%Y%m%d%H%M%S'` 2>&1 &>> $VAL_LOG
+echo "==== Finaliza ejecucion catalogo===="`date '+%Y%m%d%H%M%S'` 2>&1 &>> $VAL_LOG
 
 ETAPA=2
-#HACE EL LLAMADO AL PYTHON QUE REALIZA LA CONVERSION DEL ARCHIVO  XLS a tabla en Hive
+#HACE EL LLAMADO AL PYTHON QUE REALIZA LA CONVERSION DEL ARCHIVO CSV A XLSX
 if [ "$ETAPA" = "2" ]; then
-echo "==== Hace el llamado al python que realiza la conversion del archivo xls a tabla en Hive ====" 2>&1 &>> $VAL_LOG
+echo "==== Hace el llamado al python que realiza la conversion del archivo csv a xlsx ====" 2>&1 &>> $VAL_LOG
 $vRUTA_SPARK \
 --jars /opt/cloudera/parcels/CDH/jars/hive-warehouse-connector-assembly-*.jar \
 --conf spark.sql.extensions=com.hortonworks.spark.sql.rule.Extensions \
@@ -109,14 +109,14 @@ $vRUTA_SPARK \
 --num-executors 4 \
 --executor-cores 6 \
 --driver-memory 4G \
-${VAL_RUTA}/Python/OTC_T_CTL_PRE_USR_NC.py \
---rutain=${VAL_RUTA}/Input/$VAL_FTP_NOM_ARCHIVO \
+${VAL_RUTA}/OTC_T_CTL_CONSOLIDADO_ID.py \
+--rutain=${VAL_RUTA}/input/$VAL_FTP_NOM_ARCHIVO \
 --tablaout=$VAL_DIR_HDFS_CAT \
---tipo=overwrite 2>&1 &>> $VAL_LOG
+--tipo=overwrite 2>&1 &>> $VAL_LOG 
 
 #VALIDA EJECUCION DEL PYTHON
-echo "==== Valida ejecucion del python que hace la conversion de excel a Hive ====" 2>&1 &>> $VAL_LOG
-error_py=`egrep 'AnalysisException|TypeError:|FAILED:|Error|Table not found|Table already exists|Vertex|No such file or directory' $VAL_LOG | wc -l`
+echo "==== Valida ejecucion del python que hace la conversion de csv a excel ====" 2>&1 &>> $VAL_LOG
+error_py=`egrep 'AnalysisException|TypeError:|FAILED:|Error|Table not found|Table already exists|Vertex|No such file or directory' $LOGS/$EJECUCION.err | wc -l`
 if [ $error_py -eq 0 ];then
 			echo "==== OK - La ejecucion del python  es EXITOSO ====" 2>&1 &>> $VAL_LOG
 		else
@@ -125,4 +125,4 @@ if [ $error_py -eq 0 ];then
 fi		
 fi
 
-### sh -x /home/nae108834/Catalogo_usuarios_prepago/Bin/OTC_T_CTL_PRE_USR_NC.sh
+### sh -x /home/nae108834/Cliente360_RF/bin/OTC_T_CTL_CONSOLIDADO_ID.sh

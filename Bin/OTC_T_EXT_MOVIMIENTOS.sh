@@ -126,7 +126,7 @@ function exportar_sftp()
 		expect "sftp>"
 		send "cd ${vREMOTEDIR_OUT}\n"
 		expect "sftp>"
-		send "put ${vARCH_XTRCTR} $(basename ${vFTP_NOM_ARCHIVO_FORMATO})\n"
+		send "put $vARCH_XTRCTR\n"
 		expect "sftp>"
 		send "exit \n"
 		interact

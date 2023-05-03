@@ -47,6 +47,7 @@ echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Parametros del SPARK GENERICO"
 vRUTA_SPARK=`mysql -N  <<<"select valor from params where ENTIDAD = 'SPARK_GENERICO' AND parametro = 'VAL_RUTA_SPARK';"`
 VAL_KINIT=`mysql -N  <<<"select valor from params where ENTIDAD = 'SPARK_GENERICO' AND parametro = 'VAL_KINIT';"`
 $VAL_KINIT
+
 #VALIDACION DE PARAMETROS INICIALES
 if  [ -z "$ENTIDAD" ] || 
 	[ -z "$VAL_RUTA" ] || 
