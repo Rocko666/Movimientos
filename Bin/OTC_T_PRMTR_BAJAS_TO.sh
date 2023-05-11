@@ -110,7 +110,7 @@ $vRUTA_SPARK \
 --num-executors 4 \
 --executor-cores 6 \
 --driver-memory 4G \
-${VAL_RUTA}/Python/OTC_T_PRMTR_BAJAS_TO.py \
+${VAL_RUTA}/Python/otc_t_prmtr_bajas_to.py \
 --rutain="${VAL_RUTA}/Input/$VAL_FTP_NOM_ARCHIVO" \
 --tablaout=$VAL_DIR_HDFS_CAT \
 --tipo=overwrite \

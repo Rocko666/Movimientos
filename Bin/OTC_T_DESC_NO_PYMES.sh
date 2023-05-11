@@ -121,7 +121,7 @@ $vRUTA_SPARK \
 --executor-memory $vEXECUTOR_MEMORY \
 --num-executors $vNUM_EXECUTORS \
 --executor-cores $vNUM_EXECUTORS_CORES \ 
-${VAL_RUTA}/Python/OTC_T_DESC_NO_PYMES.py \
+${VAL_RUTA}/Python/otc_t_desc_no_pymes.py \
 --rutain=${VAL_RUTA}/Input/$VAL_FTP_NOM_ARCHIVO \
 --tablaout=$VAL_DIR_HDFS_CAT \
 --tipo=overwrite 2>&1 &>> $VAL_LOG
