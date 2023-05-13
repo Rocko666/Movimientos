@@ -24,7 +24,7 @@ print(lne_dvs())
 parser = argparse.ArgumentParser()
 parser.add_argument('--vSEntidad', required=True, type=str, help='Entidad del Proceso')
 parser.add_argument('--vTDClass', required=True, type=str, help='Clase java del conector JDBC')
-parser.add_argument('--vjdbcurl', required=True, type=str, help='URL del conector JDBC Ejm: jdbc:mysql://localhost:3306/base')
+parser.add_argument('--vJdbcUrl', required=True, type=str, help='URL del conector JDBC Ejm: jdbc:mysql://localhost:3306/base')
 parser.add_argument('--vTDUser', required=True, type=str, help='Usuario de la base de datos')
 parser.add_argument('--vTDPass', required=True, type=str, help='Clave de la base de datos')
 parser.add_argument('--vTable', required=True, type=str, help='Nombre de la tabla en hive bd.tabla')
@@ -101,22 +101,22 @@ try:
     case when (select y.value from nc_list_values y where y.list_value_id = cb.doc_type) is null then
     (select y.value from nc_list_values y where y.list_value_id = cr.doc_type)  else
     (select y.value from nc_list_values y where y.list_value_id = cb.doc_type) end as doc_type,
-    ctg.vSEntidad as CustomerCategory,
+    ctg.name as CustomerCategory,
     to_char( a.object_id) as PortinCommonOrderID,
     (select lv.value from nc_list_values lv where lv.list_value_id = a.request_status) as RequestStatus,
     (select lv.localized_value from vw_list_values lv where lv.list_value_id = a.ascp_response) as estado,
     to_char(a.fvc,'DD-MM-YYYY') as fvc,
-    donor.vSEntidad as operadora,
+    donor.name as operadora,
     to_char(a.donor_account_type) as donor_account_type1,
     (select lv.value from nc_list_values lv where lv.list_value_id = a.donor_account_type) as LN_Origen,
-    u.vSEntidad as AssignedCSR,
+    u.name as AssignedCSR,
     a.created_when as created_when,
     to_char(o.object_id) as SalesOrderID,
     (select lv.value from nc_list_values lv where lv.list_value_id = o.sales_ord_status) as SalesOrderStatus,
     o.processed_when as SalesOrderProcessedDate,
-    ri.vSEntidad as telefono,
-    substr(sim.vSEntidad,1,19) as AssociatedSIMICCID,
-    oi.tariff_plan_vSEntidad as PlanDestino,
+    ri.name as telefono,
+    substr(sim.name,1,19) as AssociatedSIMICCID,
+    oi.tariff_plan_name as PlanDestino,
     a.ascp_rejection_comment  as motivo_rechazo
     from R_OM_PORTIN_CO a
     left join PROXTOMSREP_RDB.R_OM_PORTIN_CO_MPN_SR mpn on mpn.object_id = a.object_id
@@ -153,7 +153,7 @@ try:
     ts_step = datetime.now()
     print(lne_dvs())
 except Exception as e:
-    exit(etq_error(msg_e_ejecucion(vTdboracle+"."+ vTtbloracle+" Grabando los datos =>".format(''),str(e))))
+    exit(etq_error(msg_e_ejecucion(vTable+" Grabando los datos =>".format(''),str(e))))
 te_step = datetime.now()
 print(etq_info(msg_d_duracion_ejecucion(vStp02,vle_duracion(ts_step,te_step))))
 print(lne_dvs())

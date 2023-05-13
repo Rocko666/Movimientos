@@ -108,7 +108,8 @@ VAL_MES_ANTERIOR_TERMINA=$(date -d "$VAL_MES_ANTERIOR_INICIA +1 month -1 day" +%
 FECHA_EJE_1=$(date -d "$VAL_FECHA_PROCESO" +%Y%m%d)
 FECHA_MENOS_1D=$(date -d "$FECHA_EJE_1 -1 day" +%Y%m%d)
 MES_PROCESO=$(date -d "$FECHA_INICIO_MES" +%Y%m)
-JDBCURL1=jdbc:oracle:thin:@$TDHOST:$TDPORT/$TDSERVICE
+JDBCURL1=jdbc:oracle:thin:@$TDHOST:$TDPORT/$TDDB
+#$TDDB
 VAL_DAY=`echo $VAL_FECHA_PROCESO | cut -c7-8`
 
 if  [ -z "$ETAPA" ] || 
@@ -136,36 +137,27 @@ echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: JDBCURL1 => " $JDBCURL1
 
 if [ "$ETAPA" = "1" ]; then
 ###########################################################################################################################################################
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: ETAPA 2: Oracle Import " 2>&1 &>> $VAL_LOG
+echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: ETAPA 1: Oracle Import " 2>&1 &>> $VAL_LOG
 ###########################################################################################################################################################
 $VAL_RUTA_SPARK \
---jars /opt/cloudera/parcels/CDH/jars/hive-warehouse-connector-assembly-*.jar \
---conf spark.sql.extensions=com.hortonworks.spark.sql.rule.Extensions \
---conf spark.security.credentials.hiveserver2.enabled=false \
---conf spark.sql.hive.hwc.execution.mode=spark \
---conf spark.datasource.hive.warehouse.read.via.llap=false \
---conf spark.datasource.hive.warehouse.load.staging.dir=/tmp \
---conf spark.datasource.hive.warehouse.read.jdbc.mode=cluster \
---conf spark.datasource.hive.warehouse.user.name="rgenerator" \
+--conf spark.ui.enabled=false \
+--conf spark.shuffle.service.enabled=false \
+--conf spark.dynamicAllocation.enabled=false \
 --conf spark.port.maxRetries=100 \
---py-files /opt/cloudera/parcels/CDH/lib/hive_warehouse_connector/pyspark_hwc-1.0.0.7.1.7.1000-141.zip \
---conf spark.sql.hive.hiveserver2.jdbc.url="jdbc:hive2://quisrvbigdata1.otecel.com.ec:2181,quisrvbigdata2.otecel.com.ec:2181,quisrvbigdata10.otecel.com.ec:2181,quisrvbigdata11.otecel.com.ec:2181/default;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2" \
 --name $ENTIDAD \
 --master $VAL_MASTER \
 --driver-memory $VAL_DRIVER_MEMORY \
 --executor-memory $VAL_EXECUTOR_MEMORY \
 --num-executors $VAL_NUM_EXECUTORS \
 --executor-cores $VAL_NUM_EXECUTORS_CORES \
---jars $RUTA_LIB/$RUTA_LIB_ORACLE \
+--jars $VAL_RUTA_LIB/$VAL_LIB \
 $RUTA_PYTHON/otc_t_solict_port_in.py \
 --vSEntidad=$ENTIDAD \
 --vTable=$HIVEDB.$HIVETABLE \
---vFechaProceso=$VAL_FECHA_PROCESO \
 --vJdbcUrl=$JDBCURL1 \
---vTDDb=$TDDB \
 --vTDPass=$TDPASS \
 --vTDUser=$TDUSER \
---vTDClass=$TDCLASS_ORC 2>&1 &>> $VAL_LOG
+--vTDClass=$TDCLASS 2>&1 &>> $VAL_LOG
 
 	# Validamos el LOG de la ejecucion, si encontramos errores finalizamos con error >0
 	VAL_ERRORES=`egrep 'NODATA:|ERROR:|FAILED:|Error|Table not found|Table already exists|Vertex|Permission denied|cannot resolve' $VAL_LOG | wc -l`
@@ -183,7 +175,7 @@ fi
 
 if [ "$ETAPA" = "2" ]; then
 ###########################################################################################################################################################
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: ETAPA 3: Finalizar el proceso " 2>&1 &>> $VAL_LOG
+echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: ETAPA 2: Finalizar el proceso " 2>&1 &>> $VAL_LOG
 ###########################################################################################################################################################
 
 	#SE REALIZA EL SETEO DE LA ETAPA EN LA TABLA params_des
