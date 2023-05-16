@@ -5,9 +5,9 @@
 # Ejem:  /usr/hdp/current/spark2-client/bin/pyspark readexcel.py --rutain=/carpeta/excel.xls --tablaout=esquema.tabla --tipo=overwrite/append
 import sys
 reload(sys)
-sys.setdefaultencoding('latin1')
-#sys.setdefaultencoding('windows-1252')
 #sys.setdefaultencoding('latin1')
+#sys.setdefaultencoding('windows-1252')
+sys.setdefaultencoding('utf-8')
 from pyspark.sql import SparkSession
 import pandas as pd
 from datetime import datetime

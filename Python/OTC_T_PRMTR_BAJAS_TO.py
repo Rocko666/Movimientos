@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 import sys
 reload(sys)
-sys.setdefaultencoding('latin1')
-#sys.setdefaultencoding('utf-8')
+#sys.setdefaultencoding('utf-8-sig')
+#sys.setdefaultencoding('latin1')
+#sys.setdefaultencoding('windows-1252')
+sys.setdefaultencoding('utf-8')
 from pyspark.sql import SparkSession
 import pandas as pd
 from datetime import datetime
 from pyspark.sql import functions as F, Window
 import re
 import argparse
+import os
 
-# pip install xlrd==1.2.0
+# Establece la codificacion UTF-8 en el entorno de Python
+os.environ['PYTHONIOENCODING'] = 'UTF-8'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--rutain', required=True, type=str)
@@ -27,7 +31,8 @@ vTipo=parametros.tipo
 timestart = datetime.now()
 vRegExpUnnamed=r"unnamed*"
 vApp="PERIMETRO PARA BAJAS Y TRANSFER OUT"
-dfExcel = pd.read_excel(vPathExcel)
+dfExcel = pd.read_excel(vPathExcel, encoding='utf-8')
+print (dfExcel)
 
 def getColumnName(vColumn=str):
     a=vColumn.lower()
@@ -41,6 +46,7 @@ spark = SparkSession\
     .master("local")\
     .config("hive.exec.dynamic.partition", "true")\
     .config("hive.exec.dynamic.partition.mode", "nonstrict")\
+    .config("spark.sql.sessionEncoding", "UTF-8")\
     .enableHiveSupport()\
     .getOrCreate()
 sc = spark.sparkContext
@@ -71,6 +77,7 @@ query_truncate = "ALTER TABLE "+ vTablaOut +" DROP IF EXISTS PARTITION (PT_FECHA
 spark.sql(query_truncate)
 print("Truncate Exitoso de la tabla "+vTablaOut+" particion "+str(vPart))
 df3.repartition(1).write.mode("append").insertInto(vTablaOut)
+df3.write.mode('overwrite').format('parquet').saveAsTable('db_desarrollo2021.tmp_prmt_b_to')
 print("Escritura Exitosa de la tabla "+ vTablaOut)
 
 spark.stop()
