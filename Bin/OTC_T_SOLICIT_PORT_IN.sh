@@ -33,9 +33,7 @@ VAL_RUTA=`mysql -N <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"'
 HIVEDB=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'HIVEDB';"`         
 HIVETABLE=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'HIVETABLE';"`        
 RUTA_PYTHON=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'RUTA_PYTHON';"` 
-VAL_ESQUEMA_TMP=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ESQUEMA_TMP';"`
 VAL_MASTER=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_MASTER';"`
-VAL_MASTER_EXPORT=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_MASTER_EXPORT';"`
 VAL_DRIVER_MEMORY=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_DRIVER_MEMORY';"`
 VAL_EXECUTOR_MEMORY=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_EXECUTOR_MEMORY';"`
 VAL_NUM_EXECUTORS=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_NUM_EXECUTORS';"`
@@ -77,9 +75,7 @@ if  [ -z "$ENTIDAD" ] ||
 	[ -z "$HIVEDB" ] || 
 	[ -z "$HIVETABLE" ] || 
 	[ -z "$RUTA_PYTHON" ] || 
-	[ -z "$VAL_ESQUEMA_TMP" ] || 
 	[ -z "$VAL_MASTER" ] || 
-	[ -z "$VAL_MASTER_EXPORT" ] || 
 	[ -z "$VAL_DRIVER_MEMORY" ] || 
 	[ -z "$VAL_EXECUTOR_MEMORY" ] || 
 	[ -z "$VAL_NUM_EXECUTORS" ] || 
@@ -103,23 +99,13 @@ fi
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Parametros calculados de fechas  " 2>&1 &>> $VAL_LOG
 ###########################################################################################################################################################
 FECHA_EJECUCION=`date '+%Y%m01' -d "$VAL_FECHA_PROCESO"`
-VAL_MES_ANTERIOR_INICIA=$(date -d "$FECHA_EJECUCION -1 month" +%Y%m%d)
-VAL_MES_ANTERIOR_TERMINA=$(date -d "$VAL_MES_ANTERIOR_INICIA +1 month -1 day" +%Y%m%d)
-FECHA_EJE_1=$(date -d "$VAL_FECHA_PROCESO" +%Y%m%d)
-FECHA_MENOS_1D=$(date -d "$FECHA_EJE_1 -1 day" +%Y%m%d)
-MES_PROCESO=$(date -d "$FECHA_INICIO_MES" +%Y%m)
+VAL_F_INICIAL=$(date -d "$FECHA_EJECUCION -4 month" +%Y%m%d)
 JDBCURL1=jdbc:oracle:thin:@$TDHOST:$TDPORT/$TDDB
 #$TDDB
-VAL_DAY=`echo $VAL_FECHA_PROCESO | cut -c7-8`
 
 if  [ -z "$ETAPA" ] || 
-	[ -z "$FECHA_MENOS_1D" ] || 
-	[ -z "$FECHA_EJE_1" ] || 
-	[ -z "$VAL_MES_ANTERIOR_TERMINA" ] || 
-	[ -z "$VAL_MES_ANTERIOR_INICIA" ] || 
+	[ -z "$VAL_F_INICIAL" ] || 
 	[ -z "$FECHA_EJECUCION" ] || 
-	[ -z "$MES_PROCESO" ] || 
-	[ -z "$VAL_DAY" ] ||
 	[ -z "$JDBCURL1" ]; then
   echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: $TIME [ERROR] $rc unos de los parametros calculados esta vacio o es nulo" 2>&1 &>> $VAL_LOG
   error=1
@@ -127,12 +113,7 @@ if  [ -z "$ETAPA" ] ||
 fi
 
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: FECHA_EJECUCION => " $FECHA_EJECUCION
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: VAL_MES_ANTERIOR_INICIA => " $VAL_MES_ANTERIOR_INICIA
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: VAL_MES_ANTERIOR_TERMINA => " $VAL_MES_ANTERIOR_TERMINA
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: FECHA_EJE_1 => " $FECHA_EJE_1
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: FECHA_MENOS_1D => " $FECHA_MENOS_1D
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: MES_PROCESO => " $MES_PROCESO
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: VAL_DAY => " $VAL_DAY
+echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: VAL_F_INICIAL => " $VAL_F_INICIAL
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: JDBCURL1 => " $JDBCURL1
 
 if [ "$ETAPA" = "1" ]; then
@@ -141,7 +122,7 @@ echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: ETAPA 1: Oracle Import " 2>&1 &>> $VAL_L
 ###########################################################################################################################################################
 $VAL_RUTA_SPARK \
 --conf spark.ui.enabled=false \
---conf spark.shuffle.service.enabled=false \
+--conf spark.shuffle.service.enabled=true \
 --conf spark.dynamicAllocation.enabled=false \
 --conf spark.port.maxRetries=100 \
 --name $ENTIDAD \
@@ -162,10 +143,10 @@ $RUTA_PYTHON/otc_t_solict_port_in.py \
 	# Validamos el LOG de la ejecucion, si encontramos errores finalizamos con error >0
 	VAL_ERRORES=`egrep 'NODATA:|ERROR:|FAILED:|Error|Table not found|Table already exists|Vertex|Permission denied|cannot resolve' $VAL_LOG | wc -l`
 	if [ $VAL_ERRORES -ne 0 ];then
-		echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: ETAPA 2 --> Problemas en la carga de informacion a ORACLE " 2>&1 &>> $VAL_LOG
+		echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: ETAPA 1 --> Problemas en la carga de informacion a ORACLE " 2>&1 &>> $VAL_LOG
 		exit 1																																 
 	else
-		echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: ETAPA 2 --> La carga de informacion a ORACLE fue ejecutada de manera EXITOSA" 2>&1 &>> $VAL_LOG	
+		echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: ETAPA 1 --> La carga de informacion a ORACLE fue ejecutada de manera EXITOSA" 2>&1 &>> $VAL_LOG	
 		ETAPA=2
 		#SE REALIZA EL SETEO DE LA ETAPA EN LA TABLA params_des
 		echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: $SHELL --> Se procesa la ETAPA 2 con EXITO " 2>&1 &>> $VAL_LOG
@@ -179,7 +160,6 @@ echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: ETAPA 2: Finalizar el proceso " 2>&1 &>>
 ###########################################################################################################################################################
 
 	#SE REALIZA EL SETEO DE LA ETAPA EN LA TABLA params_des
-	echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: El Proceso termina de manera exitosa " 2>&1 &>> $VAL_LOG
 	`mysql -N  <<<"update params_des set valor='1' where ENTIDAD = '${ENTIDAD}' and parametro = 'ETAPA';"`
 
 	echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: El proceso OTC_T_SOLICIT_PORT_IN finaliza correctamente " 2>&1 &>> $VAL_LOG

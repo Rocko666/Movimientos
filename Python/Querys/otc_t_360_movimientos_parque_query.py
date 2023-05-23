@@ -50,17 +50,9 @@ SELECT
 	, nombre_usuario_sub
 	, forma_pago
 	, cod_da
-	, nom_usuario
 	, campania
-	, codigo_distribuidor
-	, codigo_plaza
-	, nom_plaza
 	, region
 	, provincia_ivr
-	, ejecutivo_asignado_ptr
-	, area_ptr
-	, codigo_vendedor_da_ptr
-	, jefatura_ptr
 	, provincia_ms
 	, codigo_usuario
 	, calf_riesgo
@@ -70,10 +62,6 @@ SELECT
 	, account_num
 	, distribuidor AS distribuidor_crm
 	, canal AS canal_transacc
-	, (nvl(tarifa_plan_actual_ov, tarifa_basica))-(nvl(descuento_tarifa_plan_act, 0)) AS TARIFA_FINAL_PLAN_ACT  --**OJO
-	, descuento_tarifa_plan_act
-	, tarifa_plan_actual_ov
-	, descripcion_descuento_plan_act --**OJO
 	----xxxxxxxxxxxxxxxxxxxxxxxx---------  
 FROM {vTAltBI}
 WHERE p_FECHA_PROCESO = {fecha_movimientos_cp}
@@ -117,17 +105,9 @@ def qry_insrt_otc_t_abh_baja(vTAltBajHist, vTBajBI, fecha_movimientos_cp,f_inici
 	, CAST(NULL AS STRING) AS nombre_usuario_sub
 	, CAST(NULL AS STRING) AS forma_pago
 	, CAST(NULL AS STRING) AS cod_da
-	, CAST(NULL AS STRING) AS nom_usuario
 	, CAST(NULL AS STRING) AS campania
-	, CAST(NULL AS STRING) AS codigo_distribuidor
-	, CAST(NULL AS STRING) AS codigo_plaza
-	, CAST(NULL AS STRING) AS nom_plaza
 	, CAST(NULL AS STRING) AS region
 	, CAST(NULL AS STRING) AS provincia_ivr
-	, ejecutivo_asignado_ptr
-	, area_ptr
-	, codigo_vendedor_da_ptr
-	, jefatura_ptr
 	, CAST(NULL AS STRING) AS provincia_ms
 	, CAST(NULL AS STRING) AS codigo_usuario
 	, CAST(NULL AS STRING) AS calf_riesgo
@@ -140,10 +120,6 @@ def qry_insrt_otc_t_abh_baja(vTAltBajHist, vTBajBI, fecha_movimientos_cp,f_inici
 	, account_no AS account_num
 	, CAST(NULL AS STRING) AS distribuidor_crm
 	, CAST(NULL AS STRING) AS canal_transacc
-	, CAST(NULL AS DOUBLE) AS tarifa_final_plan_act
-	, CAST(NULL AS DOUBLE) AS descuento_tarifa_plan_act
-	, CAST(NULL AS DOUBLE) AS tarifa_plan_actual_ov
-	, CAST(NULL AS STRING) AS descripcion_descuento_plan_act
 	---------------------------------------xxxxxxxxxxxxxxxxxxxxxxxxxxxx-----------------------------
 FROM {vTBajBI}
 	WHERE p_FECHA_PROCESO = {fecha_movimientos_cp}
@@ -157,6 +133,7 @@ FROM {vTAltBajHist}
     '''.format(vTAltBajHist=vTAltBajHist, vTBajBI=vTBajBI, fecha_movimientos_cp=fecha_movimientos_cp,f_inicio=f_inicio,fecha_proceso=fecha_proceso)
     return qry
 
+# Es necesario los siguientes SELEC * FROM ya que son inserts de las primeras tablas.
 def qry_ovwrt_altas_bajas(vTAltBajHist,vTablaTmpAlta, vTablaTmpBaja):
     qry='''
     INSERT OVERWRITE TABLE {vTAltBajHist}
@@ -169,7 +146,6 @@ def qry_ovwrt_altas_bajas(vTAltBajHist,vTablaTmpAlta, vTablaTmpBaja):
     FROM {vTablaTmpBaja}
     '''.format(vTAltBajHist=vTAltBajHist,vTablaTmpAlta=vTablaTmpAlta, vTablaTmpBaja=vTablaTmpBaja)
     return qry
-
 
 # N03
 def qry_dlt_otc_t_th_pre_pos(vTTransfHist, f_inicio, fecha_proceso):
@@ -210,15 +186,7 @@ SELECT
 	, forma_pago
 	, canal AS canal_transacc
 	, campania
-	, codigo_distribuidor_usuario AS codigo_distribuidor
-	, codigo_plaza_usuario AS codigo_plaza
-	, nom_plaza_usuario AS nom_plaza
 	, region_usuario AS region
-	, CAST( NULL AS STRING) AS ruc_distribuidor -- eliminar 
-	, ejecutivo_asignado_ptr
-	, area_ptr
-	, codigo_vendedor_da_ptr
-	, jefatura_ptr
 	, codigo_usuario
 	, calf_riesgo
 	, cap_endeu
@@ -230,9 +198,6 @@ SELECT
 	, codigo_plan_anterior AS cod_plan_anterior
 	, nombre_plan_anterior AS des_plan_anterior
 	, distribuidor AS distribuidor_crm
-	, (nvl(tarifa_ov_plan_act, tarifa_basica))-(nvl(descuento_tarifa_plan_act, 0)) AS tarifa_final_plan_act --** OJO
-	, descuento_tarifa_plan_act
-	, tarifa_ov_plan_act
 	-------------------------xxxxxxxxxxxxxxxxxxxx---------------------------------
 FROM
 	{vTTrInBI}
@@ -280,15 +245,7 @@ SELECT
 	, forma_pago
 	, canal AS canal_transacc
 	, campania_usuario AS campania
-	, codigo_distribuidor_usuario AS codigo_distribuidor
-	, codigo_plaza_usuario AS codigo_plaza
-	, nom_plaza_usuario AS nom_plaza
 	, region_usuario AS region
-	, CAST( NULL AS STRING) AS ruc_distribuidor -- eliminar 
-	, ejecutivo_asignado_ptr
-	, area_ptr
-	, codigo_vendedor_da_ptr
-	, jefatura_ptr
 	, codigo_usuario
 	, CAST(NULL AS STRING) AS calf_riesgo
 	, CAST(NULL AS STRING) AS cap_endeu
@@ -300,9 +257,6 @@ SELECT
 	, codigo_plan_anterior AS cod_plan_anterior
 	, nombre_plan_anterior AS des_plan_anterior
 	, distribuidor AS distribuidor_crm
-	, CAST(NULL AS DOUBLE) AS tarifa_final_plan_act
-	, CAST(NULL AS DOUBLE) AS descuento_tarifa_plan_act
-	, CAST(NULL AS DOUBLE) AS tarifa_ov_plan_act
 	--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxX
 FROM
 	{vTTrOutBI}
@@ -360,19 +314,11 @@ SELECT
 	, nombre_usuario_submit AS nombre_usuario_sub
 	, forma_pago
 	, campania
-	, CAST(NULL AS varchar(60)) AS codigo_distribuidor
-	, CAST(NULL AS varchar(60)) AS codigo_plaza
-	, CAST(NULL AS varchar(110)) AS nom_plaza
 	, CAST(NULL AS STRING) AS region
-	, CAST(NULL AS STRING) AS ruc_distribuidor -- ELIMINAR 
 	, tarifa_basica_anterior
 	, fecha_inicio_plan_anterior
-	, tarifa_final_plan_act
 	, tarifa_final_plan_ant
 	, provincia
-	, descripcion_descuento_plan_act
-	, descuento_tarifa_plan_act
-	, tarifa_plan_actual_ov
 	-------------xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-------------------------------------
 FROM
 	{vTCPBI}
@@ -393,12 +339,7 @@ def qry_otc_t_mp_no_reciclable_tmp(vTNRCSA,fecha_movimientos):
 		, fecha_proceso
 		, CAST(NULL AS STRING) AS canal_comercial
 		, CAST(NULL AS STRING) AS campania
-		, CAST(NULL AS STRING) AS codigo_distribuidor
-		, CAST(NULL AS varchar(110)) AS nom_distribuidor
-		, CAST(NULL AS varchar(60)) AS codigo_plaza
-		, CAST(NULL AS varchar(110)) AS nom_plaza
 		, CAST(NULL AS STRING) AS region
-		, CAST( NULL AS STRING) AS ruc_distribuidor -- ELIMINAR 
 		, linea_negocio_baja
 		, documento_cliente_ant
 		, dias
@@ -448,10 +389,6 @@ SELECT
 	, operadora_origen
 	, imei
 	, equipo
-	, ejecutivo_asignado_ptr
-	, area_ptr
-	, codigo_vendedor_da_ptr
-	, jefatura_ptr
 	, codigo_usuario
 	, calf_riesgo
 	, cap_endeu
@@ -548,10 +485,6 @@ SELECT
 	, operadora_origen
 	, imei
 	, equipo
-	, ejecutivo_asignado_ptr
-	, area_ptr
-	, codigo_vendedor_da_ptr
-	, jefatura_ptr
 	, codigo_usuario
 	, calf_riesgo
 	, cap_endeu
@@ -612,17 +545,9 @@ SELECT
 	, xx.nombre_usuario_sub
 	, xx.forma_pago
 	, xx.cod_da
-	, xx.nom_usuario
 	, xx.campania
-	, xx.codigo_distribuidor
-	, xx.codigo_plaza
-	, xx.nom_plaza
 	, xx.region
 	, xx.provincia_ivr
-	, xx.ejecutivo_asignado_ptr
-	, xx.area_ptr
-	, xx.codigo_vendedor_da_ptr
-	, xx.jefatura_ptr
 	, xx.provincia_ms
 	, xx.codigo_usuario
 	, xx.calf_riesgo
@@ -632,10 +557,6 @@ SELECT
 	, xx.account_num
 	, xx.distribuidor_crm
 	, xx.canal_transacc
-	, xx.tarifa_final_plan_act
-	, xx.descuento_tarifa_plan_act
-	, xx.tarifa_plan_actual_ov
-	, xx.descripcion_descuento_plan_act
 	----------***********--------------
 FROM
 	(
@@ -652,7 +573,7 @@ FROM
 		, aa.motivo
 		, aa.distribuidor
 		, aa.oficina
-  --insertado COMISIONES  BIGD-677
+--insertado COMISIONES  BIGD-677
 		, aa.sub_movimiento
 		, aa.imei
 		, aa.equipo
@@ -666,17 +587,9 @@ FROM
 		, aa.nombre_usuario_sub
 		, aa.forma_pago
 		, aa.cod_da
-		, aa.nom_usuario
 		, aa.campania
-		, aa.codigo_distribuidor
-		, aa.codigo_plaza
-		, aa.nom_plaza
 		, aa.region
 		, aa.provincia_ivr
-		, aa.ejecutivo_asignado_ptr
-		, aa.area_ptr
-		, aa.codigo_vendedor_da_ptr
-		, aa.jefatura_ptr
 		, aa.provincia_ms
 		, aa.codigo_usuario
 		, aa.calf_riesgo
@@ -686,10 +599,6 @@ FROM
 		, aa.account_num
 		, aa.distribuidor_crm
 		, aa.canal_transacc
-		, aa.tarifa_final_plan_act
-		, aa.descuento_tarifa_plan_act
-		, aa.tarifa_plan_actual_ov
-		, aa.descripcion_descuento_plan_act
 		-------***----------------
 		, ROW_NUMBER() OVER (PARTITION BY aa.TIPO
 		, aa.telefono
@@ -736,17 +645,9 @@ SELECT
 	, xx.nombre_usuario_sub
 	, xx.forma_pago
 	, xx.cod_da
-	, xx.nom_usuario
 	, xx.campania
-	, xx.codigo_distribuidor
-	, xx.codigo_plaza
-	, xx.nom_plaza
 	, xx.region
 	, xx.provincia_ivr
-	, xx.ejecutivo_asignado_ptr
-	, xx.area_ptr
-	, xx.codigo_vendedor_da_ptr
-	, xx.jefatura_ptr
 	, xx.provincia_ms
 	, xx.codigo_usuario
 	, xx.calf_riesgo
@@ -756,10 +657,6 @@ SELECT
 	, xx.account_num
 	, xx.distribuidor_crm
 	, xx.canal_transacc
-	, xx.tarifa_final_plan_act
-	, xx.descuento_tarifa_plan_act
-	, xx.tarifa_plan_actual_ov
-	, xx.descripcion_descuento_plan_act
 	------***---------------------
 FROM
 	(
@@ -790,17 +687,9 @@ FROM
 		, aa.nombre_usuario_sub
 		, aa.forma_pago
 		, aa.cod_da
-		, aa.nom_usuario
 		, aa.campania
-		, aa.codigo_distribuidor
-		, aa.codigo_plaza
-		, aa.nom_plaza
 		, aa.region
 		, aa.provincia_ivr
-		, aa.ejecutivo_asignado_ptr
-		, aa.area_ptr
-		, aa.codigo_vendedor_da_ptr
-		, aa.jefatura_ptr
 		, aa.provincia_ms
 		, aa.codigo_usuario
 		, aa.calf_riesgo
@@ -810,10 +699,6 @@ FROM
 		, aa.account_num
 		, aa.distribuidor_crm
 		, aa.canal_transacc
-		, aa.tarifa_final_plan_act
-		, aa.descuento_tarifa_plan_act
-		, aa.tarifa_plan_actual_ov
-		, aa.descripcion_descuento_plan_act
 		---------------------------------------
 		, ROW_NUMBER() OVER (PARTITION BY aa.tipo
 		, aa.telefono
@@ -855,15 +740,7 @@ SELECT
 	, xx.forma_pago
 	, xx.canal_transacc
 	, xx.campania
-	, xx.codigo_distribuidor
-	, xx.codigo_plaza
-	, xx.nom_plaza
 	, xx.region
-	, xx.ruc_distribuidor -- eliminar 
-	, xx.ejecutivo_asignado_ptr
-	, xx.area_ptr
-	, xx.codigo_vendedor_da_ptr
-	, xx.jefatura_ptr
 	, xx.codigo_usuario
 	, xx.calf_riesgo
 	, xx.cap_endeu
@@ -875,9 +752,6 @@ SELECT
 	, xx.cod_plan_anterior
 	, xx.des_plan_anterior
 	, xx.distribuidor_crm
-	, xx.tarifa_final_plan_act
-	, xx.descuento_tarifa_plan_act
-	, xx.tarifa_ov_plan_act
 	--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxX
 FROM
 	(
@@ -902,15 +776,7 @@ FROM
 		, aa.forma_pago
 		, aa.canal_transacc
 		, aa.campania
-		, aa.codigo_distribuidor
-		, aa.codigo_plaza
-		, aa.nom_plaza
 		, aa.region
-		, aa.ruc_distribuidor -- eliminar 
-		, aa.ejecutivo_asignado_ptr
-		, aa.area_ptr
-		, aa.codigo_vendedor_da_ptr
-		, aa.jefatura_ptr
 		, aa.codigo_usuario
 		, aa.calf_riesgo
 		, aa.cap_endeu
@@ -922,9 +788,6 @@ FROM
 		, aa.cod_plan_anterior
 		, aa.des_plan_anterior
 		, aa.distribuidor_crm
-		, aa.tarifa_final_plan_act
-		, aa.descuento_tarifa_plan_act
-		, aa.tarifa_ov_plan_act
 		--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 		, ROW_NUMBER() OVER (PARTITION BY aa.tipo
 		, aa.telefono
@@ -966,15 +829,7 @@ SELECT
 	, xx.forma_pago
 	, xx.canal_transacc
 	, xx.campania
-	, xx.codigo_distribuidor
-	, xx.codigo_plaza
-	, xx.nom_plaza
 	, xx.region
-	, xx.ruc_distribuidor -- eliminar 
-	, xx.ejecutivo_asignado_ptr
-	, xx.area_ptr
-	, xx.codigo_vendedor_da_ptr
-	, xx.jefatura_ptr
 	, xx.codigo_usuario
 	, xx.calf_riesgo
 	, xx.cap_endeu
@@ -986,9 +841,6 @@ SELECT
 	, xx.cod_plan_anterior
 	, xx.des_plan_anterior
 	, xx.distribuidor_crm
-	, xx.tarifa_final_plan_act
-	, xx.descuento_tarifa_plan_act
-	, xx.tarifa_ov_plan_act
 	--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxX
 FROM
 	(
@@ -1013,15 +865,7 @@ FROM
 		, aa.forma_pago
 		, aa.canal_transacc
 		, aa.campania
-		, aa.codigo_distribuidor
-		, aa.codigo_plaza
-		, aa.nom_plaza
 		, aa.region
-		, aa.ruc_distribuidor -- eliminar 
-		, aa.ejecutivo_asignado_ptr
-		, aa.area_ptr
-		, aa.codigo_vendedor_da_ptr
-		, aa.jefatura_ptr
 		, aa.codigo_usuario
 		, aa.calf_riesgo
 		, aa.cap_endeu
@@ -1033,9 +877,6 @@ FROM
 		, aa.cod_plan_anterior
 		, aa.des_plan_anterior
 		, aa.distribuidor_crm
-		, aa.tarifa_final_plan_act
-		, aa.descuento_tarifa_plan_act
-		, aa.tarifa_ov_plan_act
 		------------
 		, ROW_NUMBER() OVER (
                 PARTITION BY aa.tipo
@@ -1080,19 +921,11 @@ SELECT
 	, xx.nombre_usuario_sub
 	, xx.forma_pago
 	, xx.campania
-	, xx.codigo_distribuidor
-	, xx.codigo_plaza
-	, xx.nom_plaza
 	, xx.region
-	, xx.ruc_distribuidor -- eliminar
 	, xx.tarifa_basica_anterior
 	, xx.fecha_inicio_plan_anterior
-	, xx.tarifa_final_plan_act
 	, xx.tarifa_final_plan_ant
 	, xx.provincia
-	, xx.descripcion_descuento_plan_act
-	, xx.descuento_tarifa_plan_act
-	, xx.tarifa_plan_actual_ov
 	-------------xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-------------------------------------
 FROM
 	(
@@ -1118,19 +951,11 @@ FROM
 		, aa.nombre_usuario_sub
 		, aa.forma_pago
 		, aa.campania
-		, aa.codigo_distribuidor
-		, aa.codigo_plaza
-		, aa.nom_plaza
 		, aa.region
-		, aa.ruc_distribuidor  -- eliminar
 		, aa.tarifa_basica_anterior
 		, aa.fecha_inicio_plan_anterior
-		, aa.tarifa_final_plan_act
 		, aa.tarifa_final_plan_ant
 		, aa.provincia
-		, aa.descripcion_descuento_plan_act
-		, aa.descuento_tarifa_plan_act
-		, aa.tarifa_plan_actual_ov
 		-----------------------------------------
 		, ROW_NUMBER() OVER (
                 PARTITION BY aa.telefono
@@ -1159,12 +984,7 @@ SELECT
 	, xx.fecha_proceso
 	, xx.canal_comercial
 	, xx.campania
-	, xx.codigo_distribuidor
-	, xx.nom_distribuidor
-	, xx.codigo_plaza
-	, xx.nom_plaza
 	, xx.region
-	, xx.ruc_distribuidor -- eliminar
 	, xx.linea_negocio_baja
 	, xx.documento_cliente_ant
 	, xx.dias
@@ -1180,12 +1000,7 @@ FROM
 		, aa.fecha_proceso
 		, aa.canal_comercial
 		, aa.campania
-		, aa.codigo_distribuidor
-		, aa.nom_distribuidor
-		, aa.codigo_plaza
-		, aa.nom_plaza
 		, aa.region
-		, aa.ruc_distribuidor -- eliminar
 		, aa.linea_negocio_baja
 		, aa.documento_cliente_ant
 		, aa.dias
@@ -1303,7 +1118,6 @@ SELECT
 	-----------INSERTADO EN REFACTORING------------
 	, a.cod_categoria
 	, a.cod_da
-	, a.nom_usuario
 	, a.provincia_ivr
 	, a.provincia_ms
 	, (CASE 
@@ -1316,13 +1130,7 @@ SELECT
 	, d.account_num_anterior
 	, e.tarifa_basica_anterior
 	, e.fecha_inicio_plan_anterior
-	, nvl(nvl(e.tarifa_final_plan_act, a.tarifa_final_plan_act), c.tarifa_final_plan_act) AS tarifa_final_plan_act
-	, nvl(nvl(e.descuento_tarifa_plan_act, a.descuento_tarifa_plan_act), c.descuento_tarifa_plan_act) AS descuento_tarifa_plan_act
-	, nvl(nvl(e.tarifa_plan_actual_ov, a.tarifa_plan_actual_ov), c.tarifa_ov_plan_act) AS tarifa_plan_actual_ov
-	, nvl(e.descripcion_descuento_plan_act, a.descripcion_descuento_plan_act) AS descripcion_descuento_plan_act
 	, e.tarifa_final_plan_ant
-	--NVL ANIADIDO PARA INCLUIR LA FECHA DE BAJA DE LAS ALTAS_BAJAS_REPROCESO
-	--, G.FECHA as  FECHA_MOVIMIENTO_BAJA
 	, (CASE
 		WHEN z.tipo_movimiento_mes = 'BAJA' THEN g.fecha
 		ELSE d.fecha END) AS fecha_movimiento_baja
@@ -1422,7 +1230,7 @@ SELECT
 	, tb_descuento as tb_descuento_movimiento_mes
 	, tb_override as tb_override_movimiento_mes
 	, delta as delta_movimiento_mes
-	--insertado COMISIONES  BIGD-677 para unir campos y llevarlos a 360_general
+	--INSERTADO COMISIONES  BIGD-677 PARA UNIR CAMPOS Y LLEVARLOS A 360_GENERAL
 	, sub_movimiento
 	, imei
 	, equipo
@@ -1432,10 +1240,6 @@ SELECT
 	, domain_login_sub
 	, nombre_usuario_sub
 	, forma_pago
-	, ejecutivo_asignado_ptr
-	, area_ptr
-	, codigo_vendedor_da_ptr
-	, jefatura_ptr
 	, codigo_usuario
 	, calf_riesgo
 	, cap_endeu
@@ -1446,8 +1250,6 @@ SELECT
 	, provincia as provincia_activacion
 	, distribuidor_crm
 	, canal_transacc
-	, nom_plaza as nom_plaza_movimiento_mes
-	, codigo_distribuidor as codigo_distribuidor_movimiento_mes
 	, cod_da
 	, campania as campania_movimiento_mes
 	, region 
@@ -1482,10 +1284,6 @@ FROM
 		, domain_login_sub
 		, nombre_usuario_sub
 		, forma_pago
-		, ejecutivo_asignado_ptr
-		, area_ptr
-		, codigo_vendedor_da_ptr
-		, jefatura_ptr
 		, codigo_usuario
 		, calf_riesgo
 		, cap_endeu
@@ -1496,8 +1294,6 @@ FROM
 		, provincia
 		, distribuidor_crm
 		, canal_transacc
-		, nom_plaza
-		, codigo_distribuidor
 		, cod_da
 		, campania
 		, region
@@ -1536,10 +1332,6 @@ FROM
 			, domain_login_sub
 			, nombre_usuario_sub
 			, forma_pago
-			, CAST(NULL AS STRING) AS ejecutivo_asignado_ptr
-			, CAST(NULL AS STRING) AS area_ptr
-			, CAST(NULL AS STRING) AS codigo_vendedor_da_ptr
-			, CAST(NULL AS STRING) AS jefatura_ptr
 			, CAST(NULL AS STRING) AS codigo_usuario
 			, CAST(NULL AS STRING) AS calf_riesgo
 			, CAST(NULL AS STRING) AS cap_endeu
@@ -1550,8 +1342,6 @@ FROM
 			, provincia
 			, CAST(NULL AS STRING) AS distribuidor_crm
 			, CAST(NULL AS STRING) AS canal_transacc
-			, nom_plaza
-			, codigo_distribuidor
 			, CAST(NULL AS STRING) AS cod_da
 			, campania
 			, region
@@ -1588,10 +1378,6 @@ FROM
 			, domain_login_sub
 			, nombre_usuario_sub
 			, forma_pago
-			, ejecutivo_asignado_ptr
-			, area_ptr
-			, codigo_vendedor_da_ptr
-			, jefatura_ptr
 			, codigo_usuario
 			, calf_riesgo
 			, cap_endeu
@@ -1602,8 +1388,6 @@ FROM
 			, CAST(NULL AS STRING) AS provincia
 			, distribuidor_crm
 			, canal_transacc
-			, nom_plaza
-			, codigo_distribuidor
 			, CAST(NULL AS STRING) AS cod_da
 			, campania
 			, region
@@ -1640,10 +1424,6 @@ FROM
 			, domain_login_sub
 			, nombre_usuario_sub
 			, forma_pago
-			, ejecutivo_asignado_ptr
-			, area_ptr
-			, codigo_vendedor_da_ptr
-			, jefatura_ptr
 			, codigo_usuario
 			, calf_riesgo
 			, cap_endeu
@@ -1654,8 +1434,6 @@ FROM
 			, CAST(NULL AS STRING) AS provincia
 			, distribuidor_crm
 			, canal_transacc
-			, nom_plaza
-			, codigo_distribuidor
 			, CAST(NULL AS STRING) AS cod_da
 			, campania
 			, region
@@ -1691,10 +1469,6 @@ FROM
 			, domain_login_sub
 			, nombre_usuario_sub
 			, forma_pago
-			, ejecutivo_asignado_ptr
-			, area_ptr
-			, codigo_vendedor_da_ptr
-			, jefatura_ptr
 			, codigo_usuario
 			, calf_riesgo
 			, cap_endeu
@@ -1705,8 +1479,6 @@ FROM
 			, provincia
 			, distribuidor_crm
 			, canal_transacc
-			, nom_plaza
-			, codigo_distribuidor
 			, cod_da
 			, campania
 			, region
@@ -1744,10 +1516,6 @@ FROM
 			, CAST(NULL AS STRING) AS domain_login_sub
 			, CAST(NULL AS STRING) AS nombre_usuario_sub
 			, CAST(NULL AS STRING) AS forma_pago
-			, CAST(NULL AS STRING) AS ejecutivo_asignado_ptr
-			, CAST(NULL AS STRING) AS area_ptr
-			, CAST(NULL AS STRING) AS codigo_vendedor_da_ptr
-			, CAST(NULL AS STRING) AS jefatura_ptr
 			, CAST(NULL AS STRING) AS codigo_usuario
 			, CAST(NULL AS STRING) AS calf_riesgo
 			, CAST(NULL AS STRING) AS cap_endeu
@@ -1758,8 +1526,6 @@ FROM
 			, CAST(NULL AS STRING) AS provincia
 			, CAST(NULL AS STRING) AS distribuidor_crm
 			, CAST(NULL AS STRING) AS canal_transacc
-			, nom_plaza
-			, codigo_distribuidor
 			, CAST(NULL AS STRING) AS cod_da
 			, campania
 			, region
@@ -1796,10 +1562,6 @@ FROM
 			, domain_login_sub
 			, nombre_usuario_sub
 			, forma_pago
-			, ejecutivo_asignado_ptr
-			, area_ptr
-			, codigo_vendedor_da_ptr
-			, jefatura_ptr
 			, codigo_usuario
 			, calf_riesgo
 			, cap_endeu
@@ -1810,8 +1572,6 @@ FROM
 			, CAST(NULL AS STRING) AS provincia
 			, distribuidor_crm
 			, canal_transacc
-			, nom_plaza
-			, codigo_distribuidor
 			, cod_da
 			, campania
 			, region
@@ -1848,10 +1608,6 @@ FROM
 			, domain_login_sub
 			, nombre_usuario_sub
 			, forma_pago
-			, ejecutivo_asignado_ptr
-			, area_ptr
-			, codigo_vendedor_da_ptr
-			, jefatura_ptr
 			, codigo_usuario
 			, calf_riesgo
 			, cap_endeu
@@ -1862,8 +1618,6 @@ FROM
 			, provincia
 			, distribuidor_crm
 			, canal_transacc
-			, nom_plaza
-			, codigo_distribuidor
 			, cod_da
 			, campania
 			, region
@@ -1948,7 +1702,6 @@ FROM
 		, canal
 		, codigo_distribuidor
 		, nom_distribuidor
-		--, regexp_replace(regexp_replace(codigo_plaza, 
 		, codigo_plaza
 		, nom_plaza
 		, sub_canal

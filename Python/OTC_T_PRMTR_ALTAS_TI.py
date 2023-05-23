@@ -2,19 +2,15 @@
 import sys
 reload(sys)
 #sys.setdefaultencoding('utf-8-sig')
-#sys.setdefaultencoding('latin1')
+sys.setdefaultencoding('latin1')
 #sys.setdefaultencoding('windows-1252')
-sys.setdefaultencoding('utf-8')
+#sys.setdefaultencoding('utf-8')
 from pyspark.sql import SparkSession
 import pandas as pd
 from datetime import datetime
 from pyspark.sql import functions as F, Window
 import re
 import argparse
-import os
-
-# Establece la codificacion UTF-8 en el entorno de Python
-os.environ['PYTHONIOENCODING'] = 'UTF-8'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--rutain', required=True, type=str)
@@ -31,7 +27,7 @@ vTipo=parametros.tipo
 timestart = datetime.now()
 vRegExpUnnamed=r"unnamed*"
 vApp="PERIMETRO PARA MOVIMIENTOS"
-dfExcel = pd.read_excel(vPathExcel, encoding='utf-8')
+dfExcel = pd.read_excel(vPathExcel, error_bad_lines=False)
 print (dfExcel)
 
 def getColumnName(vColumn=str):
@@ -45,7 +41,6 @@ spark = SparkSession\
     .appName(vApp)\
     .config("hive.exec.dynamic.partition", "true")\
     .config("hive.exec.dynamic.partition.mode", "nonstrict")\
-    .config("spark.sql.sessionEncoding", "UTF-8")\
     .master("local")\
     .enableHiveSupport()\
     .getOrCreate()

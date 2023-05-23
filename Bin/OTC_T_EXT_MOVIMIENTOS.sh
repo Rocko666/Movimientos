@@ -26,6 +26,12 @@ set -e
 # Fecha de modificacion:   2022/07/16                                    #
 ##########################################################################
 
+# sh -x /home/nae108834/Movimientos/Bin/OTC_T_360_PIVOT_PARQUE.sh 20230331 && sh -x /home/nae108834/Movimientos/Bin/OTC_T_MOVIMIENTOS_PARQUE.sh 20230331 && sh -x /home/nae108834/Movimientos/Bin/OTC_T_360_GENERAL.sh 20230331 && sh -x /home/nae108834/Movimientos/Bin/OTC_T_EXT_MOVIMIENTOS.sh 20230331
+
+# sh -x /home/nae105215/RAW/USERDAS/OTC_T_V_BAJAS_SERVICIOS/bin/OTC_T_V_BAJAS_SERVICIOS.sh && sh -x /home/nae105215/RAW/USERDAS/OTC_T_V_DIGITALES_GANADAS/bin/OTC_T_V_DIGITALES_GANADAS.sh && sh -x /home/nae105215/RAW/USERDAS/OTC_T_V_TRADICIONALES_IMPLEMENTADAS/bin/OTC_T_V_TRADICIONALES_IMPLEMENTADAS.sh && sh -x /home/nae105215/RAW/USERDAS/OTC_T_V_TRADICIONALES_GANADAS/bin/OTC_T_V_TRADICIONALES_GANADAS.sh && sh -x /home/nae105215/RAW/USERDAS/OTC_T_V_DIGITALES_IMPLEMENTADAS/bin/OTC_T_V_DIGITALES_IMPLEMENTADAS.sh && sh -x /home/nae105215/EXT_CONECTIVIDAD/bin/OTC_T_EXT_CONECTIVIDAD.sh 20230205
+
+# 
+
 #PARAMETROS ESTATICOS
 ENTIDAD=EXT_MVMNTS0010
 

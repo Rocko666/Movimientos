@@ -272,6 +272,8 @@ $VAL_RUTA_PYTHON/$VAL_FILE_PYTHON \
 --vSEsquemaTabla3=$ESQUEMA_TABLA_3 \
 --vIFechaMenos2Mes=$fechamenos2mes \
 --vIFechaEje1=$fecha_eje1 \
+--vYear=$year \
+--vMonth=$month \
 --fecha_inico_mes_1_1=$fecha_inico_mes_1_1 \
 --fecha_port_ini=$fecha_port_ini \
 --fecha_port_fin=$fecha_port_fin \

@@ -70,9 +70,12 @@ ts_step = datetime.now()
 
 spark = SparkSession. \
     builder. \
-    config("hive.exec.dynamic.partition.mode", "nonstrict"). \
-    enableHiveSupport(). \
-    getOrCreate()
+    enableHiveSupport() \
+    .config("spark.sql.broadcastTimeout", "36000") \
+    .config("hive.exec.dynamic.partition", "true") \
+    .config("hive.exec.dynamic.partition.mode", "nonstrict") \
+    .config("spark.yarn.queue", "default") \
+    .getOrCreate()
 spark.sparkContext.setLogLevel("ERROR")
 sc = spark.sparkContext
 sc.setLogLevel("ERROR")
@@ -131,8 +134,10 @@ try:
     left join R_EH_ERROR_RECORD err on err.failed_order = a.object_id
     join R_BOE_SALES_ORD o on o.object_id = a.sales_order    
     left join R_USR_USERS u1 on u1.object_id = o.submitted_by
-    left join R_BOE_ORD_ITEM oi on oi.parent_id = a.sales_order and oi.phone_number = ri.object_id)
+    left join R_BOE_ORD_ITEM oi on oi.parent_id = a.sales_order and oi.phone_number = ri.object_id
+    where a.created_when >= to_date('010123','ddmmyy') and  a.created_when < to_date('010423','ddmmyy') )
     '''
+    ## where a.created_when >= to_date('010322','ddmmyy') and  a.created_when < to_date('311222','ddmmyy')
     print(etq_info("Query de la tabla de Oracle a exportar a Hive ..."))    
     print(lne_dvs())
     df_solict_port_in = spark.read.format("jdbc")\
@@ -144,8 +149,8 @@ try:
 			.option("dbtable",vSQL).load()
     print(etq_info(msg_t_total_registros_hive("Total registros recuperados de ORACLE: ",str( df_solict_port_in.count()))))
     df_solict_port_in.printSchema()
-    df_solict_port_in.show(5)
-    # Grabando en tabla temporal de Hive previo envio a ORACLE.
+    # Grabando en tabla temporal de Hive 
+    df_solict_port_in.write.mode('overwrite').format('parquet').saveAsTable(vTable)
     print(lne_dvs())
     te_step = datetime.now()
     print(etq_info(msg_d_duracion_ejecucion(vStp02,vle_duracion(ts_step,te_step))))

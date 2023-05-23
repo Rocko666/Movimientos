@@ -2,9 +2,9 @@
 import sys
 reload(sys)
 #sys.setdefaultencoding('utf-8-sig')
-#sys.setdefaultencoding('latin1')
+sys.setdefaultencoding('latin1')
 #sys.setdefaultencoding('windows-1252')
-sys.setdefaultencoding('utf-8')
+#sys.setdefaultencoding('utf-8')
 from pyspark.sql import SparkSession
 import pandas as pd
 from datetime import datetime
@@ -14,7 +14,7 @@ import argparse
 import os
 
 # Establece la codificacion UTF-8 en el entorno de Python
-os.environ['PYTHONIOENCODING'] = 'UTF-8'
+#os.environ['PYTHONIOENCODING'] = 'UTF-8'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--rutain', required=True, type=str)
@@ -31,7 +31,7 @@ vTipo=parametros.tipo
 timestart = datetime.now()
 vRegExpUnnamed=r"unnamed*"
 vApp="PERIMETRO PARA BAJAS Y TRANSFER OUT"
-dfExcel = pd.read_excel(vPathExcel, encoding='utf-8')
+dfExcel = pd.read_excel(vPathExcel, encoding='latin1')
 print (dfExcel)
 
 def getColumnName(vColumn=str):
@@ -46,7 +46,7 @@ spark = SparkSession\
     .master("local")\
     .config("hive.exec.dynamic.partition", "true")\
     .config("hive.exec.dynamic.partition.mode", "nonstrict")\
-    .config("spark.sql.sessionEncoding", "UTF-8")\
+    .config("spark.sql.sessionEncoding", "latin1")\
     .enableHiveSupport()\
     .getOrCreate()
 sc = spark.sparkContext

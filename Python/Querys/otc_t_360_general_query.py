@@ -850,31 +850,26 @@ SELECT
     ,tiposegmentacion
     ,tiporuc
     ,region
-    ,fecha_carga
-    ,pt_fecha
-FROM db_desarrollo2021.OTC_T_PRMTR_ALTAS_TI 
-WHERE pt_fecha={vIFechaEje}
+FROM db_cs_altas.otc_t_perimetro_altas_historico
+WHERE fechaproceso={vIFechaEje}
     '''.format(vIFechaEje=vIFechaEje)
     return qry
 
 #27
-def qry_tmp_prmt_baja_to(vIFechaEje):
+def qry_tmp_prmt_baja_to(vIFechaEje,vYear,vMonth):
     qry='''
 SELECT 
     identificador
     ,razon_social
-    ,fecha_ingreso
     ,ejecutivo_asignado
-    ,correo_ejecutivo_asignado
     ,area
     ,codigo_vendedor_da
     ,jefatura
     ,region
-    ,fecha_carga
-    ,pt_fecha
-FROM db_desarrollo2021.OTC_T_PRMTR_BAJAS_TO
-WHERE pt_fecha={vIFechaEje}
-    '''.format(vIFechaEje=vIFechaEje)
+FROM db_cs_facturacion.otc_t_perimetros
+where anio={vYear}
+and mes={vMonth}
+    '''.format(vIFechaEje=vIFechaEje,vYear=vYear,vMonth=vMonth)
     return qry
 
 #28
@@ -1023,11 +1018,9 @@ SELECT distinct
 	,salesorderprocesseddate
 	,requeststatus
 	,doc_number
-	--LA SIGUIENTE TABLA FUE TRAIDA DESDE ORACLE CON SPARK CON EL QUERY DE CARLOS CASTILLO
-FROM db_desarrollo2021.sol_port_in_3
-	--FROM db_desarrollo2021.r_om_portin_co 
-	--cambiar por la tabla generada en el proceso SOLICITUDES DE PORTABILIDAD IN 
-    --en SPARK con tablas de hive
+	--LA SIGUIENTE TABLA FUE TRAIDA DESDE ORACLE CON SPARK CON EL QUERY DE CARLOS CASTILLO eb spark
+	--en el proceso SOLICITUDES DE PORTABILIDAD IN
+FROM db_desarrollo2021.otc_t_solicit_port_in
 WHERE nvl(salesorderprocesseddate, created_when) BETWEEN '{fecha_port_ini}' AND '{fecha_port_fin}'
 and requeststatus in ('Approved','Partially Rejected','Pending in ASCP')
 '''.format(fecha_port_ini=fecha_port_ini,fecha_port_fin=fecha_port_fin)
@@ -1320,11 +1313,9 @@ SELECT
 		THEN (nvl(t1.tarifa, ovw.mrc_ov_price) - nvl(descu.discount_value, 0))
 			WHEN a1.tipo IN ('ALTA') 
 			then (nvl(t1.tarifa, ovw.mrc_base_price) - nvl(descu.discount_value, 0)) end) as tarifa_final_plan_act
-	--, a2.TARIFA_FINAL_PLAN_ACT
 	--, (case when a1.tipo IN ('DOWNSELL','UPSELL','MISMA_TARIFA') THEN (a2.TARIFA_BASICA_ANTERIOR-) ) 
 	, a2.tarifa_final_plan_ant
 	, a2.mismo_cliente
-	, (a2.tarifa_final_plan_act - a2.tarifa_final_plan_ant) AS delta_tarifa_final
 	, (CASE 
 			WHEN upper(spi.ln_origen) like '%POSTPAID%' THEN 'POSPAGO'
 			WHEN upper(spi.ln_origen) like '%PREPAID%' THEN 'PREPAGO'
@@ -1335,7 +1326,7 @@ SELECT
 	, a1.distribuidor_crm
 	, (CASE	when a1.tipo IN ('ALTA','PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
 		THEN descu.discount_value END) AS descuento_tarifa_plan_act
-	, (CASE	when a1.tipo IN ('PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
+	, (CASE	WHEN a1.tipo IN ('PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
 			THEN ovw.mrc_ov_price
 			WHEN a1.tipo IN ('ALTA') 
 			THEN ovw.mrc_base_price END) AS tarifa_plan_actual_ov

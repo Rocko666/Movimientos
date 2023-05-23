@@ -45,6 +45,8 @@ try:
     parser.add_argument('--fecha_inico_mes_1_1', required=True, type=str,help='Paramtero fecha')
     parser.add_argument('--fecha_port_ini', required=True, type=str,help='Paramtero fecha')
     parser.add_argument('--fecha_port_fin', required=True, type=str,help='Paramtero fecha')
+    parser.add_argument('--vYear', required=True, type=int,help='Paramtero anio')
+    parser.add_argument('--vMonth', required=True, type=int,help='Paramtero mes')
     
     parametros = parser.parse_args()
     vSQueue=parametros.vSQueue
@@ -68,6 +70,8 @@ try:
     fecha_inico_mes_1_1=parametros.fecha_inico_mes_1_1
     fecha_port_ini=parametros.fecha_port_ini
     fecha_port_fin=parametros.fecha_port_fin
+    vYear=parametros.vYear
+    vMonth=parametros.vMonth
 
     print(etq_info("Imprimiendo parametros..."))
     print(lne_dvs())
@@ -90,8 +94,10 @@ try:
     print(etq_info(log_p_parametros("vIFechaMenos2Mes",str(vIFechaMenos2Mes))))
     print(etq_info(log_p_parametros("vIFechaEje1",str(vIFechaEje1))))
     print(etq_info(log_p_parametros("fecha_inico_mes_1_1",str(fecha_inico_mes_1_1))))
-    print(etq_info(log_p_parametros("fecha_port_ini",str(fecha_inico_mes_1_1))))
-    print(etq_info(log_p_parametros("fecha_port_fin",str(fecha_inico_mes_1_1))))
+    print(etq_info(log_p_parametros("fecha_port_ini",str(fecha_port_ini))))
+    print(etq_info(log_p_parametros("fecha_port_fin",str(fecha_port_fin))))
+    print(etq_info(log_p_parametros("vYear",str(vYear))))
+    print(etq_info(log_p_parametros("vMonth",str(vMonth))))
     te_step = datetime.now()
     print(etq_info(msg_d_duracion_ejecucion(vSStep,vle_duracion(ts_step,te_step))))
 except Exception as e:
@@ -1126,19 +1132,19 @@ try:
     vTotDf=df0.count()
     te_step_count = datetime.now()
     print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
-    #if df0.rdd.isEmpty():
-    #exit(etq_nodata(msg_e_df_nodata('df0')))
-    #else:
-    try:
-        ts_step_tbl = datetime.now()
-        print(etq_info(msg_i_insert_hive(vTblInt26)))
-        df0.write.mode('overwrite').saveAsTable(vTblInt26)
-        df0.printSchema()
-        print(etq_info(msg_t_total_registros_hive(vTblInt26,str(vTotDf))))
-        te_step_tbl = datetime.now()
-        print(etq_info(msg_d_duracion_hive(vTblInt26,vle_duracion(ts_step_tbl,te_step_tbl))))
-    except Exception as e:       
-        exit(etq_error(msg_e_insert_hive(vTblInt26,str(e))))
+    if df0.rdd.isEmpty():
+        exit(etq_nodata(msg_e_df_nodata('df0')))
+    else:
+        try:
+            ts_step_tbl = datetime.now()
+            print(etq_info(msg_i_insert_hive(vTblInt26)))
+            df0.write.mode('overwrite').saveAsTable(vTblInt26)
+            df0.printSchema()
+            print(etq_info(msg_t_total_registros_hive(vTblInt26,str(vTotDf))))
+            te_step_tbl = datetime.now()
+            print(etq_info(msg_d_duracion_hive(vTblInt26,vle_duracion(ts_step_tbl,te_step_tbl))))
+        except Exception as e:       
+            exit(etq_error(msg_e_insert_hive(vTblInt26,str(e))))
     del df0
     print(etq_info("Eliminar dataframe [{}]".format('df0')))
     te_step = datetime.now()
@@ -1152,26 +1158,26 @@ try:
     ts_step = datetime.now()
     print(etq_info(vStp))
     print(lne_dvs())
-    VSQL=qry_tmp_prmt_baja_to(vIFechaEje)
+    VSQL=qry_tmp_prmt_baja_to(vIFechaEje,vYear,vMonth)
     print(etq_sql(VSQL))
     df0 = spark.sql(VSQL)
     ts_step_count = datetime.now()
     vTotDf=df0.count()
     te_step_count = datetime.now()
     print(etq_info(msg_d_duracion_ejecucion('df0',vle_duracion(ts_step_count,te_step_count))))
-    #if df0.rdd.isEmpty():
-        #exit(etq_nodata(msg_e_df_nodata('df0')))
-    #else:
-    try:
-        ts_step_tbl = datetime.now()
-        print(etq_info(msg_i_insert_hive(vTblInt27)))
-        df0.write.mode('overwrite').saveAsTable(vTblInt27)
-        df0.printSchema()
-        print(etq_info(msg_t_total_registros_hive(vTblInt27,str(vTotDf))))
-        te_step_tbl = datetime.now()
-        print(etq_info(msg_d_duracion_hive(vTblInt27,vle_duracion(ts_step_tbl,te_step_tbl))))
-    except Exception as e:       
-        exit(etq_error(msg_e_insert_hive(vTblInt27,str(e))))
+    if df0.rdd.isEmpty():
+        exit(etq_nodata(msg_e_df_nodata('df0')))
+    else:
+        try:
+            ts_step_tbl = datetime.now()
+            print(etq_info(msg_i_insert_hive(vTblInt27)))
+            df0.write.mode('overwrite').saveAsTable(vTblInt27)
+            df0.printSchema()
+            print(etq_info(msg_t_total_registros_hive(vTblInt27,str(vTotDf))))
+            te_step_tbl = datetime.now()
+            print(etq_info(msg_d_duracion_hive(vTblInt27,vle_duracion(ts_step_tbl,te_step_tbl))))
+        except Exception as e:       
+            exit(etq_error(msg_e_insert_hive(vTblInt27,str(e))))
     del df0
     print(etq_info("Eliminar dataframe [{}]".format('df0')))
     te_step = datetime.now()
