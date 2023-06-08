@@ -209,7 +209,7 @@ echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: ETAPA 2: Exportacion del archivo a ruta 
 
 #REALIZA LA TRANSFERENCIA DEL ARCHIVO CSV A RUTA FTP
 echo  "==== Inicia exportacion del archivo CSV del servidor: $vFTP_HOSTNAME_OUT a ruta: $vFTP_RUTA_OUT  ====" 2>&1 &>> $vLOG
-exportar $vFTP_NOM_ARCHIVO_FORMATO 2>&1 &>> $vLOG
+#exportar $vFTP_NOM_ARCHIVO_FORMATO 2>&1 &>> $vLOG
 exportar_sftp $vFTP_NOM_ARCHIVO_FORMATO 2>&1 &>> $vLOG
 
 #VALIDA EJECUCION DE LA TRANSFERENCIA DEL ARCHIVO CSV A RUTA FTP

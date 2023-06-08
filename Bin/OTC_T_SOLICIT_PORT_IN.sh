@@ -99,7 +99,7 @@ fi
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Parametros calculados de fechas  " 2>&1 &>> $VAL_LOG
 ###########################################################################################################################################################
 FECHA_EJECUCION=`date '+%Y%m01' -d "$VAL_FECHA_PROCESO"`
-VAL_F_INICIAL=$(date -d "$FECHA_EJECUCION -4 month" +%Y%m%d)
+VAL_F_INICIAL=$(date -d "$FECHA_EJECUCION -6 month" +%Y%m%d)
 JDBCURL1=jdbc:oracle:thin:@$TDHOST:$TDPORT/$TDDB
 #$TDDB
 
@@ -112,9 +112,19 @@ if  [ -z "$ETAPA" ] ||
   exit $error
 fi
 
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: FECHA_EJECUCION => " $FECHA_EJECUCION
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: VAL_F_INICIAL => " $VAL_F_INICIAL
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: JDBCURL1 => " $JDBCURL1
+
+MES_F=$(echo "$FECHA_EJECUCION" | cut -c 5-6)
+ANIO_F=$(echo "$FECHA_EJECUCION" | cut -c 3-4)
+FECHA_FIN="01${MES_F}${ANIO_F}"
+
+MES_I=$(echo "$VAL_F_INICIAL" | cut -c 5-6)
+ANIO_I=$(echo "$VAL_F_INICIAL" | cut -c 3-4)
+FECHA_INI="01${MES_I}${ANIO_I}"
+
+
+echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: FECHA_INI => " $FECHA_INI 2>&1 &>> $VAL_LOG
+echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: FECHA_FIN => " $FECHA_FIN 2>&1 &>> $VAL_LOG
+echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: JDBCURL1 => " $JDBCURL1 2>&1 &>> $VAL_LOG
 
 if [ "$ETAPA" = "1" ]; then
 ###########################################################################################################################################################
@@ -138,6 +148,8 @@ $RUTA_PYTHON/otc_t_solict_port_in.py \
 --vJdbcUrl=$JDBCURL1 \
 --vTDPass=$TDPASS \
 --vTDUser=$TDUSER \
+--vFIni=$FECHA_INI \
+--vFFin=$FECHA_FIN \
 --vTDClass=$TDCLASS 2>&1 &>> $VAL_LOG
 
 	# Validamos el LOG de la ejecucion, si encontramos errores finalizamos con error >0
