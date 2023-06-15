@@ -117,7 +117,7 @@ try:
     spark = SparkSession\
         .builder\
         .enableHiveSupport() \
-        .config("spark.yarn.queue", "default") \
+        .config("spark.yarn.queue", "desarrollo") \
         .config("spark.sql.broadcastTimeout", "36000") \
         .config("hive.exec.dynamic.partition", "true") \
         .config("hive.exec.dynamic.partition.mode", "nonstrict") \

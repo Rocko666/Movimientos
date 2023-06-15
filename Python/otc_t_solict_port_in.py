@@ -81,7 +81,7 @@ spark = SparkSession. \
     .config("spark.sql.broadcastTimeout", "36000") \
     .config("hive.exec.dynamic.partition", "true") \
     .config("hive.exec.dynamic.partition.mode", "nonstrict") \
-    .config("spark.yarn.queue", "default") \
+    .config("spark.yarn.queue", "desarrollo") \
     .getOrCreate()
 spark.sparkContext.setLogLevel("ERROR")
 sc = spark.sparkContext
