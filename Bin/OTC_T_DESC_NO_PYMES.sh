@@ -103,25 +103,18 @@ ETAPA=2
 #HACE EL LLAMADO AL PYTHON QUE REALIZA LA CONVERSION DEL ARCHIVO  XLSX a tabla en Hive
 if [ "$ETAPA" = "2" ]; then
 echo "==== Hace el llamado al python que realiza la conversion del archivo xlsx a tabla en Hive ====" 2>&1 &>> $VAL_LOG
-$vRUTA_SPARK \ 
---jars /opt/cloudera/parcels/CDH/jars/hive-warehouse-connector-assembly-*.jar \
---conf spark.sql.extensions=com.hortonworks.spark.sql.rule.Extensions \
---conf spark.security.credentials.hiveserver2.enabled=false \
---conf spark.sql.hive.hwc.execution.mode=spark \
---conf spark.datasource.hive.warehouse.read.via.llap=false \
---conf spark.datasource.hive.warehouse.load.staging.dir=/tmp \
---conf spark.datasource.hive.warehouse.read.jdbc.mode=cluster \
---conf spark.datasource.hive.warehouse.user.name="rgenerator" \
+$vRUTA_SPARK \
+--conf spark.ui.enabled=false \
+--conf spark.shuffle.service.enabled=true \
+--conf spark.dynamicAllocation.enabled=false \
 --conf spark.port.maxRetries=100 \
---py-files /opt/cloudera/parcels/CDH/lib/hive_warehouse_connector/pyspark_hwc-1.0.0.7.1.7.1000-141.zip \
---conf spark.sql.hive.hiveserver2.jdbc.url="jdbc:hive2://quisrvbigdata1.otecel.com.ec:2181,quisrvbigdata2.otecel.com.ec:2181,quisrvbigdata10.otecel.com.ec:2181,quisrvbigdata11.otecel.com.ec:2181/default;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2" \
 --name $ENTIDAD \
 --master $vMASTER \
 --driver-memory $vDRIVER_MEMORY \
 --executor-memory $vEXECUTOR_MEMORY \
 --num-executors $vNUM_EXECUTORS \
---executor-cores $vNUM_EXECUTORS_CORES \ 
-${VAL_RUTA}/Python/otc_t_desc_no_pymes.py \
+--executor-cores $vNUM_EXECUTORS_CORES \
+$VAL_RUTA/Python/otc_t_desc_no_pymes.py \
 --rutain=${VAL_RUTA}/Input/$VAL_FTP_NOM_ARCHIVO \
 --tablaout=$VAL_DIR_HDFS_CAT \
 --tipo=overwrite 2>&1 &>> $VAL_LOG
