@@ -302,7 +302,7 @@ except Exception as e:
     exit(etq_error(msg_e_ejecucion(vStp,str(e))))
 
 print(lne_dvs())
-VStp='Paso [3.06]: Insertado en comisiones  BIGD-677-para incluir movimientos [no recliclable]'
+VStp='Paso [3.06]: Insertado en comisiones  BIGD-60-para incluir movimientos [no recliclable]'
 try:
     ts_step = datetime.now()
     print(etq_info(VStp))
