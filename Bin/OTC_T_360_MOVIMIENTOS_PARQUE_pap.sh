@@ -26,31 +26,31 @@ VAL_KINIT=`mysql -N  <<<"select valor from params where ENTIDAD = 'SPARK_GENERIC
 $VAL_KINIT
 
 ###########################################################################################################################################################
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Parametros definidos en la tabla params_des" 
+echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Parametros definidos en la tabla params" 
 ###########################################################################################################################################################
-SHELL=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'SHELL';"`
-VAL_RUTA=`mysql -N <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'RUTA';"` 
-VAL_RUTA_LOG=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'RUTA_LOG';"`
-RUTA_PYTHON=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'RUTA_PYTHON';"` 
-VAL_ESQUEMA_TMP=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ESQUEMA_TMP';"`      
-VAL_ESQUEMA_REP=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ESQUEMA_REP';"`       
-vTAltBajHist=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTAltBajHist';"` 
-vTAltBI=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTAltBI';"` 
-vTBajBI=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTBajBI';"` 
-vTTransfHist=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTTransfHist';"` 
-vTTrInBI=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTTrInBI';"` 
-vTTrOutBI=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTTrOutBI';"` 
-vTCPHist=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTCPHist';"` 
-vTCPBI=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTCPBI';"` 
-vTNRCSA=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTNRCSA';"` 
-vTCatPosUsr=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTCatPosUsr';"` 
-vTCatPreUsr=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTCatPreUsr';"` 
-vTPivotParq=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTPivotParq';"` 
-VAL_ETP01_MASTER=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ETP01_MASTER';"`
-VAL_ETP01_DRIVER_MEMORY=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ETP01_DRIVER_MEMORY';"`
-VAL_ETP01_EXECUTOR_MEMORY=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ETP01_EXECUTOR_MEMORY';"`
-VAL_ETP01_NUM_EXECUTORS=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ETP01_NUM_EXECUTORS';"`
-VAL_ETP01_NUM_EXECUTORS_CORES=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ETP01_NUM_EXECUTORS_CORES';"`
+SHELL=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'SHELL';"`
+VAL_RUTA=`mysql -N <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'RUTA';"` 
+VAL_RUTA_LOG=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'RUTA_LOG';"`
+RUTA_PYTHON=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'RUTA_PYTHON';"` 
+VAL_ESQUEMA_TMP=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ESQUEMA_TMP';"`      
+VAL_ESQUEMA_REP=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ESQUEMA_REP';"`       
+vTAltBajHist=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTAltBajHist';"` 
+vTAltBI=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTAltBI';"` 
+vTBajBI=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTBajBI';"` 
+vTTransfHist=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTTransfHist';"` 
+vTTrInBI=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTTrInBI';"` 
+vTTrOutBI=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTTrOutBI';"` 
+vTCPHist=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTCPHist';"` 
+vTCPBI=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTCPBI';"` 
+vTNRCSA=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTNRCSA';"` 
+vTCatPosUsr=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTCatPosUsr';"` 
+vTCatPreUsr=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTCatPreUsr';"` 
+vTPivotParq=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vTPivotParq';"` 
+VAL_ETP01_MASTER=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ETP01_MASTER';"`
+VAL_ETP01_DRIVER_MEMORY=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ETP01_DRIVER_MEMORY';"`
+VAL_ETP01_EXECUTOR_MEMORY=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ETP01_EXECUTOR_MEMORY';"`
+VAL_ETP01_NUM_EXECUTORS=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ETP01_NUM_EXECUTORS';"`
+VAL_ETP01_NUM_EXECUTORS_CORES=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ETP01_NUM_EXECUTORS_CORES';"`
 
 ################### VARIABLES DEL SPARK GENERICO
 VAL_RUTA_SPARK=`mysql -N  <<<"select valor from params where ENTIDAD = '"$SPARK_GENERICO"' AND parametro = 'VAL_RUTA_SPARK';"`
@@ -65,7 +65,7 @@ FECHAEJE=$1
 ###########################################################################################################################################################
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Validacion de parametros iniciales, nulos y existencia de Rutas " 2>&1 &>> $VAL_LOG_EJECUCION
 ###########################################################################################################################################################
-if  [ -z "$FECHAEJE" ] || 
+if [ -z "$FECHAEJE" ] || 
 	[ -z "$ENTIDAD" ] ||
 	[ -z "$VAL_HORA" ] ||  
 	[ -z "$SHELL" ] || 
@@ -82,9 +82,10 @@ if  [ -z "$FECHAEJE" ] ||
 	[ -z "$vTTrOutBI" ] ||
 	[ -z "$vTCPHist" ] ||
 	[ -z "$vTCPBI" ] ||
+	[ -z "$vTNRHist" ] ||
 	[ -z "$vTNRCSA" ] ||
+	[ -z "$vTABRHist" ] ||
 	[ -z "$vTCatPosUsr" ] ||
-	[ -z "$vTCatPreUsr" ] ||
 	[ -z "$vTPivotParq" ] ||
 	[ -z "$VAL_ETP01_MASTER" ] ||
 	[ -z "$VAL_ETP01_DRIVER_MEMORY" ] ||
@@ -126,7 +127,7 @@ else
 echo $f_inicio
 fi
 
-ETAPA=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'ETAPA';"`
+ETAPA=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'ETAPA';"`
 
 if [ -z "$ETAPA" ] || 
 	[ -z "$f_inicio" ] ||
@@ -189,9 +190,10 @@ $RUTA_PYTHON/otc_t_360_movimientos_parque.py \
 --vTTrOutBI=$vTTrOutBI \
 --vTCPHist=$vTCPHist \
 --vTCPBI=$vTCPBI \
+--vTNRHist=$vTNRHist \
 --vTNRCSA=$vTNRCSA \
+--vTABRHist=$vTABRHist \
 --vTCatPosUsr=$vTCatPosUsr \
---vTCatPreUsr=$vTCatPreUsr \
 --vTPivotParq=$vTPivotParq \
 --f_inicio=$f_inicio \
 --fecha_proceso=$fecha_proceso \
@@ -203,7 +205,7 @@ $RUTA_PYTHON/otc_t_360_movimientos_parque.py \
 --f_fin_abr=$f_fin_abr \
 --f_efectiva=$f_efectiva 2>&1 &>> $VAL_LOG_EJECUCION
 
-# Se valida el LOG de la ejecucion, si se encuentra errores se finaliza con error 
+	# Se valida el LOG de la ejecucion, si se encuentra errores se finaliza con error >0
 error_spark=`egrep 'An error occurred|Caused by:|ERROR: Creando df de query|NO EXISTE TABLA|cannot resolve|Non-ASCII character|UnicodeEncodeError:|can not accept object|pyspark.sql.utils.ParseException|AnalysisException:|NameError:|IndentationError:|Permission denied:|ValueError:|ERROR:|error:|unrecognized arguments:|No such file or directory|Failed to connect|Could not open client' $VAL_LOG_EJECUCION | wc -l`
 	if [ $error_spark -eq 0 ];then
 	echo "==== OK - La ejecucion del archivo spark otc_t_360_movimientos_parque.py es EXITOSO ===="`date '+%H%M%S'` 2>&1 &>> $VAL_LOG_EJECUCION
