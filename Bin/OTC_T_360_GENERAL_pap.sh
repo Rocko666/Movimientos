@@ -31,7 +31,7 @@ echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Validar parametros iniciales y de entrad
 ###################################################################################################################
 ENTIDAD=OTC_T_360_GENERAL
 FECHAEJE=$1
-PASO=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'PASO';"`
+PASO=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'PASO';"`
 
 if  [ -z "$FECHAEJE" ] ||
 	[ -z "$ENTIDAD" ] ||
@@ -44,7 +44,7 @@ fi
 # VALIDAR PARAMETRO VAL_LOG
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Validar parametro del file LOG"
 ###################################################################################################################
-RUTA_LOG=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'RUTA_LOG';"`
+RUTA_LOG=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'RUTA_LOG';"`
 VAL_DIA=`date '+%Y%m%d'` 
 VAL_HORA=`date '+%H%M%S'`
 VAL_LOG=$RUTA_LOG/$ENTIDAD$FECHAEJE_$VAL_DIA"_"$VAL_HORA.log
@@ -67,32 +67,32 @@ if [ -z "$VAL_RUTA_SPARK" ] ; then
 fi
 
 ###################################################################################################################
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Obtener y validar parametros definidos en la tabla params_des..." 2>&1 &>> $VAL_LOG
+echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Obtener y validar parametros definidos en la tabla params..." 2>&1 &>> $VAL_LOG
 ###################################################################################################################
-RUTA=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'RUTA';"`
-HIVEDB=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'HIVEDB';"`
-HIVETABLE=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'HIVETABLE';"`
-ESQUEMA_TEMP=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'ESQUEMA_TEMP';"`
-ESQUEMA_TEMP_READ=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'ESQUEMA_TEMP_READ';"`
-VAL_PATH_QUERY=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'PATH_QUERY';"`
-VAL_PATH_CONF=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'PATH_CONF';"`
-VAL_QUEUE=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'QUEUE';"`
-PESOS_PARAMETROS=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' and (parametro = 'PESOS_PARAMETROS' );"`
-PESOS_NSE=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' and (parametro = 'PESOS_NSE' );"`
-TOPE_RECARGAS=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' and (parametro = 'TOPE_RECARGAS' );"`
-TOPE_TARIFA_BASICA=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' and (parametro = 'TOPE_TARIFA_BASICA' );"`
-ESQUEMA_TABLA=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' and (parametro = 'ESQUEMA_TABLA' );"`
-ESQUEMA_TABLA_1=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' and (parametro = 'ESQUEMA_TABLA_1' );"`
-ESQUEMA_TABLA_2=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' and (parametro = 'ESQUEMA_TABLA_2' );"`
-ESQUEMA_TABLA_3=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' and (parametro = 'ESQUEMA_TABLA_3' );"`
-VAL_TIPO_CARGA=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'TIPO_CARGA';"`
-VAL_RUTA_PYTHON=`mysql -N  <<<"select valor from params_des where entidad = '"$ENTIDAD"' AND parametro = 'RUTA_PYTHON';"` 
-VAL_FILE_PYTHON=`mysql -N  <<<"select valor from params_des where entidad = '"$ENTIDAD"' AND parametro = 'FILE_PYTHON';"`
-VAL_MASTER=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_MASTER';"`
-VAL_DRIVER_MEMORY=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_DRIVER_MEMORY';"`
-VAL_EXECUTOR_MEMORY=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_EXECUTOR_MEMORY';"`
-VAL_NUM_EXECUTORS=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_NUM_EXECUTORS';"`
-VAL_NUM_EXECUTORS_CORES=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_NUM_EXECUTORS_CORES';"`
+RUTA=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'RUTA';"`
+HIVEDB=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'HIVEDB';"`
+HIVETABLE=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'HIVETABLE';"`
+ESQUEMA_TEMP=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'ESQUEMA_TEMP';"`
+ESQUEMA_TEMP_READ=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'ESQUEMA_TEMP_READ';"`
+VAL_PATH_QUERY=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'PATH_QUERY';"`
+VAL_PATH_CONF=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'PATH_CONF';"`
+VAL_QUEUE=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'QUEUE';"`
+PESOS_PARAMETROS=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' and (parametro = 'PESOS_PARAMETROS' );"`
+PESOS_NSE=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' and (parametro = 'PESOS_NSE' );"`
+TOPE_RECARGAS=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' and (parametro = 'TOPE_RECARGAS' );"`
+TOPE_TARIFA_BASICA=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' and (parametro = 'TOPE_TARIFA_BASICA' );"`
+ESQUEMA_TABLA=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' and (parametro = 'ESQUEMA_TABLA' );"`
+ESQUEMA_TABLA_1=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' and (parametro = 'ESQUEMA_TABLA_1' );"`
+ESQUEMA_TABLA_2=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' and (parametro = 'ESQUEMA_TABLA_2' );"`
+ESQUEMA_TABLA_3=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' and (parametro = 'ESQUEMA_TABLA_3' );"`
+VAL_TIPO_CARGA=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'TIPO_CARGA';"`
+VAL_RUTA_PYTHON=`mysql -N  <<<"select valor from params where entidad = '"$ENTIDAD"' AND parametro = 'RUTA_PYTHON';"` 
+VAL_FILE_PYTHON=`mysql -N  <<<"select valor from params where entidad = '"$ENTIDAD"' AND parametro = 'FILE_PYTHON';"`
+VAL_MASTER=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_MASTER';"`
+VAL_DRIVER_MEMORY=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_DRIVER_MEMORY';"`
+VAL_EXECUTOR_MEMORY=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_EXECUTOR_MEMORY';"`
+VAL_NUM_EXECUTORS=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_NUM_EXECUTORS';"`
+VAL_NUM_EXECUTORS_CORES=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_NUM_EXECUTORS_CORES';"`
 
 if  [ -z "$HIVEDB" ] ||
 	[ -z "$RUTA" ] ||
@@ -118,7 +118,7 @@ if  [ -z "$HIVEDB" ] ||
 	[ -z "$ESQUEMA_TABLA_1" ] ||
 	[ -z "$ESQUEMA_TABLA_2" ] ||
 	[ -z "$ESQUEMA_TABLA_3" ] ; then
-	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: Uno de los parametros de la tabla params_des es nulo o vacio" 2>&1 &>> $VAL_LOG
+	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: Uno de los parametros de la tabla params es nulo o vacio" 2>&1 &>> $VAL_LOG
 	exit 1
 fi
 

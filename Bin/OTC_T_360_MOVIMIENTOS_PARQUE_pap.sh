@@ -65,7 +65,7 @@ FECHAEJE=$1
 ###########################################################################################################################################################
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Validacion de parametros iniciales, nulos y existencia de Rutas " 2>&1 &>> $VAL_LOG_EJECUCION
 ###########################################################################################################################################################
-if [ -z "$FECHAEJE" ] || 
+if  [ -z "$FECHAEJE" ] || 
 	[ -z "$ENTIDAD" ] ||
 	[ -z "$VAL_HORA" ] ||  
 	[ -z "$SHELL" ] || 
@@ -82,10 +82,9 @@ if [ -z "$FECHAEJE" ] ||
 	[ -z "$vTTrOutBI" ] ||
 	[ -z "$vTCPHist" ] ||
 	[ -z "$vTCPBI" ] ||
-	[ -z "$vTNRHist" ] ||
 	[ -z "$vTNRCSA" ] ||
-	[ -z "$vTABRHist" ] ||
 	[ -z "$vTCatPosUsr" ] ||
+	[ -z "$vTCatPreUsr" ] ||
 	[ -z "$vTPivotParq" ] ||
 	[ -z "$VAL_ETP01_MASTER" ] ||
 	[ -z "$VAL_ETP01_DRIVER_MEMORY" ] ||
@@ -94,9 +93,9 @@ if [ -z "$FECHAEJE" ] ||
 	[ -z "$VAL_ETP01_NUM_EXECUTORS_CORES" ] ||
 	[ -z "$VAL_RUTA_SPARK" ] ||
 	[ -z "$VAL_LOG_EJECUCION" ] ; then
-  echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: $TIME [ERROR] $rc unos de los parametros esta vacio o es nulo" 2>&1 &>> $VAL_LOG_EJECUCION
-  error=1
-  exit $error
+	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: $TIME [ERROR] $rc unos de los parametros esta vacio o es nulo" 2>&1 &>> $VAL_LOG_EJECUCION
+	error=1
+	exit $error
 fi
 ###########################################################################################################################################################
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Parametros calculados de fechas  " 2>&1 &>> $VAL_LOG_EJECUCION
@@ -129,7 +128,7 @@ fi
 
 ETAPA=`mysql -N  <<<"select valor from params where ENTIDAD = '"$ENTIDAD"' AND parametro = 'ETAPA';"`
 
-if [ -z "$ETAPA" ] || 
+if  [ -z "$ETAPA" ] || 
 	[ -z "$f_inicio" ] ||
 	[ -z "$fecha_proceso" ] ||
 	[ -z "$fecha_movimientos" ] || 
@@ -139,9 +138,9 @@ if [ -z "$ETAPA" ] ||
 	[ -z "$f_inicio_abr" ] || 
 	[ -z "$f_fin_abr" ] || 
 	[ -z "$f_efectiva" ] ; then
-  echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: $TIME [ERROR] $rc unos de los parametros calculados esta vacio o es nulo" 2>&1 &>> $VAL_LOG_EJECUCION
-  error=1
-  exit $error
+	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: $TIME [ERROR] $rc unos de los parametros calculados esta vacio o es nulo" 2>&1 &>> $VAL_LOG_EJECUCION
+	error=1
+	exit $error
 fi
 
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: f_inicio => " $f_inicio
@@ -190,10 +189,9 @@ $RUTA_PYTHON/otc_t_360_movimientos_parque.py \
 --vTTrOutBI=$vTTrOutBI \
 --vTCPHist=$vTCPHist \
 --vTCPBI=$vTCPBI \
---vTNRHist=$vTNRHist \
 --vTNRCSA=$vTNRCSA \
---vTABRHist=$vTABRHist \
 --vTCatPosUsr=$vTCatPosUsr \
+--vTCatPreUsr=$vTCatPreUsr \
 --vTPivotParq=$vTPivotParq \
 --f_inicio=$f_inicio \
 --fecha_proceso=$fecha_proceso \

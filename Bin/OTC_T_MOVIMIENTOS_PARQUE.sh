@@ -93,9 +93,9 @@ if  [ -z "$FECHAEJE" ] ||
 	[ -z "$VAL_ETP01_NUM_EXECUTORS_CORES" ] ||
 	[ -z "$VAL_RUTA_SPARK" ] ||
 	[ -z "$VAL_LOG_EJECUCION" ] ; then
-  echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: $TIME [ERROR] $rc unos de los parametros esta vacio o es nulo" 2>&1 &>> $VAL_LOG_EJECUCION
-  error=1
-  exit $error
+	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: $TIME [ERROR] $rc unos de los parametros esta vacio o es nulo" 2>&1 &>> $VAL_LOG_EJECUCION
+	error=1
+	exit $error
 fi
 ###########################################################################################################################################################
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Parametros calculados de fechas  " 2>&1 &>> $VAL_LOG_EJECUCION
@@ -128,7 +128,7 @@ fi
 
 ETAPA=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'ETAPA';"`
 
-if [ -z "$ETAPA" ] || 
+if  [ -z "$ETAPA" ] || 
 	[ -z "$f_inicio" ] ||
 	[ -z "$fecha_proceso" ] ||
 	[ -z "$fecha_movimientos" ] || 
@@ -138,9 +138,9 @@ if [ -z "$ETAPA" ] ||
 	[ -z "$f_inicio_abr" ] || 
 	[ -z "$f_fin_abr" ] || 
 	[ -z "$f_efectiva" ] ; then
-  echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: $TIME [ERROR] $rc unos de los parametros calculados esta vacio o es nulo" 2>&1 &>> $VAL_LOG_EJECUCION
-  error=1
-  exit $error
+	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: $TIME [ERROR] $rc unos de los parametros calculados esta vacio o es nulo" 2>&1 &>> $VAL_LOG_EJECUCION
+	error=1
+	exit $error
 fi
 
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: f_inicio => " $f_inicio
@@ -203,7 +203,7 @@ $RUTA_PYTHON/otc_t_360_movimientos_parque.py \
 --f_fin_abr=$f_fin_abr \
 --f_efectiva=$f_efectiva 2>&1 &>> $VAL_LOG_EJECUCION
 
-# Se valida el LOG de la ejecucion, si se encuentra errores se finaliza con error 
+	# Se valida el LOG de la ejecucion, si se encuentra errores se finaliza con error >0
 error_spark=`egrep 'An error occurred|Caused by:|ERROR: Creando df de query|NO EXISTE TABLA|cannot resolve|Non-ASCII character|UnicodeEncodeError:|can not accept object|pyspark.sql.utils.ParseException|AnalysisException:|NameError:|IndentationError:|Permission denied:|ValueError:|ERROR:|error:|unrecognized arguments:|No such file or directory|Failed to connect|Could not open client' $VAL_LOG_EJECUCION | wc -l`
 	if [ $error_spark -eq 0 ];then
 	echo "==== OK - La ejecucion del archivo spark otc_t_360_movimientos_parque.py es EXITOSO ===="`date '+%H%M%S'` 2>&1 &>> $VAL_LOG_EJECUCION

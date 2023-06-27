@@ -33,7 +33,7 @@ set -e
 # sh -x /home/nae105215/RAW/TUENTI/OTC_T_TUENTI_MSISDN_BY_ACCOUNT/bin/OTC_T_TUENTI_MSISDN_BY_ACCOUNT.sh 20230604 && sh -x /home/nae105215/RAW/TUENTI/OTC_T_TUENTI_ACCOUNT/bin/OTC_T_TUENTI_ACCOUNT.sh 20230604 && sh -x /home/nae105215/ALTAS_APP_TUENTI/bin/OTC_T_ALTAS_APP_TUENTI.sh 20230604 
 
 
-## sh -x /home/nae108834/Movimientos/Bin/OTC_T_360_PIVOT_PARQUE.sh 20230531  && sh -x /home/nae108834/Movimientos/Bin/OTC_T_DESC_NO_PYMES.sh && sh -x /home/nae108834/Movimientos/Bin/OTC_T_CTL_PRE_USR_NC.sh && sh -x  /home/nae108834/Movimientos/Bin/OTC_T_SOLICIT_PORT_IN.sh 20230601 && sh -x /home/nae108834/Movimientos/Bin/OTC_T_COMBO_INICIAL.sh && sh -x /home/nae108834/Movimientos/Bin/OTC_T_AJUSTES_MOVIMIENTOS.sh && sh -x /home/nae108834/Movimientos/Bin/OTC_T_MOVIMIENTOS_PARQUE.sh 20230531 && sh -x /home/nae108834/Movimientos/Bin/OTC_T_360_GENERAL.sh 20230531 && sh -x /home/nae108834/Movimientos/Bin/OTC_T_EXT_MOVIMIENTOS.sh 20230531
+## sh -x /home/nae108834/Movimientos/Bin/OTC_T_360_PIVOT_PARQUE.sh 20230531  && sh -x /home/nae108834/Movimientos/Bin/OTC_T_DESC_NO_PYMES.sh && sh -x  /home/nae108834/Movimientos/Bin/OTC_T_SOLICIT_PORT_IN.sh 20230601 && sh -x /home/nae108834/Movimientos/Bin/OTC_T_COMBO_INICIAL.sh && sh -x /home/nae108834/Movimientos/Bin/OTC_T_AJUSTES_MOVIMIENTOS.sh && sh -x /home/nae108834/Movimientos/Bin/OTC_T_MOVIMIENTOS_PARQUE.sh 20230531 && sh -x /home/nae108834/Movimientos/Bin/OTC_T_360_GENERAL.sh 20230531 && sh -x /home/nae108834/Movimientos/Bin/OTC_T_EXT_MOVIMIENTOS.sh 20230531
 
 
 
