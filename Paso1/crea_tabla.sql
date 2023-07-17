@@ -1,144 +1,131 @@
--- DESARROLLO
-DROP TABLE IF EXISTS db_desarrollo2021.otc_t_rtd_oferta_sugerida;
-CREATE TABLE `db_desarrollo2021.otc_t_rtd_oferta_sugerida`(
-  `abonado_cd` string, 
-  `numero_telefono` string, 
-  `linea_negocio` string, 
-  `app` decimal(1,0), 
-  `flag_lista_blanca` decimal(1,0), 
-  `grupo_prepago` string, 
-  `scoring` decimal(1,0), 
-  `bancarizado` decimal(1,0), 
-  `datos` decimal(1,0), 
-  `combero` decimal(1,0), 
-  `ultimo_combo` string, 
-  `ticket_promedio` decimal(5,2), 
-  `limite_credito` decimal(5,2), 
-  `es_smartphone` string, 
-  `ultimo_combo_ub` string, 
-  `tipo_consumidor` string,
-  `movimiento` string,
-  `oferta_sugerida` string, 
-  `beneficio` string, 
-  `fecha_inicio_benef` date, 
-  `fecha_fin_benef` date,
-  `duracion_oferta` int,
-  `script_oferta` string,
-  `cod_activacion_beneficio` string,
-  `gatillador_beneficio_os` string,
-  `saldo` decimal(5,2),
-  `valor_oferta` int,
-  `duracion_dias` string,
-  `duracion_beneficio` string,
-  `combo_complemento` string
-  )COMMENT 'Tabla particionada con informacion diaria de oferta sugerida'
-PARTITIONED BY ( 
-fecha_proceso bigint COMMENT 'Fecha de proceso que corresponde a la particion') 
-CLUSTERED BY ( 
-  numero_telefono) 
-INTO 1 BUCKETS
-STORED as ORC tblproperties ('orc.compress' = 'SNAPPY');
+--AGREGA NUEVOS CAMPOS A TABLA DESTINO otc_t_360_general
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (id_tipo_movimiento int);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (tipo_movimiento varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (id_subcanal int);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (id_producto string);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (sub_movimiento varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (tecnologia char(2));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (dias_transcurridos_baja int);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (dias_en_parque int);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (dias_en_parque_prepago int);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (tipo_descuento_conadis varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (tipo_descuento varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (ciudad varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (provincia_activacion varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (cod_categoria varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (cod_da varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (nom_usuario varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (provincia_ivr varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (provincia_ms varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (fecha_alta_pospago_historica date);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (vol_invol varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (account_num_anterior varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (imei char(14));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (equipo varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (icc char(19));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (domain_login_ow varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (nombre_usuario_ow varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (domain_login_sub varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (nombre_usuario_sub varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (forma_pago varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (id_canal int);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (campania varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (codigo_distribuidor_movimiento_mes varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (codigo_plaza varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (nom_plaza_movimiento_mes varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (region varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (ruc_distribuidor varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (ejecutivo_asignado_ptr varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (area_ptr varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (codigo_vendedor_da_ptr varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (jefatura_ptr varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (codigo_usuario char(9));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (descripcion_desp STRING);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (calf_riesgo char(1));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (cap_endeu char(1));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (valor_cred int);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (ciudad_usuario varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (provincia_usuario varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (linea_de_negocio_anterior varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (cliente_anterior char(15));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (dias_reciclaje int);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (fecha_baja_reciclada date);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (tarifa_basica_anterior float);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (fecha_inicio_plan_anterior date);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (tarifa_final_plan_act float);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (tarifa_final_plan_ant float);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (mismo_cliente char(2));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (tipo_de_cuenta_en_operador_donante varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (fecha_alta_prepago date);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (tarifa_basica_baja float);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (canal_transacc varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (distribuidor_crm varchar(110));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (descuento_tarifa_plan_act double);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (tarifa_plan_actual_ov double);
 
--- PRODUCCION
-DROP TABLE IF EXISTS db_reportes.otc_t_rtd_oferta_sugerida;
-CREATE TABLE db_reportes.otc_t_rtd_oferta_sugerida(
-  abonado_cd string, 
-  numero_telefono string, 
-  linea_negocio string, 
-  app decimal(1,0), 
-  flag_lista_blanca decimal(1,0), 
-  grupo_prepago string, 
-  scoring decimal(1,0), 
-  bancarizado decimal(1,0), 
-  datos decimal(1,0), 
-  combero decimal(1,0), 
-  ultimo_combo string, 
-  ticket_promedio decimal(5,2), 
-  limite_credito decimal(5,2), 
-  es_smartphone string, 
-  ultimo_combo_ub string, 
-  tipo_consumidor string,
-  movimiento string,
-  oferta_sugerida string, 
-  beneficio string, 
-  fecha_inicio_benef date, 
-  fecha_fin_benef date,
-  duracion_oferta int,
-  script_oferta string,
-  cod_activacion_beneficio string,
-  gatillador_beneficio_os string,
-  saldo decimal(5,2),
-  valor_oferta int,
-  duracion_dias string,
-  duracion_beneficio string,
-  combo_complemento string
-  )COMMENT 'Tabla particionada con informacion diaria de oferta sugerida'
-PARTITIONED BY ( 
-fecha_proceso bigint COMMENT 'Fecha de proceso que corresponde a la particion') 
-CLUSTERED BY ( 
-  numero_telefono) 
-INTO 1 BUCKETS
-STORED as ORC tblproperties ('transactional'='false','orc.compress' = 'SNAPPY');
-
-
-
----MOVIMIENTOS PARQUE
-
-----db_reportes.otc_t_alta_baja_hist
-drop table if exists db_desarrollo2021.otc_t_alta_baja_hist_cloudera;
-CREATE TABLE db_desarrollo2021.otc_t_alta_baja_hist_cloudera(
---drop table if exist db_reportes.otc_t_alta_baja_hist;
---CREATE TABLE db_reportes.otc_t_alta_baja_hist(
-  `tipo` varchar(20), 
-  `telefono` varchar(9), 
-  `fecha` date, 
-  `canal` varchar(50), 
-  `sub_canal` varchar(50), 
-  `nuevo_sub_canal` varchar(50), 
-  `portabilidad` varchar(10), 
-  `operadora_origen` varchar(20), 
-  `operadora_destino` varchar(20), 
-  `motivo` varchar(50), 
-  `distribuidor` varchar(50), 
-  `oficina` varchar(50))
---STORED AS PARQUET TBLPROPERTIES ("transactional"="false",'parquet.compression' = 'SNAPPY');
-STORED AS ORC TBLPROPERTIES ("transactional"="true");
-
-----db_reportes.otc_t_transfer_hist
-CREATE TABLE db_desarrollo2021.otc_t_transfer_hist_cloudera(
---CREATE TABLE db_reportes.otc_t_transfer_hist(
-  `tipo` varchar(20), 
-  `telefono` varchar(9), 
-  `fecha` date, 
-  `canal` varchar(50), 
-  `sub_canal` varchar(50), 
-  `nuevo_sub_canal` varchar(50), 
-  `distribuidor` varchar(50), 
-  `oficina` varchar(50))
-CLUSTERED BY (telefono) INTO 4 BUCKETS
-STORED AS ORC TBLPROPERTIES ("transactional"="true");
-
-----db_reportes.otc_t_cambio_plan_hist
-CREATE TABLE db_desarrollo2021.otc_t_cambio_plan_hist_cloudera(
---CREATE TABLE db_reportes.otc_t_cambio_plan_hist(
-  `tipo` varchar(20), 
-  `telefono` varchar(9), 
-  `fecha` date, 
-  `canal` varchar(50), 
-  `sub_canal` varchar(50), 
-  `nuevo_sub_canal` varchar(50), 
-  `distribuidor` varchar(50), 
-  `oficina` varchar(50), 
-  `cod_plan_anterior` varchar(10), 
-  `des_plan_anterior` varchar(50), 
-  `tb_descuento` double, 
-  `tb_override` double, 
-  `delta` double)
-CLUSTERED BY (telefono) INTO 4 BUCKETS
-STORED AS ORC TBLPROPERTIES ("transactional"="true");
-
-----db_reportes.otc_t_cambio_plan_hist
+--AGREGA NUEVOS CAMPOS A TABLA DESTINO otc_t_alta_baja_hist
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (sub_movimiento varchar(50));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (imei char(14));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (equipo string);
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (icc char(19));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (ciudad varchar(110));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (provincia varchar(60));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (cod_categoria varchar(20));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (domain_login_ow varchar(110));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (nombre_usuario_ow varchar(110));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (domain_login_sub varchar(110));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (nombre_usuario_sub varchar(110));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (forma_pago varchar(50));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (cod_da string);
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (campania string);
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (region string);
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (provincia_ivr string);
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (provincia_ms string);
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (codigo_usuario char(9));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (calf_riesgo char(1));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (cap_endeu char(1));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (valor_cred int);
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (vol_invol string);
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (account_num bigint);
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (distribuidor_crm varchar(110));
+ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (canal_transacc varchar(110));
 
 
+--AGREGA NUEVOS CAMPOS A TABLA DESTINO otc_t_transfer_hist
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (sub_movimiento varchar(50));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (imei char(14));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (equipo string);
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (icc char(19));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (domain_login_ow varchar(110));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (nombre_usuario_ow varchar(110));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (domain_login_sub varchar(110));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (nombre_usuario_sub varchar(110));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (forma_pago varchar(50));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (canal_transacc varchar(50));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (campania string);
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (region string);
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (codigo_usuario char(9));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (calf_riesgo char(1));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (cap_endeu char(1));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (valor_cred int);
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (account_num_anterior varchar(30));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (ciudad_usuario varchar(40));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (provincia_usuario varchar(40));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (ciudad varchar(100));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (COD_PLAN_ANTERIOR varchar(20));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (DES_PLAN_ANTERIOR varchar(50));
+ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (distribuidor_crm varchar(128));
 
-
+--AGREGA NUEVOS CAMPOS A TABLA DESTINO otc_t_cambio_plan_hist
+ALTER TABLE db_reportes.otc_t_cambio_plan_hist ADD COLUMNS (sub_movimiento varchar(50));
+ALTER TABLE db_reportes.otc_t_cambio_plan_hist ADD COLUMNS (domain_login_ow varchar(100));
+ALTER TABLE db_reportes.otc_t_cambio_plan_hist ADD COLUMNS (nombre_usuario_ow varchar(100));
+ALTER TABLE db_reportes.otc_t_cambio_plan_hist ADD COLUMNS (domain_login_sub varchar(100));
+ALTER TABLE db_reportes.otc_t_cambio_plan_hist ADD COLUMNS (nombre_usuario_sub varchar(100));
+ALTER TABLE db_reportes.otc_t_cambio_plan_hist ADD COLUMNS (forma_pago varchar(100));
+ALTER TABLE db_reportes.otc_t_cambio_plan_hist ADD COLUMNS (campania varchar(80));
+ALTER TABLE db_reportes.otc_t_cambio_plan_hist ADD COLUMNS (region string);
+ALTER TABLE db_reportes.otc_t_cambio_plan_hist ADD COLUMNS (tarifa_basica_anterior double);
+ALTER TABLE db_reportes.otc_t_cambio_plan_hist ADD COLUMNS (fecha_inicio_plan_anterior date);
+ALTER TABLE db_reportes.otc_t_cambio_plan_hist ADD COLUMNS (tarifa_final_plan_ant double);
+ALTER TABLE db_reportes.otc_t_cambio_plan_hist ADD COLUMNS (provincia varchar(50));
