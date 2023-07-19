@@ -26,10 +26,6 @@ set -e
 # Fecha de modificacion:   2022/07/16                                    #
 ##########################################################################
 
-# sh -x /home/nae108834/cp_terminales_simcards/bin/OTC_T_TERMINALES_FACT.sh 20230704 && sh -x /home/nae108834/cp_terminales_simcards/bin/OTC_T_TERMINALES_NC.sh 20230704 && sh -x /home/nae108834/cp_terminales_simcards/bin/OTC_T_R_CBM_BILL.sh && sh -x /home/nae108834/cp_terminales_simcards/bin/OTC_T_R_AM_CPE.sh 20230704 &&  sh -x /home/nae108834/cp_terminales_simcards/bin/OTC_T_V_USUARIOS.sh && sh -x /home/nae108834/cp_terminales_simcards/bin/SH_TERMINALES_SIMCARDS.sh 20230704
-
-# sh -x /home/nae105215/RAW/USERDAS/OTC_T_V_BAJAS_SERVICIOS/bin/OTC_T_V_BAJAS_SERVICIOS.sh && sh -x /home/nae105215/RAW/USERDAS/OTC_T_V_DIGITALES_GANADAS/bin/OTC_T_V_DIGITALES_GANADAS.sh && sh -x /home/nae105215/RAW/USERDAS/OTC_T_V_TRADICIONALES_IMPLEMENTADAS/bin/OTC_T_V_TRADICIONALES_IMPLEMENTADAS.sh && sh -x /home/nae105215/RAW/USERDAS/OTC_T_V_TRADICIONALES_GANADAS/bin/OTC_T_V_TRADICIONALES_GANADAS.sh && sh -x /home/nae105215/RAW/USERDAS/OTC_T_V_DIGITALES_IMPLEMENTADAS/bin/OTC_T_V_DIGITALES_IMPLEMENTADAS.sh && sh -x /home/nae105215/EXT_CONECTIVIDAD/bin/OTC_T_EXT_CONECTIVIDAD.sh 20230705
-
 # sh -x /home/nae105215/RAW/TUENTI/OTC_T_TUENTI_MSISDN_BY_ACCOUNT/bin/OTC_T_TUENTI_MSISDN_BY_ACCOUNT.sh 20230704 && sh -x /home/nae105215/RAW/TUENTI/OTC_T_TUENTI_ACCOUNT/bin/OTC_T_TUENTI_ACCOUNT.sh 20230704 && sh -x /home/nae105215/ALTAS_APP_TUENTI/bin/OTC_T_ALTAS_APP_TUENTI.sh 20230704 
 
 
