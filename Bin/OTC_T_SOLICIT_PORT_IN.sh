@@ -131,9 +131,9 @@ if [ "$ETAPA" = "1" ]; then
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: ETAPA 1: Oracle Import " 2>&1 &>> $VAL_LOG
 ###########################################################################################################################################################
 $VAL_RUTA_SPARK \
---conf spark.ui.enabled=false \
+ 
 --conf spark.shuffle.service.enabled=true \
---conf spark.dynamicAllocation.enabled=false \
+
 --conf spark.port.maxRetries=100 \
 --name $ENTIDAD \
 --master $VAL_MASTER \

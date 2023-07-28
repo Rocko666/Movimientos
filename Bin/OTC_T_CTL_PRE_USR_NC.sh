@@ -92,9 +92,9 @@ ETAPA=2
 if [ "$ETAPA" = "2" ]; then
 echo "==== Hace el llamado al python que realiza la conversion del archivo xls a tabla en Hive ====" 2>&1 &>> $VAL_LOG
 $vRUTA_SPARK \
---conf spark.ui.enabled=false \
+ 
 --conf spark.shuffle.service.enabled=true \
---conf spark.dynamicAllocation.enabled=false \
+
 --conf spark.port.maxRetries=100 \
 --name $ENTIDAD \
 --master yarn \
