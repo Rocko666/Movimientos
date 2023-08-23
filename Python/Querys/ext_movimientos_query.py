@@ -72,7 +72,7 @@ SELECT	DISTINCT
 	, area_ptr
 	, codigo_vendedor_da_ptr
 	, jefatura_ptr
-	, 'email@protegido.com' AS nom_email
+	, a.email AS nom_email
 	, provincia_ms
 	, nvl(nvl(ajst.id_sub_canal,a.id_subcanal), -1) as id_sub_canal
 	, nvl(ajst.sub_canal,a.sub_canal_movimiento_mes) as sub_canal

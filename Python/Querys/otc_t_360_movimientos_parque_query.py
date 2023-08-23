@@ -68,7 +68,43 @@ WHERE p_FECHA_PROCESO = {fecha_movimientos_cp}
 AND marca = 'TELEFONICA'
 UNION ALL
     SELECT 
-	* 
+	tipo
+	,telefono
+	,fecha
+	,canal
+	,sub_canal
+	,nuevo_sub_canal
+	,portabilidad
+	,operadora_origen
+	,operadora_destino
+	,motivo
+	,distribuidor
+	,oficina
+	,sub_movimiento
+	,imei
+	,equipo
+	,icc
+	,ciudad
+	,provincia
+	,cod_categoria
+	,domain_login_ow
+	,nombre_usuario_ow
+	,domain_login_sub
+	,nombre_usuario_sub
+	,forma_pago
+	,cod_da
+	,campania
+	,region
+	,provincia_ivr
+	,provincia_ms
+	,codigo_usuario
+	,calf_riesgo
+	,cap_endeu
+	,valor_cred
+	,vol_invol
+	,account_num
+	,distribuidor_crm
+	,canal_transacc
 FROM {vTAltBajHist}
     WHERE TIPO = 'ALTA'
     AND (FECHA NOT BETWEEN '{f_inicio}' AND '{fecha_proceso}' OR FECHA IS NULL)
@@ -126,23 +162,131 @@ FROM {vTBajBI}
 	AND marca = 'TELEFONICA'
 UNION ALL
     SELECT 
-    *
+    tipo
+	,telefono
+	,fecha
+	,canal
+	,sub_canal
+	,nuevo_sub_canal
+	,portabilidad
+	,operadora_origen
+	,operadora_destino
+	,motivo
+	,distribuidor
+	,oficina
+	,sub_movimiento
+	,imei
+	,equipo
+	,icc
+	,ciudad
+	,provincia
+	,cod_categoria
+	,domain_login_ow
+	,nombre_usuario_ow
+	,domain_login_sub
+	,nombre_usuario_sub
+	,forma_pago
+	,cod_da
+	,campania
+	,region
+	,provincia_ivr
+	,provincia_ms
+	,codigo_usuario
+	,calf_riesgo
+	,cap_endeu
+	,valor_cred
+	,vol_invol
+	,account_num
+	,distribuidor_crm
+	,canal_transacc
 FROM {vTAltBajHist}
     WHERE TIPO in('BAJA','BJA')
     AND (FECHA NOT BETWEEN '{f_inicio}' AND '{fecha_proceso}' OR FECHA IS NULL)
     '''.format(vTAltBajHist=vTAltBajHist, vTBajBI=vTBajBI, fecha_movimientos_cp=fecha_movimientos_cp,f_inicio=f_inicio,fecha_proceso=fecha_proceso)
     return qry
 
-# Es necesario los siguientes SELEC * FROM ya que son inserts de las primeras tablas.
+# Inserts de las primeras tablas
 def qry_ovwrt_altas_bajas(vTAltBajHist,vTablaTmpAlta, vTablaTmpBaja):
     qry='''
     INSERT OVERWRITE TABLE {vTAltBajHist}
     SELECT 
-    *
+		tipo
+		,telefono
+		,fecha
+		,canal
+		,sub_canal
+		,nuevo_sub_canal
+		,portabilidad
+		,operadora_origen
+		,operadora_destino
+		,motivo
+		,distribuidor
+		,oficina
+		,sub_movimiento
+		,imei
+		,equipo
+		,icc
+		,ciudad
+		,provincia
+		,cod_categoria
+		,domain_login_ow
+		,nombre_usuario_ow
+		,domain_login_sub
+		,nombre_usuario_sub
+		,forma_pago
+		,cod_da
+		,campania
+		,region
+		,provincia_ivr
+		,provincia_ms
+		,codigo_usuario
+		,calf_riesgo
+		,cap_endeu
+		,valor_cred
+		,vol_invol
+		,account_num
+		,distribuidor_crm
+		,canal_transacc
     FROM {vTablaTmpAlta}
     UNION ALL
     SELECT
-    *
+		tipo
+		,telefono
+		,fecha
+		,canal
+		,sub_canal
+		,nuevo_sub_canal
+		,portabilidad
+		,operadora_origen
+		,operadora_destino
+		,motivo
+		,distribuidor
+		,oficina
+		,sub_movimiento
+		,imei
+		,equipo
+		,icc
+		,ciudad
+		,provincia
+		,cod_categoria
+		,domain_login_ow
+		,nombre_usuario_ow
+		,domain_login_sub
+		,nombre_usuario_sub
+		,forma_pago
+		,cod_da
+		,campania
+		,region
+		,provincia_ivr
+		,provincia_ms
+		,codigo_usuario
+		,calf_riesgo
+		,cap_endeu
+		,valor_cred
+		,vol_invol
+		,account_num
+		,distribuidor_crm
+		,canal_transacc
     FROM {vTablaTmpBaja}
     '''.format(vTAltBajHist=vTAltBajHist,vTablaTmpAlta=vTablaTmpAlta, vTablaTmpBaja=vTablaTmpBaja)
     return qry
@@ -492,7 +636,41 @@ SELECT
 FROM
 	(
 	SELECT
-		atm.*
+		atm.telefono
+		, atm.linea_negocio
+		, atm.account_num
+		, atm.fecha_alta
+		, atm.cliente
+		, atm.documento_cliente
+		, atm.nombre_plan
+		, atm.icc
+		, atm.fecha_baja
+		, atm.domain_login_ow
+		, atm.nombre_usuario_ow
+		, atm.domain_login_sub
+		, atm.nombre_usuario_sub
+		, atm.canal_transacc
+		, atm.distribuidor_crm
+		, atm.oficina
+		, atm.portabilidad
+		, atm.forma_pago
+		, atm.cod_da
+		, atm.nom_usuario
+		, atm.canal
+		, atm.campania
+		, atm.codigo_distribuidor
+		, atm.distribuidor
+		, atm.codigo_plaza
+		, atm.nom_plaza
+		, atm.region
+		, atm.sub_canal
+		, atm.operadora_origen
+		, atm.imei
+		, atm.equipo
+		, atm.codigo_usuario
+		, atm.calf_riesgo
+		, atm.cap_endeu
+		, atm.valor_cred
 		, ROW_NUMBER() OVER(PARTITION BY atm.telefono
 		, atm.fecha_alta
 		, atm.linea_negocio
@@ -557,7 +735,7 @@ SELECT
 	, xx.account_num
 	, xx.distribuidor_crm
 	, xx.canal_transacc
-	----------***********--------------
+	----------xxxxxxxxxxxxxxxxx--------------
 FROM
 	(
 	SELECT
@@ -599,7 +777,7 @@ FROM
 		, aa.account_num
 		, aa.distribuidor_crm
 		, aa.canal_transacc
-		-------***----------------
+		-------xxxxxxxx----------------
 		, ROW_NUMBER() OVER (PARTITION BY aa.TIPO
 		, aa.telefono
 	ORDER BY
@@ -657,7 +835,7 @@ SELECT
 	, xx.account_num
 	, xx.distribuidor_crm
 	, xx.canal_transacc
-	------***---------------------
+	------xxxxxxxx---------------------
 FROM
 	(
 	SELECT
@@ -1579,7 +1757,7 @@ FROM
 			{vTMP09}
 		WHERE
 			fecha_alta BETWEEN '{f_inicio}' AND '{fecha_proceso}'
-			-----------------------*************************-----------------
+			-----------------------xxxxxxxxxxxxxxxxxxx-----------------
 	UNION ALL
 		SELECT
 			tipo
@@ -1723,7 +1901,45 @@ WHERE
 def qry_otc_t_360_parque_1_mov_mes_tmp(vTMP18,vTMP19,vTMP20):
     qry='''
 SELECT
-	A.*
+	a.tipo
+	, a.telefono
+	, a.fecha_movimiento_mes
+	, a.canal_movimiento_mes
+	, a.sub_canal_movimiento_mes
+	, a.nuevo_sub_canal_movimiento_mes
+	, a.distribuidor_movimiento_mes
+	, a.oficina_movimiento_mes
+	, a.portabilidad_movimiento_mes
+	, a.operadora_origen_movimiento_mes
+	, a.operadora_destino_movimiento_mes
+	, a.motivo_movimiento_mes
+	, a.cod_plan_anterior_movimiento_mes
+	, a.des_plan_anterior_movimiento_mes
+	, a.tb_descuento_movimiento_mes
+	, a.tb_override_movimiento_mes
+	, a.delta_movimiento_mes
+	, a.sub_movimiento
+	, a.imei
+	, a.equipo
+	, a.icc
+	, a.domain_login_ow
+	, a.nombre_usuario_ow
+	, a.domain_login_sub
+	, a.nombre_usuario_sub
+	, a.forma_pago
+	, a.codigo_usuario
+	, a.calf_riesgo
+	, a.cap_endeu
+	, a.valor_cred
+	, a.ciudad_usuario
+	, a.provincia_usuario
+	, a.ciudad
+	, a.provincia_activacion
+	, a.distribuidor_crm
+	, a.canal_transacc
+	, a.cod_da
+	, a.campania_movimiento_mes
+	, a.region
 	, CASE WHEN a.sub_movimiento IN ('ALTA PREPAGO', 'ALTA PORTABILIDAD PREPAGO','TRANSFER OUT PREPAGO') 
 	THEN NVL(pre.canal,c.canal) ELSE C.CANAL END AS canal_comercial
 	, CASE WHEN a.sub_movimiento IN ('ALTA PREPAGO', 'ALTA PORTABILIDAD PREPAGO','TRANSFER OUT PREPAGO') 
