@@ -1262,13 +1262,10 @@ SELECT
 	, a.nuevo_sub_canal AS nuevo_sub_canal_alta
 	, a.distribuidor AS distribuidor_alta
 	, a.oficina AS oficina_alta
-	, nvl(a.portabilidad, abr.portabilidad) AS portabilidad
+	, a.portabilidad AS portabilidad
 	, a.operadora_origen
 	, a.operadora_destino
-	---nvl aniadido en REFACTORING, AL MOMENTO LA LINEA COMENTADA DE ABAJO 
-	--- SOLO TRAE NULLS Y VACIOS, CON ESTE CAMBIO SE INCLUYEN LOS DE BAJAS 
-	--,A.MOTIVO
-	, nvl(g.motivo, a.motivo) AS motivo
+	, a.MOTIVO AS motivo
 	, c.fecha AS fecha_pre_pos
 	, c.canal AS canal_pre_pos
 	, c.sub_canal AS sub_canal_pre_pos
@@ -1287,8 +1284,8 @@ SELECT
 	, e.nuevo_sub_canal AS nuevo_sub_canal_cambio_plan
 	, e.distribuidor AS distribuidor_cambio_plan
 	, e.oficina AS oficina_cambio_plan
-	, nvl(nvl(e.cod_plan_anterior, d.cod_plan_anterior), c.cod_plan_anterior) AS cod_plan_anterior
-	, nvl(nvl(e.des_plan_anterior, d.des_plan_anterior), c.des_plan_anterior) AS des_plan_anterior
+	, e.cod_plan_anterior as cod_plan_anterior
+	, e.des_plan_anterior as des_plan_anterior
 	, e.tb_descuento
 	, e.tb_override
 	, e.delta
@@ -1333,6 +1330,10 @@ SELECT
 	, (CASE
 		WHEN z.tipo_movimiento_mes = 'TRANSFER_IN' THEN 
 		npt.fecha_alta	END) AS fecha_alta_prepago
+	, abr.portabilidad AS portabilidad_cmsns
+	, g.motivo as motivo_cmsns
+	, nvl(d.cod_plan_anterior, c.cod_plan_anterior) AS cod_plan_anterior_cmsns
+	, nvl(d.des_plan_anterior, c.des_plan_anterior) AS des_plan_anterior_cmsns
 	--------------FIN REFACTORING-----------------
 	-----_______/\/\/\/\/\/\/\/\/\/\/\_____----
 FROM
@@ -1431,6 +1432,9 @@ SELECT
 	, cod_da
 	, campania as campania_movimiento_mes
 	, region 
+	--
+	, oficina_movimiento_mes_cmsns
+	, portabilidad_movimiento_mes_cmsns
 	-- FIN REFACTORING
 FROM
 	(
@@ -1475,6 +1479,9 @@ FROM
 		, cod_da
 		, campania
 		, region
+		--
+		, oficina_movimiento_mes_cmsns
+		, portabilidad_movimiento_mes_cmsns
 		, ROW_NUMBER() OVER (
                 PARTITION BY telefono
 	ORDER BY
@@ -1486,7 +1493,7 @@ FROM
 			tipo
 			, telefono
 			, fecha
-			, CAST(NULL AS STRING) AS canal
+			, canal
 			, sub_canal
 			, nuevo_sub_canal
 			, distribuidor
@@ -1523,6 +1530,9 @@ FROM
 			, CAST(NULL AS STRING) AS cod_da
 			, campania
 			, region
+			--
+			, CAST(NULL AS STRING) AS oficina_movimiento_mes_cmsns
+			, CAST(NULL AS STRING) AS portabilidad_movimiento_mes_cmsns
 		FROM
 			{vTMP14}
 		WHERE
@@ -1541,8 +1551,8 @@ FROM
 			, CAST(NULL AS STRING) AS operadora_origen
 			, CAST(NULL AS STRING) AS operadora_destino
 			, CAST(NULL AS STRING) AS motivo
-			, cod_plan_anterior
-			, des_plan_anterior
+			, CAST(NULL AS STRING) AS cod_plan_anterior
+			, CAST(NULL AS STRING) AS des_plan_anterior
 			, CAST(NULL AS DOUBLE) AS tb_descuento
 			, CAST(NULL AS DOUBLE) AS tb_override
 			, CAST(NULL AS DOUBLE) AS delta
@@ -1569,6 +1579,9 @@ FROM
 			, CAST(NULL AS STRING) AS cod_da
 			, campania
 			, region
+			--
+			, CAST(NULL AS STRING) AS oficina_movimiento_mes_cmsns
+			, CAST(NULL AS STRING) AS portabilidad_movimiento_mes_cmsns
 		FROM
 			{vTMP12}
 		WHERE
@@ -1587,8 +1600,8 @@ FROM
 			, CAST(NULL AS STRING) AS operadora_origen
 			, CAST(NULL AS STRING) AS operadora_destino
 			, CAST(NULL AS STRING) AS motivo
-			, cod_plan_anterior
-			, des_plan_anterior
+			, CAST(NULL AS STRING) AS cod_plan_anterior
+			, CAST(NULL AS STRING) AS des_plan_anterior
 			, CAST(NULL AS DOUBLE) AS tb_descuento
 			, CAST(NULL AS DOUBLE) AS tb_override
 			, CAST(NULL AS DOUBLE) AS delta
@@ -1615,6 +1628,9 @@ FROM
 			, CAST(NULL AS STRING) AS cod_da
 			, campania
 			, region
+			--
+			, CAST(NULL AS STRING) AS oficina_movimiento_mes_cmsns
+			, CAST(NULL AS STRING) AS portabilidad_movimiento_mes_cmsns
 		FROM
 			{vTMP13}
 		WHERE
@@ -1660,6 +1676,9 @@ FROM
 			, cod_da
 			, campania
 			, region
+			--
+			, CAST(NULL AS STRING) AS oficina_movimiento_mes_cmsns
+			, CAST(NULL AS STRING) AS portabilidad_movimiento_mes_cmsns
 		FROM
 			{vTMP11}
 		WHERE
@@ -1707,6 +1726,9 @@ FROM
 			, CAST(NULL AS STRING) AS cod_da
 			, campania
 			, region
+			--
+			, CAST(NULL AS STRING) AS oficina_movimiento_mes_cmsns
+			, CAST(NULL AS STRING) AS portabilidad_movimiento_mes_cmsns
 		FROM
 			{vTMP15}
 		WHERE
@@ -1716,13 +1738,13 @@ FROM
 			tipo
 			, telefono
 			, fecha_baja AS fecha
-			, canal
-			, sub_canal
+			, CAST(NULL AS STRING) AS canal
+			, CAST(NULL AS STRING) AS sub_canal
 			, CAST(NULL AS STRING) AS nuevo_sub_canal
-			, distribuidor
-			, oficina
-			, portabilidad
-			, operadora_origen
+			, CAST(NULL AS STRING) AS distribuidor
+			, CAST(NULL AS STRING) AS oficina
+			, CAST(NULL AS STRING) AS portabilidad
+			, CAST(NULL AS STRING) AS operadora_origen
 			, CAST(NULL AS STRING) AS operadora_destino
 			, CAST(NULL AS STRING) AS motivo
 			, CAST(NULL AS STRING) AS cod_plan_anterior
@@ -1753,6 +1775,9 @@ FROM
 			, cod_da
 			, campania
 			, region
+			--
+			, oficina AS oficina_movimiento_mes_cmsns
+			, portabilidad AS portabilidad_movimiento_mes_cmsns
 		FROM
 			{vTMP09}
 		WHERE
@@ -1799,6 +1824,9 @@ FROM
 			, cod_da
 			, campania
 			, region
+			--
+			, CAST(NULL AS STRING) AS oficina_movimiento_mes_cmsns
+			, CAST(NULL AS STRING) AS portabilidad_movimiento_mes_cmsns
 		FROM
 			{vTMP10}
 		WHERE
@@ -1940,6 +1968,9 @@ SELECT
 	, a.cod_da
 	, a.campania_movimiento_mes
 	, a.region
+	--
+	, a.oficina_movimiento_mes_cmsns
+	, a.portabilidad_movimiento_mes_cmsns
 	, CASE WHEN a.sub_movimiento IN ('ALTA PREPAGO', 'ALTA PORTABILIDAD PREPAGO','TRANSFER OUT PREPAGO') 
 	THEN NVL(pre.canal,c.canal) ELSE C.CANAL END AS canal_comercial
 	, CASE WHEN a.sub_movimiento IN ('ALTA PREPAGO', 'ALTA PORTABILIDAD PREPAGO','TRANSFER OUT PREPAGO') 

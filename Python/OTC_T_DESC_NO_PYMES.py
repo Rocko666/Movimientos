@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import sys
 reload(sys)
 sys.setdefaultencoding('latin1')
@@ -36,10 +35,7 @@ spark = SparkSession\
     .appName(vApp)\
     .master("local")\
     .enableHiveSupport()\
-    .config("spark.sql.broadcastTimeout", "36000") \
-    .config("hive.exec.dynamic.partition", "true") \
     .config("hive.exec.dynamic.partition.mode", "nonstrict") \
-    .config("spark.yarn.queue", "desarrollo") \
     .getOrCreate()
 sc = spark.sparkContext
 sc.setLogLevel("ERROR")

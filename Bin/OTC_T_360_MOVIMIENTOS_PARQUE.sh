@@ -51,10 +51,10 @@ VAL_ETP01_DRIVER_MEMORY=`mysql -N  <<<"select valor from params_des where ENTIDA
 VAL_ETP01_EXECUTOR_MEMORY=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ETP01_EXECUTOR_MEMORY';"`
 VAL_ETP01_NUM_EXECUTORS=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ETP01_NUM_EXECUTORS';"`
 VAL_ETP01_NUM_EXECUTORS_CORES=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ETP01_NUM_EXECUTORS_CORES';"`
+VAL_COLA_EJECUCION=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_COLA_EJECUCION';"`
 
 ################### VARIABLES DEL SPARK GENERICO
 VAL_RUTA_SPARK=`mysql -N  <<<"select valor from params where ENTIDAD = '"$SPARK_GENERICO"' AND parametro = 'VAL_RUTA_SPARK';"`
-
 
 VAL_LOG_EJECUCION=$VAL_RUTA_LOG/$ENTIDAD"_"$VAL_HORA.log
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Iniciando registro en el log.." 2>&1 &>> $VAL_LOG_EJECUCION
@@ -91,6 +91,7 @@ if  [ -z "$FECHAEJE" ] ||
 	[ -z "$VAL_ETP01_EXECUTOR_MEMORY" ] ||
 	[ -z "$VAL_ETP01_NUM_EXECUTORS" ] ||
 	[ -z "$VAL_ETP01_NUM_EXECUTORS_CORES" ] ||
+	[ -z "$VAL_COLA_EJECUCION" ] ||
 	[ -z "$VAL_RUTA_SPARK" ] ||
 	[ -z "$VAL_LOG_EJECUCION" ] ; then
 	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: $TIME [ERROR] $rc unos de los parametros esta vacio o es nulo" 2>&1 &>> $VAL_LOG_EJECUCION
@@ -106,9 +107,9 @@ echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Parametros calculados de fechas  " 2>&1 
 ## fecha maxima que se puede ejecutar este proceso es hoy -1 dia
 fecha_proceso=`date -d "$FECHAEJE" "+%Y-%m-%d"`
 f_check=`date -d "$FECHAEJE" "+%d"`
- # para tipo de dato DATE
+# para tipo de dato DATE
 fecha_movimientos=`date '+%Y-%m-%d' -d "$fecha_proceso+1 day"`
- # para las tablas particionadas
+# para las tablas particionadas
 fecha_movimientos_cp=`date '+%Y%m%d' -d "$fecha_proceso+1 day"`
 fecha_mes_ant_cp=`date -d "$FECHAEJE" "+%Y%m01"`
 fecha_mes_ant=`date -d "$FECHAEJE" "+%Y-%m-01"`
@@ -165,12 +166,12 @@ $VAL_RUTA_SPARK \
 --conf spark.datasource.hive.warehouse.read.via.llap=false \
 --conf spark.datasource.hive.warehouse.load.staging.dir=/tmp \
 --conf spark.datasource.hive.warehouse.read.jdbc.mode=cluster \
- 
 --conf spark.shuffle.service.enabled=false \
-
 --conf spark.datasource.hive.warehouse.user.name="rgenerator" \
 --py-files /opt/cloudera/parcels/CDH/lib/hive_warehouse_connector/pyspark_hwc-1.0.0.7.1.7.1000-141.zip \
 --conf spark.sql.hive.hiveserver2.jdbc.url="jdbc:hive2://quisrvbigdata1.otecel.com.ec:2181,quisrvbigdata2.otecel.com.ec:2181,quisrvbigdata10.otecel.com.ec:2181,quisrvbigdata11.otecel.com.ec:2181/default;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2" \
+--conf spark.port.maxRetries=100 \
+--queue $VAL_COLA_EJECUCION \
 --name $ENTIDAD \
 --master $VAL_ETP01_MASTER \
 --driver-memory $VAL_ETP01_DRIVER_MEMORY \

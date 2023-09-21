@@ -67,7 +67,7 @@ try:
         .config("spark.sql.broadcastTimeout", "36000") \
         .config("hive.exec.dynamic.partition", "true") \
         .config("hive.exec.dynamic.partition.mode", "nonstrict") \
-        .config("spark.yarn.queue", "default") \
+        .config("spark.yarn.queue", "capa_semantica") \
         .config("hive.enforce.bucketing", "false")\
 	    .config("hive.enforce.sorting", "false")\
 	    .getOrCreate()
@@ -91,11 +91,11 @@ try:
     print(etq_info("Inicio del proceso en PySpark...")) 
     print(lne_dvs())
     print(etq_info("Importando librerias personalizadas..."))
-    #sys.path.insert(1,'/RGenerator/reportes/Cliente360/Python/Configuraciones')
-    sys.path.insert(1,'/home/nae108834/Movimientos/Python/Configuraciones')
+    sys.path.insert(1,'/RGenerator/reportes/Cliente360/Python/Configuraciones')
+    #sys.path.insert(1,'/STAGE/versionamiento/CapaSemantica/CLIENTE_360/Python/Configuraciones')
     from otc_t_360_pivot_parque_config import *
-    #sys.path.insert(1,'/RGenerator/reportes/Cliente360/Python/Querys')
-    sys.path.insert(1,'/home/nae108834/Movimientos/Python/Querys')
+    sys.path.insert(1,'/RGenerator/reportes/Cliente360/Python/Querys')
+    #sys.path.insert(1,'/STAGE/versionamiento/CapaSemantica/CLIENTE_360/Python/Querys')
     from otc_t_360_pivot_parque_query import *
     print(lne_dvs())
     print(etq_info("Tablas termporales del proceso..."))
@@ -264,7 +264,7 @@ try:
     df18b.printSchema()
     print(etq_info("Guardando tabla tmp: (otc_t_pivot_18b)"))
     df18b.write.mode('overwrite').saveAsTable(vSSchHiveTmp+".otc_t_pivot_18b") 
-    
+
 #(df18b.rdd.isEmpty()) |    
     if (df18.rdd.isEmpty()) | (df18a.rdd.isEmpty()) | (df18l1.rdd.isEmpty()) | (df18l2.rdd.isEmpty()):
         exit(etq_nodata(msg_e_df_nodata(str('df18'))))

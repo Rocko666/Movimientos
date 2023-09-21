@@ -117,12 +117,7 @@ try:
     spark = SparkSession\
         .builder\
         .enableHiveSupport() \
-        .config("spark.yarn.queue", "desarrollo") \
-        .config("spark.sql.broadcastTimeout", "36000") \
-        .config("hive.exec.dynamic.partition", "true") \
         .config("hive.exec.dynamic.partition.mode", "nonstrict") \
-        .config("hive.enforce.bucketing", "false")\
-	    .config("hive.enforce.sorting", "false")\
         .getOrCreate()
     sc = spark.sparkContext
     sc.setLogLevel("ERROR")
@@ -145,9 +140,9 @@ try:
     print(etq_info("Inicio del proceso en PySpark...")) 
     print(lne_dvs())
     print(etq_info("Importando librerias personalizadas..."))
-    sys.path.insert(1,'/home/nae108834/Movimientos/Python/Configuraciones')
+    sys.path.insert(1,'/home/nae108834/RGenerator/reportes/Cliente360/Python/Configuraciones')
     from otc_t_360_movimientos_parque_config import *
-    sys.path.insert(1,'/home/nae108834/Movimientos/Python/Querys')
+    sys.path.insert(1,'/home/nae108834/RGenerator/reportes/Cliente360/Python/Querys')
     from otc_t_360_movimientos_parque_query import *
     print(lne_dvs())
     print(etq_info("Tablas termporales del proceso..."))
@@ -209,7 +204,7 @@ try:
     VSQLinsrt=qry_insrt_otc_t_abh_alta(vTAltBajHist,vTAltBI,fecha_movimientos_cp, f_inicio,fecha_proceso)
     print(etq_sql(VSQLinsrt))
     df_del = spark.sql(VSQLinsrt)
-    df_del.write.mode("overwrite").saveAsTable(vTablaTmpAlta)
+    df_del.repartition(1).write.mode("overwrite").saveAsTable(vTablaTmpAlta)
     print(etq_info(msg_t_total_registros_hive(vTablaTmpAlta,str(df_del.count()))))     
     #hive_hwc.executeUpdate(VSQLinsrt)
     te_step = datetime.now()
@@ -229,7 +224,7 @@ try:
     VSQLinsrt=qry_insrt_otc_t_abh_baja(vTAltBajHist,vTBajBI,fecha_movimientos_cp, f_inicio,fecha_proceso)
     print(etq_sql(VSQLinsrt))
     df_delb = spark.sql(VSQLinsrt)
-    df_delb.write.mode("overwrite").saveAsTable(vTablaTmpBaja)
+    df_delb.repartition(1).write.mode("overwrite").saveAsTable(vTablaTmpBaja)
     print(etq_info(msg_t_total_registros_hive(vTablaTmpBaja,str(df_delb.count()))))
     print(lne_dvs())    
     print(etq_info("Se actualizan los datos en la tabla[{}]".format(vTAltBajHist)))
@@ -317,7 +312,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP06)))
-            df06.write.mode('overwrite').saveAsTable(vTMP06)
+            df06.repartition(1).write.mode('overwrite').saveAsTable(vTMP06)
             df06.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP06,str(df06.count())))) 
             te_step_tbl = datetime.now()
@@ -347,7 +342,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP07)))
-            df07.write.mode('overwrite').saveAsTable(vTMP07)
+            df07.repartition(1).write.mode('overwrite').saveAsTable(vTMP07)
             df07.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP07,str(df07.count())))) 
             te_step_tbl = datetime.now()
@@ -377,7 +372,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP08)))
-            df08.write.mode('overwrite').saveAsTable(vTMP08)
+            df08.repartition(1).write.mode('overwrite').saveAsTable(vTMP08)
             df08.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP08,str(df08.count())))) 
             te_step_tbl = datetime.now()
@@ -407,7 +402,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP09)))
-            df09.write.mode('overwrite').saveAsTable(vTMP09)
+            df09.repartition(1).write.mode('overwrite').saveAsTable(vTMP09)
             df09.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP09,str(df09.count())))) 
             te_step_tbl = datetime.now()
@@ -437,7 +432,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP10)))
-            df10.write.mode('overwrite').saveAsTable(vTMP10)
+            df10.repartition(1).write.mode('overwrite').saveAsTable(vTMP10)
             df10.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP06,str(df10.count())))) 
             te_step_tbl = datetime.now()
@@ -467,7 +462,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP11)))
-            df11.write.mode('overwrite').saveAsTable(vTMP11)
+            df11.repartition(1).write.mode('overwrite').saveAsTable(vTMP11)
             df11.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP11,str(df11.count())))) 
             te_step_tbl = datetime.now()
@@ -497,7 +492,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP12)))
-            df12.write.mode('overwrite').saveAsTable(vTMP12)
+            df12.repartition(1).write.mode('overwrite').saveAsTable(vTMP12)
             df12.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP12,str(df12.count())))) 
             te_step_tbl = datetime.now()
@@ -527,7 +522,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP13)))
-            df13.write.mode('overwrite').saveAsTable(vTMP13)
+            df13.repartition(1).write.mode('overwrite').saveAsTable(vTMP13)
             df13.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP13,str(df13.count())))) 
             te_step_tbl = datetime.now()
@@ -557,7 +552,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP14)))
-            df14.write.mode('overwrite').saveAsTable(vTMP14)
+            df14.repartition(1).write.mode('overwrite').saveAsTable(vTMP14)
             df14.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP14,str(df14.count())))) 
             te_step_tbl = datetime.now()
@@ -587,7 +582,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP15)))
-            df15.write.mode('overwrite').saveAsTable(vTMP15)
+            df15.repartition(1).write.mode('overwrite').saveAsTable(vTMP15)
             df15.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP15,str(df15.count())))) 
             te_step_tbl = datetime.now()
@@ -617,7 +612,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP16)))
-            df16.write.mode('overwrite').saveAsTable(vTMP16)
+            df16.repartition(1).write.mode('overwrite').saveAsTable(vTMP16)
             df16.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP16,str(df16.count())))) 
             te_step_tbl = datetime.now()
@@ -647,7 +642,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP17)))
-            df17.write.mode('overwrite').saveAsTable(vTMP17)
+            df17.repartition(1).write.mode('overwrite').saveAsTable(vTMP17)
             df17.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP17,str(df17.count())))) 
             te_step_tbl = datetime.now()
@@ -677,7 +672,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP18)))
-            df18.write.mode('overwrite').saveAsTable(vTMP18)
+            df18.repartition(1).write.mode('overwrite').saveAsTable(vTMP18)
             df18.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP18,str(df18.count())))) 
             te_step_tbl = datetime.now()
@@ -707,7 +702,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP19)))
-            df19.write.mode('overwrite').saveAsTable(vTMP19)
+            df19.repartition(1).write.mode('overwrite').saveAsTable(vTMP19)
             df19.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP19,str(df19.count())))) 
             te_step_tbl = datetime.now()
@@ -737,7 +732,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP20)))
-            df20.write.mode('overwrite').saveAsTable(vTMP20)
+            df20.repartition(1).write.mode('overwrite').saveAsTable(vTMP20)
             df20.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP20,str(df20.count())))) 
             te_step_tbl = datetime.now()
@@ -767,7 +762,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP21)))
-            df21.write.mode('overwrite').saveAsTable(vTMP21)
+            df21.repartition(1).write.mode('overwrite').saveAsTable(vTMP21)
             df21.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP21,str(df21.count())))) 
             te_step_tbl = datetime.now()
@@ -797,7 +792,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP22)))
-            df22.write.mode('overwrite').saveAsTable(vTMP22)
+            df22.repartition(1).write.mode('overwrite').saveAsTable(vTMP22)
             df22.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP22,str(df22.count())))) 
             te_step_tbl = datetime.now()
@@ -827,7 +822,7 @@ try:
         try:
             ts_step_tbl = datetime.now()
             print(etq_info(msg_i_insert_hive(vTMP23)))
-            df23.write.mode('overwrite').saveAsTable(vTMP23)
+            df23.repartition(1).write.mode('overwrite').saveAsTable(vTMP23)
             df23.printSchema()
             print(etq_info(msg_t_total_registros_hive(vTMP23,str(df23.count())))) 
             te_step_tbl = datetime.now()

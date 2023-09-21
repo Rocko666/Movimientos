@@ -1,7 +1,7 @@
 set -e
 #!/bin/bash
 ##########################################################################
-#   Script de carga de Generica para entidades de URM con reejecución    #
+#   Script de carga de Generica para entidades de URM con reejecucion    #
 # Creado 13-Jun-2018 (LC) Version 1.0                                    #
 # Las tildes hansido omitidas intencionalmente en el script              #
 #------------------------------------------------------------------------#
@@ -9,7 +9,7 @@ set -e
 #########################################################################################################
 # NOMBRE: OTC_T_360_GENERAL.sh  		      												                        
 # DESCRIPCION:																							                                            
-# Script de carga de Generica para entidades de URM con reejecución
+# Script de carga de Generica para entidades de URM con reejecucion
 # Las tildes hansido omitidas intencionalmente en el script			                                                 											             
 # AUTOR: LC             														                          
 # FECHA CREACION: 2018-06-13																			                                      
@@ -93,8 +93,24 @@ VAL_DRIVER_MEMORY=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"
 VAL_EXECUTOR_MEMORY=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_EXECUTOR_MEMORY';"`
 VAL_NUM_EXECUTORS=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_NUM_EXECUTORS';"`
 VAL_NUM_EXECUTORS_CORES=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_NUM_EXECUTORS_CORES';"`
+vDRIVER_MEMORY=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vDRIVER_MEMORY';"`
+vEXECUTOR_MEMORY=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vEXECUTOR_MEMORY';"`
+vNUM_EXECUTORS=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vNUM_EXECUTORS';"`
+vNUM_EXECUTORS_CORES=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'vNUM_EXECUTORS_CORES';"`
+VAL_ESQUEMA_HIVE=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_ESQUEMA_HIVE';"`
+VAL_TABLA_HIVE=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_TABLA_HIVE';"`
+VAL_NOM_FILE_IN=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_NOM_FILE_IN';"`
+VAL_SFTP_RUTA_IN=`mysql -N  <<<"select valor from params_des where ENTIDAD = '"$ENTIDAD"' AND parametro = 'VAL_SFTP_RUTA_IN';"`
 
 if  [ -z "$HIVEDB" ] ||
+	[ -z "$vDRIVER_MEMORY" ] ||
+	[ -z "$vEXECUTOR_MEMORY" ] ||
+	[ -z "$vNUM_EXECUTORS" ] ||
+	[ -z "$vNUM_EXECUTORS_CORES" ] ||
+	[ -z "$VAL_ESQUEMA_HIVE" ] ||
+	[ -z "$VAL_NOM_FILE_IN" ] ||
+	[ -z "$VAL_TABLA_HIVE" ] ||
+	[ -z "$VAL_SFTP_RUTA_IN" ] ||
 	[ -z "$RUTA" ] ||
     [ -z "$HIVETABLE" ] ||
 	[ -z "$ESQUEMA_TEMP" ] ||
@@ -215,23 +231,43 @@ echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Iniciando el JOB: $ENTIDAD" 2>&1 &>> $VA
 
 if [ "$PASO" = "1" ]; then
 ###################################################################################################################
+echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Iniciando la importacion de catalogo" 2>&1 &>> $VAL_LOG
+###################################################################################################################
+
+sh -x $RUTA/Bin/OTC_T_DESC_NO_PYMES.sh $RUTA $VAL_ESQUEMA_HIVE $VAL_TABLA_HIVE $VAL_SFTP_RUTA_IN $VAL_NOM_FILE_IN $VAL_MASTER $vDRIVER_MEMORY $vEXECUTOR_MEMORY $vNUM_EXECUTORS $vNUM_EXECUTORS_CORES $VAL_QUEUE 2>&1 &>> $VAL_LOG
+2>&1 &>> $VAL_LOG
+
+if [ $? -eq 0 ]
+then
+	echo "EXITO - Importacion de catalogo OTC_T_DESC_NO_PYMES" 2>&1 &>> $VAL_LOG
+else
+	echo "ERROR - Importacion de catalogo OTC_T_DESC_NO_PYMES" 2>&1 &>> $VAL_LOG
+	exit 1
+fi
+
+`mysql -N  <<<"update params_des set valor='2' where ENTIDAD = '${ENTIDAD}' and parametro = 'PASO';"`
+
+PASO=2
+fi
+
+if [ "$PASO" = "2" ]; then
+###################################################################################################################
 echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Iniciando la importacion en spark" 2>&1 &>> $VAL_LOG
 ###################################################################################################################
 $VAL_RUTA_SPARK \
---jars /opt/cloudera/parcels/CDH/jars/hive-warehouse-connector-assembly-*.jar \
---conf spark.sql.extensions=com.hortonworks.spark.sql.rule.Extensions \
---conf spark.security.credentials.hiveserver2.enabled=false \
+--jars /opt/cloudera/parcels/CDH/jars/hive-warehouse-connector-assembly-1.0.0.7.1.7.1000-141.jar \
 --conf spark.sql.hive.hwc.execution.mode=spark \
---conf spark.datasource.hive.warehouse.read.via.llap=false \
---conf spark.datasource.hive.warehouse.load.staging.dir=/tmp \
---conf spark.datasource.hive.warehouse.read.jdbc.mode=cluster \
- 
---conf spark.shuffle.service.enabled=false \
-
---conf spark.datasource.hive.warehouse.user.name="rgenerator" \
+--conf spark.kryo.registrator=com.qubole.spark.hiveacid.util.HiveAcidKyroRegistrator \
+--conf spark.sql.extensions=com.qubole.spark.hiveacid.HiveAcidAutoConvertExtension \
 --py-files /opt/cloudera/parcels/CDH/lib/hive_warehouse_connector/pyspark_hwc-1.0.0.7.1.7.1000-141.zip \
+--conf spark.datasource.hive.warehouse.read.mode=DIRECT_READER_V2 \
 --conf spark.sql.hive.hiveserver2.jdbc.url="jdbc:hive2://quisrvbigdata1.otecel.com.ec:2181,quisrvbigdata2.otecel.com.ec:2181,quisrvbigdata10.otecel.com.ec:2181,quisrvbigdata11.otecel.com.ec:2181/default;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2" \
+--conf spark.hadoop.hive.metastore.uris="thrift://quisrvbigdata1.otecel.com.ec:9083,thrift://quisrvbigdata10.otecel.com.ec:9083" \
+--conf spark.datasource.hive.warehouse.user.name="rgenerator" \
+--conf spark.port.maxRetries=100 \
+--conf spark.rpc.message.maxSize=128 \
 --master $VAL_MASTER \
+--queue $VAL_QUEUE \
 --name $ENTIDAD \
 --driver-memory $VAL_DRIVER_MEMORY \
 --executor-memory $VAL_EXECUTOR_MEMORY \
@@ -261,16 +297,9 @@ $VAL_RUTA_PYTHON/$VAL_FILE_PYTHON \
 --fecha_port_fin=$fecha_port_fin \
 --vSPathQueryConf=$VAL_PATH_CONF 2>&1 &>> $VAL_LOG
 
-###################################################################################################################
-echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Validamos el LOG de la ejecucion, si encontramos fallas finalizamos con num_e > 0" 2>&1 &>> $VAL_LOG
-###################################################################################################################
-VAL_ERRORES=`egrep 'error:|Error:|KeyProviderCache:|Caused by:|pyspark.sql.utils.ParseException|AnalysisException:|NameError:|IndentationError:|Permission denied:|ValueError:|ERROR:|unrecognized arguments:|No such file or directory|Failed to connect|Could not open client' $VAL_LOG | wc -l`
-if [ $VAL_ERRORES -eq 0 ];then
-	echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: ETAPA $PASO => La extraccion de informacion fue ejecutada de manera EXITOSA" 2>&1 &>> $VAL_LOG	
-	echo `date '+%Y-%m-%d %H:%M:%S'`" INFO: Se procesa la ETAPA $PASO con EXITO " 2>&1 &>> $VAL_LOG 	
-else
-	echo `date '+%Y-%m-%d %H:%M:%S'`" ERROR: Problemas en la carga de informacion en las tablas del proceso" 2>&1 &>> $VAL_LOG   
-	exit 1       
-fi
+`mysql -N  <<<"update params_des set valor='1' where ENTIDAD = '${ENTIDAD}' and parametro = 'PASO';"`
+PASO=1
+
+echo "=== PROCESO $ENTIDAD FINALIZADO CON EXITO ===" 2>&1 &>> $VAL_LOG
 
 fi

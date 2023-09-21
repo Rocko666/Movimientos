@@ -1,39 +1,72 @@
-a.tipo
-, a.telefono
-, a.fecha_movimiento_mes
-, a.canal_movimiento_mes
-, a.sub_canal_movimiento_mes
-, a.nuevo_sub_canal_movimiento_mes
-, a.distribuidor_movimiento_mes
-, a.oficina_movimiento_mes
-, a.portabilidad_movimiento_mes
-, a.operadora_origen_movimiento_mes
-, a.operadora_destino_movimiento_mes
-, a.motivo_movimiento_mes
-, a.cod_plan_anterior_movimiento_mes
-, a.des_plan_anterior_movimiento_mes
-, a.tb_descuento_movimiento_mes
-, a.tb_override_movimiento_mes
-, a.delta_movimiento_mes
-, a.sub_movimiento
-, a.imei
-, a.equipo
-, a.icc
-, a.domain_login_ow
-, a.nombre_usuario_ow
-, a.domain_login_sub
-, a.nombre_usuario_sub
-, a.forma_pago
-, a.codigo_usuario
-, a.calf_riesgo
-, a.cap_endeu
-, a.valor_cred
-, a.ciudad_usuario
-, a.provincia_usuario
-, a.ciudad
-, a.provincia_activacion
-, a.distribuidor_crm
-, a.canal_transacc
-, a.cod_da
-, a.campania_movimiento_mes
-, a.region
+
+drop  TABLE db_desarrollo2021.otc_t_360_general_V_20230905;
+
+CREATE TABLE db_desarrollo2021.otc_t_360_general_V_20230905 
+STORED AS PARQUET
+TBLPROPERTIES ('external.table.purge'='true')
+AS
+(
+SELECT 
+	CASE WHEN	p.num_telefonico	= d.num_telefonico	then 'IGUAL' else 'DIF' END AS 	num_telefonico
+,	CASE WHEN	p.account_num	= d.account_num	then 'IGUAL' else 'DIF' END AS 	account_num
+FROM db_reportes.otc_t_360_general AS p
+LEFT JOIN db_desarrollo2021.otc_t_360_general as d 
+on (p.num_telefonico=d.num_telefonico)
+and (p.account_num=d.account_num)
+where p.fecha_proceso=20230904
+and d.fecha_proceso=20230904
+);
+
+select count(1) from db_desarrollo2021.otc_t_360_general_V_20230905;
+
+
+show create table db_temporales.otc_t_scoring_tiaxa_tmp;
+
+select score_1_tiaxa,score_2_tiaxa
+--from db_reportes.otc_t_360_general
+from db_desarrollo2021.otc_t_360_general
+where fecha_proceso=20230904;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -143,7 +143,7 @@ try:
     print(etq_info("Tablas externas del proceso..."))
     print(lne_dvs())
     ##hacer el cambio en produccion
-    vTblExt01=nme_tbl_tmp_otc_t_360_general_ext_01(vSSchemaTmp) # pivot parque
+    vTblExt01=nme_tbl_tmp_otc_t_360_general_ext_01(vSSchemaTmpRead) # pivot parque
     vTblExt02=nme_tbl_tmp_otc_t_360_general_ext_02(vSSchemaTmpRead)
     vTblExt03=nme_tbl_tmp_otc_t_360_general_ext_03(vSSchemaTmpRead)
     vTblExt04=nme_tbl_tmp_otc_t_360_general_ext_04(vSSchemaTmpRead)
@@ -161,7 +161,7 @@ try:
     vTblExt16=nme_tbl_tmp_otc_t_360_general_ext_16(vSSchemaTmp) #otc_t_360_parque_1_tmp_t_mov
     vTblExt17=nme_tbl_tmp_otc_t_360_general_ext_17(vSSchemaTmp) #otc_t_360_parque_1_mov_mes_tmp
     vTblExt18=nme_tbl_tmp_otc_t_360_general_ext_18(vSSchemaTmpRead)
-    vTblExt19=nme_tbl_tmp_otc_t_360_general_ext_19(vSSchemaTmp) #otc_t_360_parque_1_mov_seg_tmp
+    vTblExt19=nme_tbl_tmp_otc_t_360_general_ext_19(vSSchemaTmpRead) #otc_t_360_parque_1_mov_seg_tmp
     vTblExt20=nme_tbl_tmp_otc_t_360_general_ext_20(vSSchemaTmpRead)
     vTblExt21=nme_tbl_tmp_otc_t_360_general_ext_21(vSSchemaTmpRead)
     vTblExt22=nme_tbl_tmp_otc_t_360_general_ext_22(vSSchemaTmpRead)

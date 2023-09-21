@@ -1,7 +1,7 @@
 ###################################################################################################################################################
 # PROCESO: OTC_T_RTD_GENERAL
 ###################################################################################################################################################
-
+## eliminar el : 
 # FUENTES EXTERNAS
 def nme_tbl_tmp_otc_t_360_general_ext_01(vSchema):
     nme="""{}.otc_t_360_parque_1_tmp""".format(vSchema)
@@ -48,19 +48,19 @@ def nme_tbl_tmp_otc_t_360_general_ext_11(vSchema):
     return nme
 ###ojo
 def nme_tbl_tmp_otc_t_360_general_ext_12(vSchema):
-    nme="""{}.tmp_360_campos_adicionales_des""".format(vSchema)
+    nme="""{}.tmp_360_campos_adicionales""".format(vSchema)
     return nme
 ###ojo
 def nme_tbl_tmp_otc_t_360_general_ext_13(vSchema):
-    nme="""{}.otc_t_360_susp_cobranza_des""".format(vSchema)
+    nme="""{}.otc_t_360_susp_cobranza""".format(vSchema)
     return nme
 ###ojo
 def nme_tbl_tmp_otc_t_360_general_ext_14(vSchema):
-    nme="""{}.tmp_360_otras_suspensiones_des""".format(vSchema)
+    nme="""{}.tmp_360_otras_suspensiones""".format(vSchema)
     return nme
 ####ojo
 def nme_tbl_tmp_otc_t_360_general_ext_15(vSchema):
-    nme="""{}.otc_t_360_cartera_vencimiento_des""".format(vSchema)
+    nme="""{}.otc_t_360_cartera_vencimiento""".format(vSchema)
     return nme
 
 def nme_tbl_tmp_otc_t_360_general_ext_16(vSchema):
@@ -70,9 +70,9 @@ def nme_tbl_tmp_otc_t_360_general_ext_16(vSchema):
 def nme_tbl_tmp_otc_t_360_general_ext_17(vSchema):
     nme="""{}.otc_t_360_parque_1_mov_mes_tmp""".format(vSchema)
     return nme
-
+## ojo
 def nme_tbl_tmp_otc_t_360_general_ext_18(vSchema):
-    nme="""{}.otc_t_cuenta_num_tmp_des""".format(vSchema)
+    nme="""{}.otc_t_cuenta_num_tmp""".format(vSchema)
     return nme
 
 def nme_tbl_tmp_otc_t_360_general_ext_19(vSchema):

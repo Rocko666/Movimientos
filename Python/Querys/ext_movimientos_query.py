@@ -13,7 +13,7 @@ SELECT	DISTINCT
 	, nvl(ajst.telefono,a.num_telefonico) as telefono
 	, numero_abonado
 	, nvl(ajst.account_num,a.account_num) as account_num
-	, date_format(nvl(ajst.fecha_movimiento,a.fecha_movimiento_mes),'dd/MM/yyyy') AS fecha_movimiento
+	, date_format(nvl(ajst.fecha_movimiento,a.fecha_movimiento_mes_cmsns),'dd/MM/yyyy') AS fecha_movimiento
 	, estado_abonado
 	, nombre_cliente AS cliente
 	, identificacion_cliente AS documento_cliente
@@ -48,8 +48,8 @@ SELECT	DISTINCT
 		WHEN distribuidor_crm LIKE 'YOUPHONE C%A LTDA.' THEN 'YOUPHONE CIA LTDA.'
 		ELSE distribuidor_crm
 	END) AS distribuidor
-	, oficina_movimiento_mes AS oficina
-	, nvl(ajst.portabilidad_alta,a.portabilidad) as portabilidad_alta
+	, nvl(a.oficina_movimiento_mes, a.oficina_movimiento_mes_cmsns) AS oficina
+	, nvl(ajst.portabilidad_alta,a.portabilidad_cmsns) as portabilidad_alta
 	,(CASE
 		WHEN upper(forma_pago) LIKE 'D%BITO%DIRECTO%BANCO%' THEN 'DEBITO DIRECTO BANCO'
 		WHEN upper(forma_pago) LIKE 'D%BITO%DIRECTO%TARJETA%' THEN 'DEBITO DIRECTO TARJETA'
@@ -58,10 +58,10 @@ SELECT	DISTINCT
 	, cod_da
 	, nom_usuario
 	, nvl(nvl(ajst.id_canal,a.id_canal), -1) as id_canal
-	, nvl(ajst.canal_comercial,a.canal_movimiento_mes) as canal_comercial
+	, nvl(ajst.canal_comercial,a.canal_movimiento_mes_cmsns) as canal_comercial
 	, nvl(ajst.campania,a.campania) as campania
 	, nvl(ajst.codigo_distribuidor,a.codigo_distribuidor_movimiento_mes) as codigo_distribuidor
-	, nvl(ajst.nom_distribuidor,a.distribuidor_movimiento_mes) as nom_distribuidor
+	, nvl(ajst.nom_distribuidor,a.distribuidor_movimiento_mes_cmsns) as nom_distribuidor
 	, nvl(ajst.codigo_plaza,a.codigo_plaza) as codigo_plaza
 	, nvl(ajst.nom_plaza,a.nom_plaza_movimiento_mes) as nom_plaza
 	, nvl(ajst.region,a.region) as region
@@ -75,7 +75,7 @@ SELECT	DISTINCT
 	, a.email AS nom_email
 	, provincia_ms
 	, nvl(nvl(ajst.id_sub_canal,a.id_subcanal), -1) as id_sub_canal
-	, nvl(ajst.sub_canal,a.sub_canal_movimiento_mes) as sub_canal
+	, nvl(ajst.sub_canal,a.sub_canal_movimiento_mes_cmsns) as sub_canal
 	, round(tarifa_plan_actual_ov, 2) AS overwrite
 	, round(descuento_tarifa_plan_act, 2) AS descuento
 	, codigo_usuario
@@ -87,7 +87,7 @@ SELECT	DISTINCT
 	, valor_cred
 	, date_format(fecha_alta_pospago_historica
 	, 'dd/MM/yyyy') AS fecha_alta_pospago_historica
-	, motivo AS movimiento_baja
+	, motivo_cmsns AS movimiento_baja
 	,(CASE
 		WHEN dias_transcurridos_baja < 0 THEN ''
 		ELSE dias_transcurridos_baja
@@ -104,9 +104,9 @@ SELECT	DISTINCT
 		WHEN upper(nvl(ajst.tipo_movimiento,a.tipo_movimiento)) LIKE 'MISMA_TARIFA' THEN 'CAMBIO_PLAN'
 		ELSE upper(nvl(ajst.tipo_movimiento,a.tipo_movimiento))
 	END) AS tipo_movimiento
-	, cod_plan_anterior AS codigo_plan_anterior
+	, cod_plan_anterior_cmsns AS codigo_plan_anterior
 	, cliente_anterior
-	, des_plan_anterior AS nombre_plan_anterior
+	, des_plan_anterior_cmsns AS nombre_plan_anterior
 	, round(tarifa_basica_anterior, 2) AS tarifa_basica_anterior
 	, date_format(fecha_inicio_plan_anterior, 'dd/MM/yyyy') AS fecha_inicio_plan_anterior
 	, round(delta, 2) AS delta_tarifa
@@ -116,7 +116,7 @@ SELECT	DISTINCT
 	, dias_en_parque_prepago
 	, vol_invol
 	, round(tarifa_basica_baja, 2) AS tarifa_basica_baja
-	, portabilidad_movimiento_mes AS portabilidad_baja
+	, portabilidad_movimiento_mes_cmsns AS portabilidad_baja
 	, operadora_destino_movimiento_mes AS operadora_destino
 	, account_num_anterior
 	, ciudad_usuario
@@ -175,7 +175,107 @@ WHERE
 def qry_xtrct_csv(vTMain,vFechExt):
     qry='''
 SELECT
-	*
+	id_producto
+	, linea_negocio
+	, telefono
+	, numero_abonado
+	, account_num
+	, fecha_movimiento
+	, estado_abonado
+	, cliente
+	, documento_cliente
+	, tipo_doc_cliente
+	, plan_codigo
+	, nombre_plan
+	, ciudad
+	, provincia
+	, imei
+	, equipo
+	, icc
+	, sub_segmento
+	, segmento
+	, segmento_fin
+	, fecha_proceso
+	, tarifa_basica_actual
+	, categoria_plan
+	, cod_categoria
+	, domain_login_ow
+	, nombre_usuario_ow
+	, domain_login_sub
+	, nombre_usuario_sub
+	, canal
+	, distribuidor
+	, oficina
+	, portabilidad_alta
+	, forma_pago
+	, cod_da
+	, nom_usuario
+	, id_canal
+	, canal_comercial
+	, campania
+	, codigo_distribuidor
+	, nom_distribuidor
+	, codigo_plaza
+	, nom_plaza
+	, region
+	, ruc_distribuidor
+	, provincia_ivr
+	, operadora_origen
+	, ejecutivo_asignado_ptr
+	, area_ptr
+	, codigo_vendedor_da_ptr
+	, jefatura_ptr
+	, nom_email
+	, provincia_ms
+	, id_sub_canal
+	, sub_canal
+	, overwrite
+	, descuento
+	, codigo_usuario
+	, marca
+	, tecno_dispositivo
+	, descripcion_desp
+	, calf_riesgo
+	, cap_endeu
+	, valor_cred
+	, fecha_alta_pospago_historica
+	, movimiento_baja
+	, dias_transcurridos_baja
+	, fecha_cambio
+	, linea_de_negocio_anterior
+	, dias_en_parque
+	, id_tipo_movimiento
+	, tipo_movimiento
+	, codigo_plan_anterior
+	, cliente_anterior
+	, nombre_plan_anterior
+	, tarifa_basica_anterior
+	, fecha_inicio_plan_anterior
+	, delta_tarifa
+	, dias_reciclaje
+	, tipo_descuento
+	, tipo_descuento_conadis
+	, dias_en_parque_prepago
+	, vol_invol
+	, tarifa_basica_baja
+	, portabilidad_baja
+	, operadora_destino
+	, account_num_anterior
+	, ciudad_usuario
+	, provincia_usuario
+	, mismo_cliente
+	, fecha_alta_prepago
+	, tarifa_plan_actual_ov
+	, fecha_baja_reciclada
+	, tarifa_final_plan_act
+	, tarifa_final_plan_ant
+	, delta_tarifa_final
+	, tipo_de_cuenta_en_operador_donante
+	, id_hash
+	, observacion
+	, combo_inicial_sin_iva
+	, combo_inicial_con_iva
+	, pt_fecha
 FROM {vTMain}
 WHERE pt_fecha={vFechExt}
 	'''.format(vTMain=vTMain,vFechExt=vFechExt)
