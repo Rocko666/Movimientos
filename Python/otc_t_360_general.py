@@ -1467,7 +1467,7 @@ try:
     ts_step = datetime.now()
     print(etq_info(vStp))
     print(lne_dvs())
-    VSQL=qry_ins_otc_t_360_general(vIFechaEje1,vIFechaEje,vTblInt23,vTblExt18,vTblExt20,vTblExt21,vTblExt22,vTblExt23,vTblExt24,vTblInt29,vTblInt34,vTblInt30,vTblInt31,vTblInt32,vTblInt33,vTblInt28,vTblInt26,vTblInt27,vTblInt24,vTblInt25,vTblInt35)
+    VSQL=qry_ins_otc_t_360_general(vIFechaEje1,vIFechaEje,vTblInt23,vTblExt18,vTblExt20,vTblExt21,vTblExt22,vTblExt23,vTblExt24,vTblInt29,vTblInt34,vTblInt30,vTblInt31,vTblInt32,vTblInt33,vTblInt28,vTblInt26,vTblInt27,vTblInt24,vTblInt25,vTblInt35,vTblExt16,vTblExt17,vTblExt19)
     #print(etq_sql(VSQL))
     #df0 = spark.sql(VSQL)
     #ts_step_count = datetime.now()

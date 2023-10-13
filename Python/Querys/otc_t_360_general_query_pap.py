@@ -1057,7 +1057,7 @@ and es_parque ='NO'
 
 
 #36
-def qry_ins_otc_t_360_general(vIFechaEje1,vIFechaEje,vTblInt23,vTblExt18,vTblExt20,vTblExt21,vTblExt22,vTblExt23,vTblExt24,vTblInt29,vTblInt34,vTblInt30,vTblInt31,vTblInt32,vTblInt33,vTblInt28,vTblInt26,vTblInt27,vTblInt24,vTblInt25,vTblInt35):
+def qry_ins_otc_t_360_general(vIFechaEje1,vIFechaEje,vTblInt23,vTblExt18,vTblExt20,vTblExt21,vTblExt22,vTblExt23,vTblExt24,vTblInt29,vTblInt34,vTblInt30,vTblInt31,vTblInt32,vTblInt33,vTblInt28,vTblInt26,vTblInt27,vTblInt24,vTblInt25,vTblInt35,vTblExt16,vTblExt17,vTblExt19):
     qry='''
 SELECT
 	DISTINCT 
@@ -1128,10 +1128,7 @@ SELECT
 	, t1.fecha_ultima_renovacion_jn
 	, t1.fecha_ultimo_cambio_plan
 	, t1.tipo_movimiento_mes
-	--nvl aumentado en REFACTORING para incluir fecha_movimiento_mes para NO_RECICLABLE 
-	--cuya fecha_movimiento_mes viene null en otc_t_360_general_temp_final
-	--, a1.fecha_movimiento_mes AS fecha_movimiento_mes
-	, NVL(t1.fecha_movimiento_mes, a1.fecha_movimiento_mes) AS fecha_movimiento_mes
+	, t1.fecha_movimiento_mes AS fecha_movimiento_mes
 	, t1.es_parque
 	, t1.banco
 	, t1.parque_recargador
@@ -1177,10 +1174,9 @@ SELECT
 	, a2.tb_descuento AS tb_descuento
 	, a2.tb_override
 	, a2.delta
-	, a1.canal_comercial AS canal_movimiento_mes
-	, a1.sub_canal AS sub_canal_movimiento_mes
-	--, a1.nuevo_sub_canal_movimiento_mes
-	, a1.nom_distribuidor AS distribuidor_movimiento_mes
+	, a1.canal_movimiento_mes
+	, a1.sub_canal_movimiento_mes
+	, a1.distribuidor_movimiento_mes
 	, a1.oficina_movimiento_mes
 	, a1.portabilidad_movimiento_mes
 	, a1.operadora_origen_movimiento_mes
@@ -1243,89 +1239,87 @@ SELECT
 	----------------Insertado en RF
 	-------------------------------------
 	, cat_tm.id_tipo_movimiento AS id_tipo_movimiento
-	, a1.tipo AS tipo_movimiento
+	, a11.tipo AS tipo_movimiento
 	, cat_sc.id_tipo_movimiento AS id_subcanal
 	, cat_p.id_tipo_movimiento AS id_producto
-	, a1.sub_movimiento
+	, a11.sub_movimiento
 	, tec.tecnologia
-	, (CASE WHEN a1.tipo in ('BAJA') 
+	, (CASE WHEN a11.tipo in ('BAJA') 
 	THEN datediff(a2.fecha_movimiento_baja, t1.fecha_alta)
-			WHEN a1.tipo in ('POS_PRE') 
+			WHEN a11.tipo in ('POS_PRE') 
 			THEN faph.dias_transcurridos_baja END) AS dias_transcurridos_baja
 	, a2.dias_en_parque
 	, a2.dias_en_parque_prepago
 	, (CASE
-		when a1.tipo IN ('ALTA','PRE_POS') 
+		when a11.tipo IN ('ALTA','PRE_POS') 
 		then  nvl(dnpy.detalle, descu.desc_conadis)
-		WHEN a1.tipo IN ('DOWNSELL','UPSELL','MISMA_TARIFA') 
+		WHEN a11.tipo IN ('DOWNSELL','UPSELL','MISMA_TARIFA') 
 		THEN descu.desc_conadis
 		ELSE ''	END) AS tipo_descuento_conadis
-	, (CASE	when a1.tipo IN ('ALTA','PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
+	, (CASE	when a11.tipo IN ('ALTA','PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
 		THEN descu.descripcion_descuento END) AS tipo_descuento
-	, a1.ciudad
-	, a1.provincia_activacion
+	, a11.ciudad
+	, a11.provincia_activacion
 	, a2.cod_categoria
 	, a2.cod_da
-	, a1.nom_usuario
+	, a11.nom_usuario
 	, a2.provincia_ivr
 	, a2.provincia_ms
-	, (CASE WHEN a1.tipo in ('BAJA') 
+	, (CASE WHEN a11.tipo in ('BAJA') 
 			THEN cast(t1.fecha_alta as date)
-			WHEN a1.tipo in ('POS_PRE') 
+			WHEN a11.tipo in ('POS_PRE') 
 			THEN faph.FECHA_ALTA END)  AS fecha_alta_pospago_historica
 	, a2.vol_invol
 	, a2.account_num_anterior
-	--, a1.fecha_movimiento_mes
-	, a1.imei
-	, a1.equipo
-	, a1.icc
-	, a1.domain_login_ow
-	, a1.nombre_usuario_ow
-	, a1.domain_login_sub
-	, a1.nombre_usuario_sub
-	--, a1.oficina_movimiento_mes
-	, a1.forma_pago
+	, a11.imei
+	, a11.equipo
+	, a11.icc
+	, a11.domain_login_ow
+	, a11.nombre_usuario_ow
+	, a11.domain_login_sub
+	, a11.nombre_usuario_sub
+	, a11.forma_pago
 	, cat_c.id_tipo_movimiento AS id_canal
-	, a1.campania_homologada AS campania
-	, a1.codigo_distribuidor as codigo_distribuidor_movimiento_mes
-	, a1.codigo_plaza
-	, a1.nom_plaza as nom_plaza_movimiento_mes
-	, a1.region_homologada AS region 
-	, a1.ruc_distribuidor
-	, (case when a1.tipo IN ('ALTA','PRE_POS') 
+	, a11.campania_homologada AS campania
+	, a11.codigo_distribuidor as codigo_distribuidor_movimiento_mes
+	, a11.codigo_plaza
+	, a11.nom_plaza as nom_plaza_movimiento_mes
+	, a11.region_homologada AS region 
+	, a11.ruc_distribuidor
+	, (case when a11.tipo IN ('ALTA','PRE_POS') 
 			then pati.ejecutivo_asignado
-			when a1.tipo in ('BAJA','POS_PRE') 
+			when a11.tipo in ('BAJA','POS_PRE') 
 			then pbto.ejecutivo_asignado end) as ejecutivo_asignado_ptr
-	, (case when a1.tipo IN ('ALTA','PRE_POS') 
+	, (case when a11.tipo IN ('ALTA','PRE_POS') 
 			then pati.area
-			when a1.tipo in ('BAJA','POS_PRE') 
+			when a11.tipo in ('BAJA','POS_PRE') 
 			then pbto.area end) AS area_ptr
-	, (case when a1.tipo IN ('ALTA','PRE_POS') 
+	, (case when a11.tipo IN ('ALTA','PRE_POS') 
 			then pati.codigo_vendedor_da
-			when a1.tipo in ('BAJA','POS_PRE') 
+			when a11.tipo in ('BAJA','POS_PRE') 
 			then pbto.codigo_vendedor_da end) AS codigo_vendedor_da_ptr
-	, (case when a1.tipo IN ('ALTA','PRE_POS') 
+	, (case when a11.tipo IN ('ALTA','PRE_POS') 
 			then pati.jefatura
-			when a1.tipo in ('BAJA','POS_PRE') 
+			when a11.tipo in ('BAJA','POS_PRE') 
 			then pbto.jefatura end) AS jefatura_ptr
-	, a1.codigo_usuario
+	, a11.codigo_usuario
 	, desp.descripcion AS descripcion_desp
-	, a1.calf_riesgo
-	, a1.cap_endeu
-	, a1.valor_cred
-	, a1.ciudad_usuario
-	, a1.provincia_usuario
+	, a11.calf_riesgo
+	, a11.cap_endeu
+	, a11.valor_cred
+	, a11.ciudad_usuario
+	, a11.provincia_usuario
 	, a2.linea_de_negocio_anterior
 	, a2.cliente_anterior
 	, a2.dias_reciclaje
 	, a2.fecha_baja_reciclada
 	, a2.tarifa_basica_anterior
 	, a2.fecha_inicio_plan_anterior
-	, (case when a1.tipo IN ('PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
+	, (case when a11.tipo IN ('PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
 		THEN (nvl(t1.tarifa, ovw.mrc_ov_price) - nvl(descu.discount_value, 0))
-			WHEN a1.tipo IN ('ALTA') 
+			WHEN a11.tipo IN ('ALTA') 
 			then (nvl(t1.tarifa, ovw.mrc_base_price) - nvl(descu.discount_value, 0)) end) as tarifa_final_plan_act
-	--, (case when a1.tipo IN ('DOWNSELL','UPSELL','MISMA_TARIFA') THEN (a2.TARIFA_BASICA_ANTERIOR-) ) 
+	--, (case when a11.tipo IN ('DOWNSELL','UPSELL','MISMA_TARIFA') THEN (a2.TARIFA_BASICA_ANTERIOR-) ) 
 	, a2.tarifa_final_plan_ant
 	, a2.mismo_cliente
 	, (CASE 
@@ -1334,74 +1328,79 @@ SELECT
 			ELSE '' END) AS tipo_de_cuenta_en_operador_donante
 	, a2.fecha_alta_prepago
 	, (case when UPPER(t1.es_parque) = 'NO' THEN t1.tarifa END) AS tarifa_basica_baja
-	, a1.canal_transacc
-	, a1.distribuidor_crm
-	, (CASE	when a1.tipo IN ('ALTA','PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
+	, a11.canal_transacc
+	, a11.distribuidor_crm
+	, (CASE	when a11.tipo IN ('ALTA','PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
 		THEN descu.discount_value END) AS descuento_tarifa_plan_act
-	, (CASE	WHEN a1.tipo IN ('PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
+	, (CASE	WHEN a11.tipo IN ('PRE_POS','DOWNSELL','UPSELL','MISMA_TARIFA') 
 			THEN ovw.mrc_ov_price
-			WHEN a1.tipo IN ('ALTA') 
+			WHEN a11.tipo IN ('ALTA') 
 			THEN ovw.mrc_base_price END) AS tarifa_plan_actual_ov
+	, nvl(a2.portabilidad_cmsns,a2.portabilidad) as portabilidad_cmsns
+	, nvl(a2.motivo,a2.motivo_cmsns) as motivo_cmsns
+	, nvl(a2.cod_plan_anterior_cmsns,a2.cod_plan_anterior) as cod_plan_anterior_cmsns
+	, nvl(a2.des_plan_anterior_cmsns,a2.des_plan_anterior) as des_plan_anterior_cmsns
+	, NVL(t1.fecha_movimiento_mes, a11.fecha_movimiento_mes) as fecha_movimiento_mes_cmsns
+	, a11.canal_comercial as canal_movimiento_mes_cmsns
+	, a11.sub_canal as sub_canal_movimiento_mes_cmsns
+	, a11.nom_distribuidor as distribuidor_movimiento_mes_cmsns
+	, a11.oficina_movimiento_mes_cmsns
+	, nvl(a11.portabilidad_movimiento_mes,a11.portabilidad_movimiento_mes_cmsns) as portabilidad_movimiento_mes_cmsns
 	-------------------------------------
 	---------FIN REFACTORING
 	-------------------------------------
 	, {vIFechaEje} AS fecha_proceso
-FROM
 ----- tabla final del proceso OTC_360_GENERAL SQL 1-- proviene de PIVOT PARQUE
-	{vTblInt23} t1
-	-----------TABLA PRINCIPAL GENERADA EN MOVI PARQUE
-LEFT JOIN db_temporales.otc_t_360_parque_1_tmp_t_mov a2 --vTblExt16
-ON
-	(t1.telefono = a2.num_telefonico)
-	AND (t1.linea_negocio = a2.linea_negocio)
+FROM {vTblInt23} t1
+-----------TABLA PRINCIPAL GENERADA EN MOVIMIENTOS PARQUE
+LEFT JOIN {vTblExt16} a2 --vTblExt16
+ON	(t1.telefono = a2.num_telefonico)
+AND (t1.linea_negocio = a2.linea_negocio)
 -----------TABLA SECUNDARIA GENERADA EN MOVI PARQUE:   CONTIENE RESULTADO DE UNIONS
-LEFT JOIN db_temporales.otc_t_360_parque_1_mov_mes_tmp a1 --vTblExt17
-ON
-	(t1.telefono = a1.telefono)
-	---LA LINEA DE ABAJO SE HA COMENTADO PARA QUE SE INCLUYAN LOS MOVIMIENTOS NO_RECICLABLE 
-	--- LOS CUALES VIENEN SIN EL CAMPO fecha_movimiento_mes QUE GENERA EL CRUCE:
-	--AND (t1.fecha_movimiento_mes = a1.fecha_movimiento_mes)
+LEFT JOIN {vTblExt17} a1 --vTblExt17
+ON	(t1.telefono = a1.telefono)
+AND (t1.fecha_movimiento_mes = a1.fecha_movimiento_mes)
 LEFT JOIN {vTblExt18} a3 
-ON
-	(t1.account_num = a3.cta_fact)
-	-----------TERCERA TABLA GENERADA EN MOVI PARQUE
-LEFT JOIN db_temporales.otc_t_360_parque_1_mov_seg_tmp a4   --vTblExt19
-ON
-	(t1.telefono = a4.telefono)
-	--AND (t1.es_parque = 'SI')
+ON	(t1.account_num = a3.cta_fact)
+-----------TERCERA TABLA GENERADA EN MOVI PARQUE
+LEFT JOIN {vTblExt19} a4   --vTblExt19
+ON	(t1.telefono = a4.telefono)
+AND (t1.es_parque = 'SI')
 LEFT JOIN {vTblExt20} a5 
-ON
-	(t1.telefono = a5.telefono)
-	AND ({vIFechaEje} = a5.fecha_corte)
+ON	(t1.telefono = a5.telefono)
+AND ({vIFechaEje} = a5.fecha_corte)
 LEFT JOIN {vTblExt21} p1 
-ON
-	(t1.telefono = p1.phone_number)
+ON	(t1.telefono = p1.phone_number)
 LEFT JOIN {vTblExt22} pp 
-ON
-	(t1.telefono = pp.num_telefonico)
+ON	(t1.telefono = pp.num_telefonico)
 LEFT JOIN {vTblExt23} wb 
-ON
-	(t1.customer_ref = wb.cust_ext_ref)
-	--20210629 - SE REALIZA EL CRUCE CON LA TEMPORAL PARA AGREGAR CAMPO FECHA NACIMIENTO
-LEFT JOIN {vTblExt24} cs ON
-	(t1.identificacion_cliente = cs.cedula)
+ON	(t1.customer_ref = wb.cust_ext_ref)
+--20210629 - SE REALIZA EL CRUCE CON LA TEMPORAL PARA AGREGAR CAMPO FECHA NACIMIENTO
+LEFT JOIN {vTblExt24} cs 
+ON	(t1.identificacion_cliente = cs.cedula)
 	----------INSERTADO EN REFACTORING-------------------
 	-------------\/\/\/\/\/\/\/\/\/\/--------------------------
+-----------TABLA SECUNDARIA GENERADA EN MOVI PARQUE:   CONTIENE RESULTADO DE UNIONS
+--SE INCLUYEN LOS MOVIMIENTOS NO_RECICLABLE Y altas bajas reproceso
+--- LOS CUALES VIENEN SIN EL CAMPO fecha_movimiento_mes QUE GENERA EL CRUCE:
+LEFT JOIN {vTblExt17} a11 --vTblExt17
+ON
+	(t1.telefono = a11.telefono)
 LEFT JOIN db_reportes.otc_t_360_modelo tec ON
 	t1.telefono = tec.num_telefonico
 	AND ({vIFechaEje} = tec.fecha_proceso)
 LEFT JOIN {vTblInt29} desp ON
-	a1.icc = desp.icc
+	a11.icc = desp.icc
 LEFT JOIN {vTblInt34} spi ON
 	t1.telefono = spi.telefono
 LEFT JOIN {vTblInt30} cat_c ON
-	upper(a1.canal_comercial) = upper(cat_c.tipo_movimiento)
+	upper(a11.canal_comercial) = upper(cat_c.tipo_movimiento)
 LEFT JOIN {vTblInt31} cat_sc ON
-	upper(a1.sub_canal) = upper(cat_sc.tipo_movimiento)
+	upper(a11.sub_canal) = upper(cat_sc.tipo_movimiento)
 LEFT JOIN {vTblInt32} cat_p ON
-	upper(a1.sub_movimiento) = rtrim(upper(cat_p.tipo_movimiento))
+	upper(a11.sub_movimiento) = rtrim(upper(cat_p.tipo_movimiento))
 LEFT JOIN {vTblInt33} cat_tm ON
-	upper(a1.tipo) = upper(cat_tm.auxiliar)
+	upper(a11.tipo) = upper(cat_tm.auxiliar)
 LEFT JOIN  {vTblInt28} dnpy ON
 	t1.telefono = dnpy.telefono
 LEFT JOIN {vTblInt26} pati ON
@@ -1418,6 +1417,6 @@ LEFT JOIN {vTblInt35} faph ON
 	(faph.telefono=t1.telefono)
 ----------/\/\/\/\/\/\/\/\/\/\/\/\-----------------
 ----------FIN DE REFACTORING-------------------
-    '''.format(vIFechaEje1=vIFechaEje1,vIFechaEje=vIFechaEje,vTblInt23=vTblInt23,vTblExt18=vTblExt18,vTblExt20=vTblExt20,vTblExt21=vTblExt21,vTblExt22=vTblExt22,vTblExt23=vTblExt23,vTblExt24=vTblExt24,vTblInt29=vTblInt29,vTblInt34=vTblInt34,vTblInt30=vTblInt30,vTblInt31=vTblInt31,vTblInt32=vTblInt32,vTblInt33=vTblInt33,vTblInt28=vTblInt28,vTblInt26=vTblInt26,vTblInt27=vTblInt27,vTblInt24=vTblInt24,vTblInt25=vTblInt25,vTblInt35=vTblInt35)
+    '''.format(vIFechaEje1=vIFechaEje1,vIFechaEje=vIFechaEje,vTblInt23=vTblInt23,vTblExt18=vTblExt18,vTblExt20=vTblExt20,vTblExt21=vTblExt21,vTblExt22=vTblExt22,vTblExt23=vTblExt23,vTblExt24=vTblExt24,vTblInt29=vTblInt29,vTblInt34=vTblInt34,vTblInt30=vTblInt30,vTblInt31=vTblInt31,vTblInt32=vTblInt32,vTblInt33=vTblInt33,vTblInt28=vTblInt28,vTblInt26=vTblInt26,vTblInt27=vTblInt27,vTblInt24=vTblInt24,vTblInt25=vTblInt25,vTblInt35=vTblInt35,vTblExt16=vTblExt16,vTblExt17=vTblExt17,vTblExt19=vTblExt19)
     return qry
 

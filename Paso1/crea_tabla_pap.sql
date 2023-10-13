@@ -62,6 +62,16 @@ ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (canal_transacc varchar(11
 ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (distribuidor_crm varchar(110));
 ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (descuento_tarifa_plan_act double);
 ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (tarifa_plan_actual_ov double);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (portabilidad_cmsns string);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (motivo_cmsns string);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (cod_plan_anterior_cmsns string);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (des_plan_anterior_cmsns string);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (fecha_movimiento_mes_cmsns date);
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (canal_movimiento_mes_cmsns varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (sub_canal_movimiento_mes_cmsns varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (distribuidor_movimiento_mes_cmsns varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (oficina_movimiento_mes_cmsns varchar(50));
+ALTER TABLE db_reportes.otc_t_360_general ADD COLUMNS (portabilidad_movimiento_mes_cmsns string);
 
 --AGREGA NUEVOS CAMPOS A TABLA DESTINO otc_t_alta_baja_hist
 ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (sub_movimiento varchar(50));
@@ -89,7 +99,6 @@ ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (vol_invol string);
 ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (account_num bigint);
 ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (distribuidor_crm varchar(110));
 ALTER TABLE db_reportes.otc_t_alta_baja_hist ADD COLUMNS (canal_transacc varchar(110));
-
 
 --AGREGA NUEVOS CAMPOS A TABLA DESTINO otc_t_transfer_hist
 ALTER TABLE db_reportes.otc_t_transfer_hist ADD COLUMNS (sub_movimiento varchar(50));

@@ -882,7 +882,7 @@ SELECT
 	,fecha_proceso
 	,fecha_carga
 	, detalle
-from db_desarrollo2021.otc_t_desc_no_pymes
+from db_desarrollo2021.otc_t_desc_no_pymes --db_reportes
 WHERE fecha_proceso = '{vIFechaEje1}'
     '''.format(vIFechaEje1=vIFechaEje1)
     return qry
@@ -1031,7 +1031,7 @@ def qry_tmp_rdb_solic_port_in(fecha_port_ini,fecha_port_fin):
 			ORDER BY created_when DESC) AS rnum
 	--LA SIGUIENTE TABLA FUE TRAIDA DESDE ORACLE CON SPARK CON EL QUERY DE CARLOS CASTILLO en spark
 	--en el proceso SOLICITUDES DE PORTABILIDAD IN
-FROM db_desarrollo2021.otc_t_solicit_port_in  
+FROM db_desarrollo2021.otc_t_solicit_port_in  --db_reportes
 WHERE nvl(salesorderprocesseddate, created_when) BETWEEN '{fecha_port_ini}' AND '{fecha_port_fin}'
 and requeststatus in ('Approved','Partially Rejected','Pending in ASCP')  ) f
 where  rnum=1
@@ -1057,7 +1057,7 @@ and es_parque ='NO'
 
 
 #36
-def qry_ins_otc_t_360_general(vIFechaEje1,vIFechaEje,vTblInt23,vTblExt18,vTblExt20,vTblExt21,vTblExt22,vTblExt23,vTblExt24,vTblInt29,vTblInt34,vTblInt30,vTblInt31,vTblInt32,vTblInt33,vTblInt28,vTblInt26,vTblInt27,vTblInt24,vTblInt25,vTblInt35):
+def qry_ins_otc_t_360_general(vIFechaEje1,vIFechaEje,vTblInt23,vTblExt18,vTblExt20,vTblExt21,vTblExt22,vTblExt23,vTblExt24,vTblInt29,vTblInt34,vTblInt30,vTblInt31,vTblInt32,vTblInt33,vTblInt28,vTblInt26,vTblInt27,vTblInt24,vTblInt25,vTblInt35,vTblExt16,vTblExt17,vTblExt19):
     qry='''
 SELECT
 	DISTINCT 
@@ -1353,17 +1353,17 @@ SELECT
 ----- tabla final del proceso OTC_360_GENERAL SQL 1-- proviene de PIVOT PARQUE
 FROM {vTblInt23} t1
 -----------TABLA PRINCIPAL GENERADA EN MOVIMIENTOS PARQUE
-LEFT JOIN db_desarrollo2021.otc_t_360_parque_1_tmp_t_mov a2 --vTblExt16
+LEFT JOIN {vTblExt16} a2 --vTblExt16
 ON	(t1.telefono = a2.num_telefonico)
 AND (t1.linea_negocio = a2.linea_negocio)
 -----------TABLA SECUNDARIA GENERADA EN MOVI PARQUE:   CONTIENE RESULTADO DE UNIONS
-LEFT JOIN db_desarrollo2021.otc_t_360_parque_1_mov_mes_tmp a1 --vTblExt17
+LEFT JOIN {vTblExt17} a1 --vTblExt17
 ON	(t1.telefono = a1.telefono)
 AND (t1.fecha_movimiento_mes = a1.fecha_movimiento_mes)
 LEFT JOIN {vTblExt18} a3 
 ON	(t1.account_num = a3.cta_fact)
 -----------TERCERA TABLA GENERADA EN MOVI PARQUE
-LEFT JOIN db_desarrollo2021.otc_t_360_parque_1_mov_seg_tmp a4   --vTblExt19
+LEFT JOIN {vTblExt19} a4   --vTblExt19
 ON	(t1.telefono = a4.telefono)
 AND (t1.es_parque = 'SI')
 LEFT JOIN {vTblExt20} a5 
@@ -1380,6 +1380,12 @@ LEFT JOIN {vTblExt24} cs
 ON	(t1.identificacion_cliente = cs.cedula)
 	----------INSERTADO EN REFACTORING-------------------
 	-------------\/\/\/\/\/\/\/\/\/\/--------------------------
+-----------TABLA SECUNDARIA GENERADA EN MOVI PARQUE:   CONTIENE RESULTADO DE UNIONS
+--SE INCLUYEN LOS MOVIMIENTOS NO_RECICLABLE Y altas bajas reproceso
+--- LOS CUALES VIENEN SIN EL CAMPO fecha_movimiento_mes QUE GENERA EL CRUCE:
+LEFT JOIN {vTblExt17} a11 --vTblExt17
+ON
+	(t1.telefono = a11.telefono)
 LEFT JOIN db_reportes.otc_t_360_modelo tec ON
 	t1.telefono = tec.num_telefonico
 	AND ({vIFechaEje} = tec.fecha_proceso)
@@ -1409,14 +1415,8 @@ LEFT JOIN {vTblInt25} ovw ON
 	and (ovw.tariff_plan_id=t1.codigo_plan)
 LEFT JOIN {vTblInt35} faph ON
 	(faph.telefono=t1.telefono)
------------TABLA SECUNDARIA GENERADA EN MOVI PARQUE:   CONTIENE RESULTADO DE UNIONS
---SE INCLUYEN LOS MOVIMIENTOS NO_RECICLABLE Y altas bajas reproceso
---- LOS CUALES VIENEN SIN EL CAMPO fecha_movimiento_mes QUE GENERA EL CRUCE:
-LEFT JOIN db_desarrollo2021.otc_t_360_parque_1_mov_mes_tmp a11 --vTblExt17
-ON
-	(t1.telefono = a11.telefono)
 ----------/\/\/\/\/\/\/\/\/\/\/\/\-----------------
 ----------FIN DE REFACTORING-------------------
-    '''.format(vIFechaEje1=vIFechaEje1,vIFechaEje=vIFechaEje,vTblInt23=vTblInt23,vTblExt18=vTblExt18,vTblExt20=vTblExt20,vTblExt21=vTblExt21,vTblExt22=vTblExt22,vTblExt23=vTblExt23,vTblExt24=vTblExt24,vTblInt29=vTblInt29,vTblInt34=vTblInt34,vTblInt30=vTblInt30,vTblInt31=vTblInt31,vTblInt32=vTblInt32,vTblInt33=vTblInt33,vTblInt28=vTblInt28,vTblInt26=vTblInt26,vTblInt27=vTblInt27,vTblInt24=vTblInt24,vTblInt25=vTblInt25,vTblInt35=vTblInt35)
+    '''.format(vIFechaEje1=vIFechaEje1,vIFechaEje=vIFechaEje,vTblInt23=vTblInt23,vTblExt18=vTblExt18,vTblExt20=vTblExt20,vTblExt21=vTblExt21,vTblExt22=vTblExt22,vTblExt23=vTblExt23,vTblExt24=vTblExt24,vTblInt29=vTblInt29,vTblInt34=vTblInt34,vTblInt30=vTblInt30,vTblInt31=vTblInt31,vTblInt32=vTblInt32,vTblInt33=vTblInt33,vTblInt28=vTblInt28,vTblInt26=vTblInt26,vTblInt27=vTblInt27,vTblInt24=vTblInt24,vTblInt25=vTblInt25,vTblInt35=vTblInt35,vTblExt16=vTblExt16,vTblExt17=vTblExt17,vTblExt19=vTblExt19)
     return qry
 

@@ -32,7 +32,7 @@ set -e
 ## sh -x /home/nae108834/Movimientos/Bin/OTC_T_360_PIVOT_PARQUE.sh 20230831  && sh -x /home/nae108834/Movimientos/Bin/OTC_T_DESC_NO_PYMES.sh && sh -x  /home/nae108834/Movimientos/Bin/OTC_T_SOLICIT_PORT_IN.sh 20230901 && sh -x /home/nae108834/Movimientos/Bin/OTC_T_COMBO_INICIAL.sh && sh -x /home/nae108834/Movimientos/Bin/OTC_T_AJUSTES_MOVIMIENTOS.sh && sh -x /home/nae108834/Movimientos/Bin/OTC_T_MOVIMIENTOS_PARQUE.sh 20230904 && sh -x /home/nae108834/Movimientos/Bin/OTC_T_360_GENERAL.sh 20230904 && sh -x /home/nae108834/Movimientos/Bin/OTC_T_EXT_MOVIMIENTOS.sh 20230731
 
 ## NUEVA EJECUCION
-# sh -x /home/nae108834/Movimientos/Bin/OTC_T_360_PIVOT_PARQUE.sh 20230731 && sh -x /home/nae108834/RGenerator/reportes/Cliente360/Bin/OTC_T_360_MOVIMIENTOS_PARQUE.sh 20230731 && sh -x /home/nae108834/RGenerator/reportes/Cliente360/Bin/OTC_T_360_GENERAL.sh 20230731 && sh -x /home/nae108835/EXT_MOVIMIENTOS_TEST/Ext_Movimientos/bin/OTC_T_EXT_MOVIMIENTOS.sh 20230906
+# sh -x /home/nae108834/Movimientos/Bin/OTC_T_360_PIVOT_PARQUE.sh 20230930 && sh -x /home/nae108834/RGenerator/reportes/Cliente360/Bin/OTC_T_360_MOVIMIENTOS_PARQUE.sh 20230930 && sh -x /home/nae108834/RGenerator/reportes/Cliente360/Bin/OTC_T_360_GENERAL.sh 20230930 && sh -x /home/nae108835/EXT_MOVIMIENTOS_TEST/Ext_Movimientos/bin/OTC_T_EXT_MOVIMIENTOS.sh 20230906
 
 #PARAMETROS ESTATICOS
 ENTIDAD=EXT_MVMNTS0010
