@@ -2,6 +2,9 @@
 CREATE TABLE STAGING.cliente360_bkup20240130 AS
 SELECT * FROM STAGING.STG_CLIENTE_360;
 
+--Descompresion de la tabla en produccion
+ALTER TABLE STAGING.STG_CLIENTE_360 MOVE NOCOMPRESS;
+
 --Agrega nuevos campos a tabla_destino STG_CLIENTE_360
 ALTER TABLE STAGING.STG_CLIENTE_360 
 ADD (
@@ -55,7 +58,7 @@ recargador_m2	VARCHAR2(1) DEFAULT NULL,
 recargador_m3	VARCHAR2(1) DEFAULT NULL,
 minutos_prom_3m	DOUBLE PRECISION,
 mb_prom_3m	DOUBLE PRECISION,
-rango_antiguedad	VARCHAR2(3) DEFAULT NULL,
+rango_antiguedad	VARCHAR2(15) DEFAULT NULL,
 antiguedad	NUMBER(4, 0) DEFAULT NULL,
 edad	NUMBER(3, 0) DEFAULT NULL,
 genero	VARCHAR2(10) DEFAULT NULL,
@@ -87,5 +90,16 @@ bonos_m1	VARCHAR2(2) DEFAULT NULL,
 bonos_m2	VARCHAR2(2) DEFAULT NULL,
 bonos_m3	VARCHAR2(2) DEFAULT NULL,
 fecha_activacion_bono	VARCHAR2(10) DEFAULT NULL,
-codigo_bono_ondemand    VARCHAR2(5) DEFAULT NULL
+codigo_bono_ondemand    VARCHAR2(5) DEFAULT NULL,
+mplay VARCHAR2(2) DEFAULT NULL,
+adulto_mayor VARCHAR2(2) DEFAULT NULL,
+sub_canal_alta VARCHAR2(50) DEFAULT NULL,
+origen_alta_segmento VARCHAR2(20) DEFAULT NULL,
+cod_da VARCHAR2(50) DEFAULT NULL,
+parque_recargador VARCHAR2(2) DEFAULT NULL,
+banco VARCHAR2(50) DEFAULT NULL,
+linea_negocio_homologado VARCHAR2(7) DEFAULT NULL
 );
+
+--Compresion de la tabla en produccion
+ALTER TABLE STAGING.STG_CLIENTE_360 MOVE COMPRESS;
